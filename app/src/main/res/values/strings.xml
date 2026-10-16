@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Vinilos</string>
+    <string name="setup_title">Base del proyecto lista</string>
+    <string name="setup_description">Arquitectura, navegación y conexión con el backend.</string>
+    <string name="backend_checking">Verificando conexión…</string>
+    <string name="backend_connected">Backend conectado correctamente</string>
+    <string name="backend_error">No fue posible conectar con el backend</string>
+    <string name="retry">Reintentar</string>
+</resources>
