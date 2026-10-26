@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ícono exportado del prototipo de Figma (trazo). El color se da con android:tint / app:tint. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:tint="?attr/colorControlNormal"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="@android:color/transparent"
+        android:pathData="M11 7.60095L5.00603 15.791C4.86499 15.9836 4.79754 16.2204 4.81588 16.4585C4.83422 16.6965 4.93714 16.9202 5.10603 17.089L5.92303 17.907C6.09438 18.0781 6.32202 18.1813 6.56369 18.1973C6.80535 18.2133 7.04461 18.141 7.23703 17.994L15.09 12"
+        android:strokeWidth="2"
+        android:strokeColor="@android:color/white"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:fillColor="@android:color/transparent"
+        android:pathData="M16.5 21.174C15.5 20.5 14.372 20 13 20C10.942 20 9.07198 22.356 6.99998 22C4.92798 21.644 4.22498 18.631 5.49998 17.5"
+        android:strokeWidth="2"
+        android:strokeColor="@android:color/white"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:fillColor="@android:color/transparent"
+        android:pathData="M16 12C18.7614 12 21 9.76142 21 7C21 4.23858 18.7614 2 16 2C13.2386 2 11 4.23858 11 7C11 9.76142 13.2386 12 16 12Z"
+        android:strokeWidth="2"
+        android:strokeColor="@android:color/white"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+</vector>
