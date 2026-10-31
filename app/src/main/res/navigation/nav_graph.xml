@@ -1,11 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    Grafo de navegación de Vinilos.
+    - La app abre en la selección de rol.
+    - Álbumes, Artistas y Coleccionistas son los destinos de la barra inferior
+      (sus id coinciden con los de menu/bottom_nav_menu.xml).
+    - Por ahora los tres usan PlaceholderFragment. En HU01-T4 se cambia
+      android:name de albumListFragment por AlbumListFragment.
+-->
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/roleSelectionFragment">
+
+    <!-- Volver a elegir el rol desde cualquier pantalla (borra la pila) -->
+    <action
+        android:id="@+id/action_global_roleSelection"
+        app:destination="@id/roleSelectionFragment"
+        app:popUpTo="@id/nav_graph"
+        app:popUpToInclusive="true" />
 
     <fragment
-        android:id="@+id/homeFragment"
-        android:name="co.edu.uniandes.misw4203.vinilos.ui.home.HomeFragment"
-        android:label="@string/app_name" />
+        android:id="@+id/roleSelectionFragment"
+        android:name="co.edu.uniandes.misw4203.vinilos.ui.role.RoleSelectionFragment"
+        android:label="@string/app_name">
+        <!-- Después de elegir el rol, "atrás" desde el catálogo cierra la app -->
+        <action
+            android:id="@+id/action_roleSelection_to_albumList"
+            app:destination="@id/albumListFragment"
+            app:popUpTo="@id/roleSelectionFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/albumListFragment"
+        android:name="co.edu.uniandes.misw4203.vinilos.ui.placeholder.PlaceholderFragment"
+        android:label="@string/nav_albums">
+        <argument
+            android:name="message"
+            android:defaultValue="@string/placeholder_albums"
+            app:argType="reference" />
+        <argument
+            android:name="icon"
+            android:defaultValue="@drawable/ic_album"
+            app:argType="reference" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/artistListFragment"
+        android:name="co.edu.uniandes.misw4203.vinilos.ui.placeholder.PlaceholderFragment"
+        android:label="@string/nav_artists">
+        <argument
+            android:name="message"
+            android:defaultValue="@string/placeholder_next_sprint"
+            app:argType="reference" />
+        <argument
+            android:name="icon"
+            android:defaultValue="@drawable/ic_artist"
+            app:argType="reference" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/collectorListFragment"
+        android:name="co.edu.uniandes.misw4203.vinilos.ui.placeholder.PlaceholderFragment"
+        android:label="@string/nav_collectors">
+        <argument
+            android:name="message"
+            android:defaultValue="@string/placeholder_next_sprint"
+            app:argType="reference" />
+        <argument
+            android:name="icon"
+            android:defaultValue="@drawable/ic_collectors"
+            app:argType="reference" />
+    </fragment>
 </navigation>

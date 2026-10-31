@@ -1,7 +1,199 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="Theme.Vinilos" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="android:navigationBarColor">?attr/colorSurface</item>
-        <item name="android:statusBarColor">?attr/colorSurface</item>
+
+    <!--
+        Tema de Vinilos según el prototipo de Figma: Material Design 3, siempre oscuro.
+        Títulos con Syne y textos con Hanken Grotesk.
+    -->
+    <style name="Theme.Vinilos" parent="Theme.Material3.Dark.NoActionBar">
+        <!-- Colores -->
+        <item name="colorPrimary">@color/md_primary</item>
+        <item name="colorOnPrimary">@color/md_on_primary</item>
+        <item name="colorPrimaryContainer">@color/md_primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/md_on_primary_container</item>
+        <item name="colorSecondary">@color/md_secondary</item>
+        <item name="colorOnSecondary">@color/md_on_secondary</item>
+        <item name="colorSecondaryContainer">@color/md_secondary_container</item>
+        <item name="colorOnSecondaryContainer">@color/md_on_secondary_container</item>
+        <item name="colorError">@color/md_error</item>
+        <item name="colorOnError">@color/md_on_error</item>
+        <item name="colorErrorContainer">@color/md_error_container</item>
+        <item name="colorOnErrorContainer">@color/md_on_error_container</item>
+        <item name="android:colorBackground">@color/md_background</item>
+        <item name="colorOnBackground">@color/md_on_background</item>
+        <item name="colorSurface">@color/md_surface</item>
+        <item name="colorOnSurface">@color/md_on_surface</item>
+        <item name="colorSurfaceVariant">@color/md_surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/md_on_surface_variant</item>
+        <item name="colorSurfaceContainerLow">@color/md_surface_container_low</item>
+        <item name="colorSurfaceContainer">@color/md_surface_container</item>
+        <item name="colorSurfaceContainerHigh">@color/md_surface_container_high</item>
+        <item name="colorSurfaceContainerHighest">@color/md_surface_container_highest</item>
+        <item name="colorOutline">@color/md_outline</item>
+        <item name="colorOutlineVariant">@color/md_outline_variant</item>
+        <item name="colorControlNormal">@color/md_on_surface_variant</item>
+
+        <!-- Escala tipográfica (tamaños del prototipo) -->
+        <item name="textAppearanceDisplaySmall">@style/TextAppearance.Vinilos.DisplaySmall</item>
+        <item name="textAppearanceHeadlineSmall">@style/TextAppearance.Vinilos.HeadlineSmall</item>
+        <item name="textAppearanceTitleLarge">@style/TextAppearance.Vinilos.TitleLarge</item>
+        <item name="textAppearanceTitleMedium">@style/TextAppearance.Vinilos.TitleMedium</item>
+        <item name="textAppearanceBodyLarge">@style/TextAppearance.Vinilos.BodyLarge</item>
+        <item name="textAppearanceBodyMedium">@style/TextAppearance.Vinilos.BodyMedium</item>
+        <item name="textAppearanceBodySmall">@style/TextAppearance.Vinilos.BodySmall</item>
+        <item name="textAppearanceLabelLarge">@style/TextAppearance.Vinilos.LabelLarge</item>
+        <item name="textAppearanceLabelMedium">@style/TextAppearance.Vinilos.LabelMedium</item>
+        <item name="textAppearanceLabelSmall">@style/TextAppearance.Vinilos.LabelSmall</item>
+
+        <!-- Componentes -->
+        <item name="bottomNavigationStyle">@style/Widget.Vinilos.BottomNavigation</item>
+        <item name="materialCardViewStyle">@style/Widget.Vinilos.Card</item>
+
+        <!-- Íconos claros en las barras del sistema (el fondo siempre es oscuro) -->
+        <item name="android:windowLightStatusBar" tools:targetApi="23">false</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">false</item>
+    </style>
+
+    <!-- ===== Tipografía ===== -->
+
+    <!-- 32sp Syne Bold: nombre de la app en la selección de rol -->
+    <style name="TextAppearance.Vinilos.DisplaySmall" parent="TextAppearance.Material3.DisplaySmall">
+        <item name="fontFamily">@font/syne_bold</item>
+        <item name="android:fontFamily">@font/syne_bold</item>
+        <item name="android:textSize">32sp</item>
+        <item name="lineHeight">40sp</item>
+        <item name="android:letterSpacing">0.004</item>
+    </style>
+
+    <!-- 18sp Syne SemiBold: título de las tarjetas de rol -->
+    <style name="TextAppearance.Vinilos.HeadlineSmall" parent="TextAppearance.Material3.HeadlineSmall">
+        <item name="fontFamily">@font/syne_semibold</item>
+        <item name="android:fontFamily">@font/syne_semibold</item>
+        <item name="android:textSize">18sp</item>
+        <item name="lineHeight">24sp</item>
+        <item name="android:letterSpacing">0.008</item>
+    </style>
+
+    <!-- 20sp Syne SemiBold: título de la barra superior -->
+    <style name="TextAppearance.Vinilos.TitleLarge" parent="TextAppearance.Material3.TitleLarge">
+        <item name="fontFamily">@font/syne_semibold</item>
+        <item name="android:fontFamily">@font/syne_semibold</item>
+        <item name="android:textSize">20sp</item>
+        <item name="lineHeight">28sp</item>
+        <item name="android:letterSpacing">0.007</item>
+    </style>
+
+    <!-- 16sp Syne SemiBold: nombre de un álbum en las listas -->
+    <style name="TextAppearance.Vinilos.TitleMedium" parent="TextAppearance.Material3.TitleMedium">
+        <item name="fontFamily">@font/syne_semibold</item>
+        <item name="android:fontFamily">@font/syne_semibold</item>
+        <item name="android:textSize">16sp</item>
+        <item name="lineHeight">22sp</item>
+        <item name="android:letterSpacing">0.009</item>
+    </style>
+
+    <!-- 15sp Hanken Grotesk: subtítulos -->
+    <style name="TextAppearance.Vinilos.BodyLarge" parent="TextAppearance.Material3.BodyLarge">
+        <item name="fontFamily">@font/hanken_grotesk_regular</item>
+        <item name="android:fontFamily">@font/hanken_grotesk_regular</item>
+        <item name="android:textSize">15sp</item>
+        <item name="lineHeight">20sp</item>
+        <item name="android:letterSpacing">0.009</item>
+    </style>
+
+    <!-- 13sp Hanken Grotesk: descripciones -->
+    <style name="TextAppearance.Vinilos.BodyMedium" parent="TextAppearance.Material3.BodyMedium">
+        <item name="fontFamily">@font/hanken_grotesk_regular</item>
+        <item name="android:fontFamily">@font/hanken_grotesk_regular</item>
+        <item name="android:textSize">13sp</item>
+        <item name="lineHeight">20sp</item>
+        <item name="android:letterSpacing">0.011</item>
+    </style>
+
+    <!-- 13sp Hanken Grotesk, interlineado corto: artista de un álbum en las listas -->
+    <style name="TextAppearance.Vinilos.BodySmall" parent="TextAppearance.Material3.BodySmall">
+        <item name="fontFamily">@font/hanken_grotesk_regular</item>
+        <item name="android:fontFamily">@font/hanken_grotesk_regular</item>
+        <item name="android:textSize">13sp</item>
+        <item name="lineHeight">18sp</item>
+        <item name="android:letterSpacing">0.011</item>
+    </style>
+
+    <!-- 14sp Hanken Grotesk SemiBold: botones -->
+    <style name="TextAppearance.Vinilos.LabelLarge" parent="TextAppearance.Material3.LabelLarge">
+        <item name="fontFamily">@font/hanken_grotesk_semibold</item>
+        <item name="android:fontFamily">@font/hanken_grotesk_semibold</item>
+        <item name="android:textSize">14sp</item>
+        <item name="lineHeight">20sp</item>
+        <item name="android:letterSpacing">0.01</item>
+    </style>
+
+    <!-- 12sp Hanken Grotesk SemiBold: chip del rol -->
+    <style name="TextAppearance.Vinilos.LabelMedium" parent="TextAppearance.Material3.LabelMedium">
+        <item name="fontFamily">@font/hanken_grotesk_semibold</item>
+        <item name="android:fontFamily">@font/hanken_grotesk_semibold</item>
+        <item name="android:textSize">12sp</item>
+        <item name="lineHeight">20sp</item>
+        <item name="android:letterSpacing">0.012</item>
+    </style>
+
+    <!-- 12sp Hanken Grotesk Medium: etiquetas y barra inferior (inactiva) -->
+    <style name="TextAppearance.Vinilos.LabelSmall" parent="TextAppearance.Material3.LabelSmall">
+        <item name="fontFamily">@font/hanken_grotesk_medium</item>
+        <item name="android:fontFamily">@font/hanken_grotesk_medium</item>
+        <item name="android:textSize">12sp</item>
+        <item name="lineHeight">20sp</item>
+        <item name="android:letterSpacing">0.012</item>
+    </style>
+
+    <!-- 12sp Hanken Grotesk Bold: barra inferior (pestaña activa) -->
+    <style name="TextAppearance.Vinilos.NavLabelActive" parent="TextAppearance.Vinilos.LabelSmall">
+        <item name="fontFamily">@font/hanken_grotesk_bold</item>
+        <item name="android:fontFamily">@font/hanken_grotesk_bold</item>
+    </style>
+
+    <!-- ===== Componentes ===== -->
+
+    <!-- Barra inferior: 80dp, indicador vino de 64x32 en la pestaña activa -->
+    <style name="Widget.Vinilos.BottomNavigation" parent="Widget.Material3.BottomNavigationView">
+        <item name="backgroundTint">?attr/colorSurfaceContainer</item>
+        <item name="labelVisibilityMode">labeled</item>
+        <item name="itemIconSize">24dp</item>
+        <item name="itemTextAppearanceActive">@style/TextAppearance.Vinilos.NavLabelActive</item>
+        <item name="itemTextAppearanceInactive">@style/TextAppearance.Vinilos.LabelSmall</item>
+        <item name="itemTextAppearanceActiveBoldEnabled">false</item>
+        <item name="itemActiveIndicatorStyle">@style/Widget.Vinilos.BottomNavigation.ActiveIndicator</item>
+    </style>
+
+    <style name="Widget.Vinilos.BottomNavigation.ActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:width">64dp</item>
+        <item name="android:height">32dp</item>
+        <item name="android:color">?attr/colorSecondaryContainer</item>
+    </style>
+
+    <!-- Tarjetas: fondo café, borde de 1dp -->
+    <style name="Widget.Vinilos.Card" parent="Widget.Material3.CardView.Outlined">
+        <item name="cardBackgroundColor">?attr/colorSurfaceContainerLow</item>
+        <item name="strokeColor">?attr/colorOutlineVariant</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="cardCornerRadius">20dp</item>
+    </style>
+
+    <!-- Chip del rol en la barra superior: borde de 1dp, ícono de persona de 18dp -->
+    <style name="Widget.Vinilos.RoleChip" parent="Widget.Material3.Chip.Assist">
+        <item name="chipBackgroundColor">@android:color/transparent</item>
+        <item name="chipStrokeColor">?attr/colorOutlineVariant</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="chipCornerRadius">16dp</item>
+        <item name="chipMinHeight">32dp</item>
+        <item name="chipIcon">@drawable/ic_visitor</item>
+        <item name="chipIconSize">18dp</item>
+        <item name="chipIconTint">?attr/colorOnSurfaceVariant</item>
+        <item name="chipStartPadding">10dp</item>
+        <item name="iconStartPadding">0dp</item>
+        <item name="iconEndPadding">0dp</item>
+        <item name="textStartPadding">6dp</item>
+        <item name="textEndPadding">4dp</item>
+        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
+        <item name="android:textAppearance">@style/TextAppearance.Vinilos.LabelMedium</item>
     </style>
 </resources>
