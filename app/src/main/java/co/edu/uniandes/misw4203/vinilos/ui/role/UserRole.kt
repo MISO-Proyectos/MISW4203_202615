@@ -11,8 +11,10 @@ import co.edu.uniandes.misw4203.vinilos.R
 enum class UserRole(
     @param:StringRes val labelRes: Int,
     /** Muestra el botón "Agregar álbum" en el catálogo. */
-    val canAddAlbums: Boolean
+    val canAddAlbums: Boolean,
+    /** Muestra el botón "Agregar track" en el detalle de un álbum. */
+    val canAddTracks: Boolean
 ) {
-    VISITOR(R.string.role_visitor, canAddAlbums = false),
-    COLLECTOR(R.string.role_collector, canAddAlbums = true)
+    VISITOR(R.string.role_visitor, canAddAlbums = false, canAddTracks = false),
+    COLLECTOR(R.string.role_collector, canAddAlbums = true, canAddTracks = true)
 }

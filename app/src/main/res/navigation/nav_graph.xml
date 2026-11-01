@@ -4,8 +4,8 @@
     - La app abre en la selección de rol.
     - Álbumes, Artistas y Coleccionistas son los destinos de la barra inferior
       (sus id coinciden con los de menu/bottom_nav_menu.xml).
-    - Álbumes usa AlbumListFragment (HU01); Artistas y Coleccionistas siguen
-      con PlaceholderFragment hasta el Sprint 2.
+    - Álbumes usa AlbumListFragment (HU01) y abre AlbumDetailFragment (HU02).
+      Artistas y Coleccionistas siguen con PlaceholderFragment hasta el Sprint 2.
 -->
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -35,7 +35,21 @@
     <fragment
         android:id="@+id/albumListFragment"
         android:name="co.edu.uniandes.misw4203.vinilos.ui.albums.AlbumListFragment"
-        android:label="@string/nav_albums" />
+        android:label="@string/nav_albums">
+        <action
+            android:id="@+id/action_albumList_to_albumDetail"
+            app:destination="@id/albumDetailFragment" />
+    </fragment>
+
+    <!-- HU02: detalle de un álbum. "albumId" lo lee AlbumDetailViewModel -->
+    <fragment
+        android:id="@+id/albumDetailFragment"
+        android:name="co.edu.uniandes.misw4203.vinilos.ui.albums.detail.AlbumDetailFragment"
+        android:label="@string/album_detail_title">
+        <argument
+            android:name="albumId"
+            app:argType="integer" />
+    </fragment>
 
     <fragment
         android:id="@+id/artistListFragment"

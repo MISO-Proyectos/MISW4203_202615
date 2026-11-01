@@ -4,4 +4,7 @@
     <dimen name="list_bottom_padding">4dp</dimen>
     <!-- Alto del botón flotante (56dp) + margen (16dp) + aire (16dp) -->
     <dimen name="fab_list_clearance">88dp</dimen>
+    <!-- Estrellas de la calificación de un comentario -->
+    <dimen name="comment_star_size">16dp</dimen>
+    <dimen name="comment_star_gap">2dp</dimen>
 </resources>

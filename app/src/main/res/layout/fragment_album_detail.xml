@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Detalle de un álbum (HU02, prototipo "02 Álbum - visitante / coleccionista").
+    Muestra uno de tres estados: cargando, el detalle o un error con "Reintentar".
+    El botón "Agregar track" solo aparece para los coleccionistas.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface"
+    tools:context=".ui.albums.detail.AlbumDetailFragment">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/detailContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="16dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="24dp">
+
+            <!-- Encabezado: carátula, nombre e intérpretes -->
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/albumCover"
+                android:layout_width="232dp"
+                android:layout_height="232dp"
+                android:layout_gravity="center_horizontal"
+                android:background="?attr/colorSurfaceContainerHighest"
+                android:scaleType="centerCrop"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.Vinilos.AlbumCoverLarge"
+                tools:src="@drawable/ic_album" />
+
+            <TextView
+                android:id="@+id/albumName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:accessibilityHeading="true"
+                android:textAlignment="center"
+                android:textAppearance="?attr/textAppearanceHeadlineMedium"
+                android:textColor="?attr/colorOnSurface"
+                tools:ignore="UnusedAttribute"
+                tools:text="Buscando América" />
+
+            <TextView
+                android:id="@+id/albumPerformers"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textAlignment="center"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                tools:text="Rubén Blades" />
+
+            <!-- Datos: fecha y género en una fila, sello debajo -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    style="@style/Widget.Vinilos.InfoBox"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1">
+
+                    <TextView
+                        style="@style/Widget.Vinilos.InfoBox.Label"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/album_release_date" />
+
+                    <TextView
+                        android:id="@+id/releaseDateValue"
+                        style="@style/Widget.Vinilos.InfoBox.Value"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:text="1 ago 1984" />
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/Widget.Vinilos.InfoBox"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <TextView
+                        style="@style/Widget.Vinilos.InfoBox.Label"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/album_genre" />
+
+                    <TextView
+                        android:id="@+id/genreValue"
+                        style="@style/Widget.Vinilos.InfoBox.Value"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:text="Salsa" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/Widget.Vinilos.InfoBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp">
+
+                <TextView
+                    style="@style/Widget.Vinilos.InfoBox.Label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/album_record_label" />
+
+                <TextView
+                    android:id="@+id/recordLabelValue"
+                    style="@style/Widget.Vinilos.InfoBox.Value"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:text="Elektra" />
+            </LinearLayout>
+
+            <!-- Descripción -->
+            <TextView
+                style="@style/Widget.Vinilos.SectionTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/album_description"
+                tools:ignore="UnusedAttribute" />
+
+            <TextView
+                android:id="@+id/albumDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                tools:text="Primer álbum de Rubén Blades con Seis del Solar." />
+
+            <!-- Tracks -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:baselineAligned="true"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/Widget.Vinilos.SectionTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/album_tracks"
+                    tools:ignore="UnusedAttribute" />
+
+                <TextView
+                    android:id="@+id/tracksCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?attr/textAppearanceLabelSmall"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    tools:text="4 canciones" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tracksContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/bg_section"
+                android:orientation="vertical"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp" />
+
+            <TextView
+                android:id="@+id/tracksEmpty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/album_no_tracks"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:visibility="gone" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/addTrackButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="@string/add_track"
+                android:textColor="?attr/colorOnSecondaryContainer"
+                android:visibility="gone"
+                app:backgroundTint="?attr/colorSecondaryContainer"
+                app:icon="@drawable/ic_add"
+                app:iconSize="18dp"
+                app:iconTint="?attr/colorOnSecondaryContainer"
+                tools:visibility="visible" />
+
+            <!-- Comentarios -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/Widget.Vinilos.SectionTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/album_comments"
+                    tools:ignore="UnusedAttribute" />
+
+                <TextView
+                    android:id="@+id/commentsCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?attr/textAppearanceLabelSmall"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    tools:text="2" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/commentsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/bg_section"
+                android:orientation="vertical"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp" />
+
+            <TextView
+                android:id="@+id/commentsEmpty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/album_no_comments"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:visibility="gone" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/loadingIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:contentDescription="@string/albums_loading"
+        android:indeterminate="true"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/errorContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="32dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_album"
+            app:tint="?attr/colorOnSurfaceVariant" />
+
+        <TextView
+            android:id="@+id/errorText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textAlignment="center"
+            android:textAppearance="?attr/textAppearanceBodyLarge"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            tools:text="No hay conexión con el servidor." />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/retryButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/retry" />
+    </LinearLayout>
+</FrameLayout>

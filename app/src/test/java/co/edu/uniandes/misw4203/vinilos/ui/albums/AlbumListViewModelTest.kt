@@ -99,6 +99,8 @@ class AlbumListViewModelTest {
         override suspend fun getAlbums() =
             if (online) delegate.getAlbums() else throw IOException("sin red")
 
+        override suspend fun getAlbum(albumId: Int) = delegate.getAlbum(albumId)
+
         override suspend fun getAlbumsForHealthCheck() = delegate.getAlbumsForHealthCheck()
     }
 }

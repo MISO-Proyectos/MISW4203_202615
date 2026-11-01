@@ -34,6 +34,7 @@
 
         <!-- Escala tipográfica (tamaños del prototipo) -->
         <item name="textAppearanceDisplaySmall">@style/TextAppearance.Vinilos.DisplaySmall</item>
+        <item name="textAppearanceHeadlineMedium">@style/TextAppearance.Vinilos.HeadlineMedium</item>
         <item name="textAppearanceHeadlineSmall">@style/TextAppearance.Vinilos.HeadlineSmall</item>
         <item name="textAppearanceTitleLarge">@style/TextAppearance.Vinilos.TitleLarge</item>
         <item name="textAppearanceTitleMedium">@style/TextAppearance.Vinilos.TitleMedium</item>
@@ -71,6 +72,15 @@
         <item name="android:textSize">18sp</item>
         <item name="lineHeight">24sp</item>
         <item name="android:letterSpacing">0.008</item>
+    </style>
+
+    <!-- 24sp Syne SemiBold: nombre del álbum en el detalle -->
+    <style name="TextAppearance.Vinilos.HeadlineMedium" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="fontFamily">@font/syne_semibold</item>
+        <item name="android:fontFamily">@font/syne_semibold</item>
+        <item name="android:textSize">24sp</item>
+        <item name="lineHeight">32sp</item>
+        <item name="android:letterSpacing">0</item>
     </style>
 
     <!-- 20sp Syne SemiBold: título de la barra superior -->
@@ -207,6 +217,41 @@
         <item name="android:maxLines">1</item>
         <item name="android:textAppearance">@style/TextAppearance.Vinilos.LabelSmall</item>
         <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
+    </style>
+
+    <!-- Carátula grande del detalle de un álbum: esquinas de 16dp -->
+    <style name="ShapeAppearance.Vinilos.AlbumCoverLarge" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+    </style>
+
+    <!-- Dato del álbum (fecha, género, sello): caja con etiqueta y valor -->
+    <style name="Widget.Vinilos.InfoBox" parent="">
+        <item name="android:background">@drawable/bg_info</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:paddingStart">12dp</item>
+        <item name="android:paddingEnd">12dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+    </style>
+
+    <style name="Widget.Vinilos.InfoBox.Label" parent="">
+        <item name="android:textAppearance">@style/TextAppearance.Vinilos.LabelSmall</item>
+        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="Widget.Vinilos.InfoBox.Value" parent="">
+        <item name="android:textAppearance">@style/TextAppearance.Vinilos.LabelLarge</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+
+    <!-- Título de sección del detalle (Descripción, Tracks, Comentarios) -->
+    <style name="Widget.Vinilos.SectionTitle" parent="">
+        <item name="android:textAppearance">@style/TextAppearance.Vinilos.TitleMedium</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+        <item name="android:accessibilityHeading">true</item>
     </style>
 
     <!-- Carátula de álbum en las listas: esquinas de 10dp -->

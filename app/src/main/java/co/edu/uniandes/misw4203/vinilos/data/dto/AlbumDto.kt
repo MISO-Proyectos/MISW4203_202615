@@ -14,5 +14,7 @@ data class AlbumDto(
     val genre: String?,
     val recordLabel: String?,
     val tracks: List<TrackDto>?,
-    val performers: List<PerformerDto>?
+    val performers: List<PerformerDto>?,
+    /** Solo viene completo en GET /albums/{id}. */
+    val comments: List<CommentDto>? = null
 )

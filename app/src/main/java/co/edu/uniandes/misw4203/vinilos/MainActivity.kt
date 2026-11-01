@@ -1,7 +1,9 @@
 package co.edu.uniandes.misw4203.vinilos
 
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
+import android.view.View
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -10,6 +12,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
+import androidx.core.widget.ImageViewCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -19,6 +22,7 @@ import androidx.navigation.ui.setupWithNavController
 import co.edu.uniandes.misw4203.vinilos.databinding.ActivityMainBinding
 import co.edu.uniandes.misw4203.vinilos.ui.role.SessionViewModel
 import co.edu.uniandes.misw4203.vinilos.ui.role.UserRole
+import com.google.android.material.color.MaterialColors
 import kotlinx.coroutines.launch
 
 /**
@@ -35,6 +39,10 @@ class MainActivity : AppCompatActivity() {
 
     /** Alto de la barra de navegación del sistema; se recalcula con los insets. */
     private var systemBottomInset = 0
+
+    /** Rol actual y si la pantalla es una sección de la barra inferior; deciden qué se ve arriba. */
+    private var currentRole: UserRole? = null
+    private var onTopLevelScreen = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // El prototipo es siempre oscuro: íconos claros en las barras del sistema
@@ -53,13 +61,18 @@ class MainActivity : AppCompatActivity() {
 
         binding.bottomNavigation.setupWithNavController(navController)
         binding.roleChip.setOnClickListener { changeRole() }
+        binding.topBarIcon.setOnClickListener { navController.navigateUp() }
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            // En la selección de rol no se muestran las barras
-            val showBars = destination.id != R.id.roleSelectionFragment
-            binding.topBar.isVisible = showBars
-            binding.bottomBar.isVisible = showBars
+            // En la selección de rol no se muestran las barras.
+            // En las secciones principales se ven la barra inferior y el chip del rol;
+            // en las demás pantallas (por ejemplo, el detalle) aparece la flecha "volver".
+            onTopLevelScreen = destination.id in TOP_LEVEL_DESTINATIONS
+            binding.topBar.isVisible = destination.id != R.id.roleSelectionFragment
+            binding.bottomBar.isVisible = onTopLevelScreen
             binding.topBarTitle.text = destination.label
+            updateTopBarIcon()
+            updateRoleChip()
             updateBottomInset()
         }
 
@@ -104,9 +117,47 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showRole(role: UserRole?) {
-        val label = role?.let { getString(it.labelRes) }
-        binding.roleChip.isVisible = role != null
+        currentRole = role
+        updateRoleChip()
+    }
+
+    private fun updateRoleChip() {
+        val label = currentRole?.let { getString(it.labelRes) }
+        binding.roleChip.isVisible = label != null && onTopLevelScreen
         binding.roleChip.text = label
         binding.roleChip.contentDescription = label?.let { getString(R.string.change_role, it) }
+    }
+
+    /** Disco naranja (decorativo) en las secciones principales; flecha "volver" en las demás. */
+    private fun updateTopBarIcon() {
+        val icon = binding.topBarIcon
+        val back = !onTopLevelScreen
+        val tintAttr = if (back) {
+            com.google.android.material.R.attr.colorOnSurface
+        } else {
+            androidx.appcompat.R.attr.colorPrimary
+        }
+        icon.setImageResource(if (back) R.drawable.ic_arrow_back else R.drawable.ic_album)
+        ImageViewCompat.setImageTintList(
+            icon,
+            ColorStateList.valueOf(MaterialColors.getColor(icon, tintAttr))
+        )
+        icon.isClickable = back
+        icon.isFocusable = back
+        icon.contentDescription = if (back) getString(R.string.navigate_up) else null
+        icon.importantForAccessibility = if (back) {
+            View.IMPORTANT_FOR_ACCESSIBILITY_YES
+        } else {
+            View.IMPORTANT_FOR_ACCESSIBILITY_NO
+        }
+    }
+
+    private companion object {
+        /** Secciones de la barra inferior (los id coinciden con menu/bottom_nav_menu.xml). */
+        val TOP_LEVEL_DESTINATIONS = setOf(
+            R.id.albumListFragment,
+            R.id.artistListFragment,
+            R.id.collectorListFragment
+        )
     }
 }

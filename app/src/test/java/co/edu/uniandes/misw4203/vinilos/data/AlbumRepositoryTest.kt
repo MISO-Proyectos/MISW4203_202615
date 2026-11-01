@@ -66,4 +66,26 @@ class AlbumRepositoryTest {
 
         assertTrue(error?.message.orEmpty().contains("conexión"))
     }
+
+    @Test
+    fun `getAlbum devuelve el album pedido`() = runBlocking {
+        val result = repositoryWith(FakeBackendApi(albums = listOf(albumDto(id = 1), albumDto(id = 2))))
+            .getAlbum(2)
+
+        assertEquals(2, result.getOrThrow().id)
+    }
+
+    @Test
+    fun `getAlbum de un album que no existe devuelve NotFound`() = runBlocking {
+        val result = repositoryWith(FakeBackendApi(albums = emptyList())).getAlbum(999)
+
+        assertTrue(result.exceptionOrNull() is AlbumRepositoryException.NotFound)
+    }
+
+    @Test
+    fun `getAlbum sin conexion devuelve NoConnection`() = runBlocking {
+        val result = repositoryWith(FakeBackendApi(error = IOException())).getAlbum(1)
+
+        assertTrue(result.exceptionOrNull() is AlbumRepositoryException.NoConnection)
+    }
 }

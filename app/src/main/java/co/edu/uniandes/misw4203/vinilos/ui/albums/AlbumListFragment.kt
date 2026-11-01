@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
@@ -12,9 +13,12 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ConcatAdapter
 import co.edu.uniandes.misw4203.vinilos.R
+import co.edu.uniandes.misw4203.vinilos.data.model.Album
 import co.edu.uniandes.misw4203.vinilos.databinding.FragmentAlbumListBinding
+import co.edu.uniandes.misw4203.vinilos.ui.albums.detail.AlbumDetailViewModel
 import co.edu.uniandes.misw4203.vinilos.ui.role.SessionViewModel
 import co.edu.uniandes.misw4203.vinilos.ui.role.UserRole
 import com.google.android.material.snackbar.Snackbar
@@ -36,7 +40,7 @@ class AlbumListFragment : Fragment() {
     private val session: SessionViewModel by activityViewModels()
 
     private val countAdapter = AlbumCountAdapter()
-    private val albumAdapter = AlbumAdapter()
+    private val albumAdapter = AlbumAdapter(::openAlbum)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -64,6 +68,14 @@ class AlbumListFragment : Fragment() {
                 launch { session.role.collect(::renderRole) }
             }
         }
+    }
+
+    /** HU02: abre el detalle del álbum tocado. */
+    private fun openAlbum(album: Album) {
+        findNavController().navigate(
+            R.id.action_albumList_to_albumDetail,
+            bundleOf(AlbumDetailViewModel.ARG_ALBUM_ID to album.id)
+        )
     }
 
     private fun renderRole(role: UserRole?) {
