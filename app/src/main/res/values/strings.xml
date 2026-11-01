@@ -35,6 +35,7 @@
 
     <!-- HU02: detalle de un álbum -->
     <string name="album_detail_title">Detalle del álbum</string>
+    <string name="album_error_title">No pudimos cargar el álbum</string>
     <string name="navigate_up">Volver</string>
     <string name="album_release_date">Fecha de lanzamiento</string>
     <string name="album_genre">Género</string>

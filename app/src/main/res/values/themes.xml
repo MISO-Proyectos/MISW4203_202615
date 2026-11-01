@@ -251,7 +251,7 @@
     <style name="Widget.Vinilos.SectionTitle" parent="">
         <item name="android:textAppearance">@style/TextAppearance.Vinilos.TitleMedium</item>
         <item name="android:textColor">?attr/colorOnSurface</item>
-        <item name="android:accessibilityHeading">true</item>
+        <item name="android:accessibilityHeading" tools:targetApi="28">true</item>
     </style>
 
     <!-- Carátula de álbum en las listas: esquinas de 10dp -->
