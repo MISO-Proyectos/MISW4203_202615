@@ -100,11 +100,17 @@ class AlbumListFragment : Fragment() {
                 countAdapter.count = state.albums.size
                 albumAdapter.submitList(state.albums)
             }
-            AlbumListUiState.Empty ->
-                binding.messageText.setText(R.string.albums_empty)
-            is AlbumListUiState.Error ->
+            AlbumListUiState.Empty -> {
+                binding.messageIcon.setImageResource(R.drawable.ic_inbox)
+                binding.messageTitle.setText(R.string.albums_empty_title)
+                binding.messageText.setText(R.string.albums_empty_subtitle)
+            }
+            is AlbumListUiState.Error -> {
+                binding.messageIcon.setImageResource(R.drawable.ic_cloud_off)
+                binding.messageTitle.setText(R.string.albums_error_title)
                 binding.messageText.text =
                     state.message.ifBlank { getString(R.string.albums_error_default) }
+            }
             AlbumListUiState.Loading -> Unit
         }
     }

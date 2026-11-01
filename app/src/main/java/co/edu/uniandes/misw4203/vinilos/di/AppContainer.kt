@@ -2,7 +2,6 @@ package co.edu.uniandes.misw4203.vinilos.di
 
 import co.edu.uniandes.misw4203.vinilos.BuildConfig
 import co.edu.uniandes.misw4203.vinilos.core.network.BackendApi
-import co.edu.uniandes.misw4203.vinilos.data.ConnectionRepository
 import co.edu.uniandes.misw4203.vinilos.data.adapter.AlbumServiceAdapter
 import co.edu.uniandes.misw4203.vinilos.data.repository.AlbumRepository
 import okhttp3.OkHttpClient
@@ -43,6 +42,4 @@ class AppContainer(baseUrl: String) {
 
     /** HU01 y HU02: álbumes. */
     val albumRepository = AlbumRepository(albumServiceAdapter)
-
-    val connectionRepository = ConnectionRepository(backendApi)
 }

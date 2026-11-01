@@ -24,12 +24,14 @@
         <item quantity="other">%d álbumes en el catálogo</item>
     </plurals>
     <string name="albums_loading">Cargando álbumes</string>
-    <string name="albums_empty">Todavía no hay álbumes en el catálogo.</string>
+    <string name="albums_empty_title">Aún no hay álbumes</string>
+    <string name="albums_empty_subtitle">Cuando se agregue un álbum al catálogo aparecerá aquí.</string>
+    <string name="albums_error_title">No pudimos cargar los álbumes</string>
     <string name="albums_error_default">No se pudieron cargar los álbumes.</string>
     <string name="retry">Reintentar</string>
     <string name="add_album">Agregar álbum</string>
     <string name="add_album_coming_soon">Agregar álbumes estará disponible muy pronto.</string>
-    <string name="album_unknown_performer">Intérprete desconocido</string>
+    <string name="album_unknown_performer">Artista no disponible</string>
 
     <!-- HU02: detalle de un álbum -->
     <string name="album_detail_title">Detalle del álbum</string>

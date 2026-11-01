@@ -1,11 +1,14 @@
 package co.edu.uniandes.misw4203.vinilos
 
 import android.content.res.ColorStateList
+import android.content.pm.PackageManager
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -44,6 +47,10 @@ class MainActivity : AppCompatActivity() {
     private var currentRole: UserRole? = null
     private var onTopLevelScreen = false
 
+    /** Android 17 exige este permiso para llegar al backend en la red local (10.0.2.2 en el emulador). */
+    private val localNetworkPermission =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         // El prototipo es siempre oscuro: íconos claros en las barras del sistema
         enableEdgeToEdge(
@@ -54,6 +61,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         applySystemBarInsets()
+        requestLocalNetworkAccess()
 
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
@@ -84,6 +92,15 @@ class MainActivity : AppCompatActivity() {
      * barra de estado queda en la raíz y el de la barra de navegación debajo de la
      * barra inferior, para que su fondo llegue hasta el borde. Funciona igual desde API 21.
      */
+    /** Pide el permiso de red local solo en Android 17 (API 37) o superior; antes no existe. */
+    private fun requestLocalNetworkAccess() {
+        if (Build.VERSION.SDK_INT < 37) return
+        val permission = "android.permission.ACCESS_LOCAL_NETWORK"
+        if (checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
+            localNetworkPermission.launch(permission)
+        }
+    }
+
     private fun applySystemBarInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
             val bars = insets.getInsets(

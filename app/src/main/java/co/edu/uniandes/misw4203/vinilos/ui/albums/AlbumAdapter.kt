@@ -27,8 +27,10 @@ class AlbumAdapter(
     }
 
     override fun onViewRecycled(holder: AlbumViewHolder) {
-        // Cancela la descarga de la carátula si la tarjeta sale de la pantalla
-        Glide.with(holder.binding.albumCover).clear(holder.binding.albumCover)
+        // Cancela la descarga de la carátula si la tarjeta sale de la pantalla. Se usa el contexto
+        // de la aplicación porque al cerrar la actividad Glide ya no acepta Glide.with(vista).
+        val cover = holder.binding.albumCover
+        Glide.with(cover.context.applicationContext).clear(cover)
         super.onViewRecycled(holder)
     }
 
