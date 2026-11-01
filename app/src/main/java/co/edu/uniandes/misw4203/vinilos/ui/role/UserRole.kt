@@ -4,10 +4,15 @@ import androidx.annotation.StringRes
 import co.edu.uniandes.misw4203.vinilos.R
 
 /**
- * Roles con los que el usuario puede entrar a la app.
- * En el Sprint 1 el rol solo se elige y se muestra en la barra superior.
+ * Roles con los que el usuario puede entrar a la app y lo que cada uno puede hacer.
+ * Las pantallas preguntan por el permiso (por ejemplo [canAddAlbums]) y no por el rol,
+ * así un rol nuevo solo se agrega aquí.
  */
-enum class UserRole(@param:StringRes val labelRes: Int) {
-    VISITOR(R.string.role_visitor),
-    COLLECTOR(R.string.role_collector)
+enum class UserRole(
+    @param:StringRes val labelRes: Int,
+    /** Muestra el botón "Agregar álbum" en el catálogo. */
+    val canAddAlbums: Boolean
+) {
+    VISITOR(R.string.role_visitor, canAddAlbums = false),
+    COLLECTOR(R.string.role_collector, canAddAlbums = true)
 }

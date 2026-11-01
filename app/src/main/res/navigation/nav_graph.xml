@@ -4,8 +4,8 @@
     - La app abre en la selección de rol.
     - Álbumes, Artistas y Coleccionistas son los destinos de la barra inferior
       (sus id coinciden con los de menu/bottom_nav_menu.xml).
-    - Por ahora los tres usan PlaceholderFragment. En HU01-T4 se cambia
-      android:name de albumListFragment por AlbumListFragment.
+    - Álbumes usa AlbumListFragment (HU01); Artistas y Coleccionistas siguen
+      con PlaceholderFragment hasta el Sprint 2.
 -->
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -31,19 +31,11 @@
             app:popUpToInclusive="true" />
     </fragment>
 
+    <!-- HU01: catálogo de álbumes -->
     <fragment
         android:id="@+id/albumListFragment"
-        android:name="co.edu.uniandes.misw4203.vinilos.ui.placeholder.PlaceholderFragment"
-        android:label="@string/nav_albums">
-        <argument
-            android:name="message"
-            android:defaultValue="@string/placeholder_albums"
-            app:argType="reference" />
-        <argument
-            android:name="icon"
-            android:defaultValue="@drawable/ic_album"
-            app:argType="reference" />
-    </fragment>
+        android:name="co.edu.uniandes.misw4203.vinilos.ui.albums.AlbumListFragment"
+        android:label="@string/nav_albums" />
 
     <fragment
         android:id="@+id/artistListFragment"

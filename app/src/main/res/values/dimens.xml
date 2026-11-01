@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Espacio al final de las listas -->
+    <dimen name="list_bottom_padding">4dp</dimen>
+    <!-- Alto del botón flotante (56dp) + margen (16dp) + aire (16dp) -->
+    <dimen name="fab_list_clearance">88dp</dimen>
+</resources>

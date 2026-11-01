@@ -69,7 +69,11 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:3.0.0")
     implementation("com.squareup.retrofit2:converter-gson:3.0.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+    // HU01: lista de álbumes y carga de carátulas
+    implementation("androidx.recyclerview:recyclerview:1.4.0")
+    implementation("com.github.bumptech.glide:glide:4.16.0")
     testImplementation(libs.junit)
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
 }
