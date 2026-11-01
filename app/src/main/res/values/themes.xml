@@ -196,4 +196,22 @@
         <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
         <item name="android:textAppearance">@style/TextAppearance.Vinilos.LabelMedium</item>
     </style>
+
+    <!-- Etiquetas de género y año en las tarjetas de álbum -->
+    <style name="Widget.Vinilos.Tag" parent="">
+        <item name="android:background">@drawable/bg_tag</item>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:paddingEnd">8dp</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textAppearance">@style/TextAppearance.Vinilos.LabelSmall</item>
+        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
+    </style>
+
+    <!-- Carátula de álbum en las listas: esquinas de 10dp -->
+    <style name="ShapeAppearance.Vinilos.AlbumCover" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">10dp</item>
+    </style>
 </resources>

@@ -16,6 +16,18 @@
     <string name="nav_collectors">Coleccionistas</string>
 
     <!-- Pantalla provisional -->
-    <string name="placeholder_albums">El catálogo de álbumes estará disponible muy pronto.</string>
     <string name="placeholder_next_sprint">Disponible en el Sprint 2</string>
+
+    <!-- HU01: catálogo de álbumes -->
+    <plurals name="albums_count">
+        <item quantity="one">%d álbum en el catálogo</item>
+        <item quantity="other">%d álbumes en el catálogo</item>
+    </plurals>
+    <string name="albums_loading">Cargando álbumes</string>
+    <string name="albums_empty">Todavía no hay álbumes en el catálogo.</string>
+    <string name="albums_error_default">No se pudieron cargar los álbumes.</string>
+    <string name="retry">Reintentar</string>
+    <string name="add_album">Agregar álbum</string>
+    <string name="add_album_coming_soon">Agregar álbumes estará disponible muy pronto.</string>
+    <string name="album_unknown_performer">Intérprete desconocido</string>
 </resources>
