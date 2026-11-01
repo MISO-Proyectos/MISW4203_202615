@@ -51,19 +51,29 @@
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:importantForAccessibility="no"
-            android:src="@drawable/ic_album"
+            android:src="@drawable/ic_inbox"
             android:tint="?attr/colorOnSurfaceVariant"
             tools:ignore="UseAppTint" />
+
+        <TextView
+            android:id="@+id/messageTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textAlignment="center"
+            android:textAppearance="?attr/textAppearanceTitleMedium"
+            android:textColor="?attr/colorOnSurface"
+            tools:text="@string/albums_empty_title" />
 
         <TextView
             android:id="@+id/messageText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:textAlignment="center"
             android:textAppearance="?attr/textAppearanceBodyLarge"
             android:textColor="?attr/colorOnSurfaceVariant"
-            tools:text="@string/albums_empty" />
+            tools:text="@string/albums_empty_subtitle" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/retryButton"

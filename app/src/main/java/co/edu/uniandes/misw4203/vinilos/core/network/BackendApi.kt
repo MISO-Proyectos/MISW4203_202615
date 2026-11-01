@@ -1,8 +1,6 @@
 package co.edu.uniandes.misw4203.vinilos.core.network
 
 import co.edu.uniandes.misw4203.vinilos.data.dto.AlbumDto
-import okhttp3.ResponseBody
-import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 
@@ -16,7 +14,4 @@ interface BackendApi {
     /** HU02: detalle de un álbum, con sus tracks, intérpretes y comentarios. */
     @GET("albums/{id}")
     suspend fun getAlbum(@Path("id") albumId: Int): AlbumDto
-
-    @GET("albums")
-    suspend fun getAlbumsForHealthCheck(): Response<ResponseBody>
 }

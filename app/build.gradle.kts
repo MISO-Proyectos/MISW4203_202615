@@ -13,7 +13,7 @@ android {
         applicationId = "co.edu.uniandes.misw4203.vinilos"
 
         // Versión mínima compatible con la aplicación
-        minSdk = 24
+        minSdk = 21
 
         // Versión de Android contra la cual se prueba la aplicación
         targetSdk = 37
@@ -28,7 +28,7 @@ android {
         buildConfigField(
             "String",
             "BASE_URL",
-            "\"http://127.0.0.1:3000/\""
+            "\"http://10.0.2.2:3000/\""
         )
     }
 
@@ -61,11 +61,11 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.core.ktx)
     implementation(libs.material)
-    implementation("androidx.fragment:fragment-ktx:1.9.1")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.10.2")
-    implementation("androidx.navigation:navigation-ui-ktx:2.10.2")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.11.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.11.0")
+    implementation("androidx.fragment:fragment-ktx:1.8.9")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.8.9")
+    implementation("androidx.navigation:navigation-ui-ktx:2.8.9")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
     implementation("com.squareup.retrofit2:retrofit:3.0.0")
     implementation("com.squareup.retrofit2:converter-gson:3.0.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
@@ -76,4 +76,7 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation("androidx.test.espresso:espresso-contrib:3.7.0")
+    androidTestImplementation("androidx.test:rules:1.7.0")
+    androidTestImplementation("androidx.test:runner:1.7.0")
 }

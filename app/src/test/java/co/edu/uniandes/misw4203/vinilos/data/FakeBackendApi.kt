@@ -5,7 +5,6 @@ import co.edu.uniandes.misw4203.vinilos.data.dto.AlbumDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.CommentDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.PerformerDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.TrackDto
-import okhttp3.ResponseBody
 import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.HttpException
 import retrofit2.Response
@@ -29,9 +28,6 @@ class FakeBackendApi(
         return albums.firstOrNull { it.id == albumId }
             ?: throw HttpException(Response.error<Any>(404, "".toResponseBody(null)))
     }
-
-    override suspend fun getAlbumsForHealthCheck(): Response<ResponseBody> =
-        throw UnsupportedOperationException("No se usa en estas pruebas")
 
     companion object {
         fun albumDto(
