@@ -21,9 +21,15 @@ sealed class AlbumRepositoryException(
         cause
     )
 
+    /** HU02: el álbum pedido no existe (HTTP 404). */
+    class NotFound(cause: Throwable? = null) : AlbumRepositoryException(
+        "No encontramos este álbum. Puede que haya sido eliminado.",
+        cause
+    )
+
     /** Cualquier otro problema, por ejemplo un JSON con un formato inesperado. */
     class Unexpected(cause: Throwable? = null) : AlbumRepositoryException(
-        "Ocurrió un error inesperado al cargar los álbumes.",
+        "Ocurrió un error inesperado al cargar la información.",
         cause
     )
 }

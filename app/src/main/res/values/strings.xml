@@ -30,4 +30,41 @@
     <string name="add_album">Agregar álbum</string>
     <string name="add_album_coming_soon">Agregar álbumes estará disponible muy pronto.</string>
     <string name="album_unknown_performer">Intérprete desconocido</string>
+
+    <!-- HU02: detalle de un álbum -->
+    <string name="album_detail_title">Detalle del álbum</string>
+    <string name="navigate_up">Volver</string>
+    <string name="album_release_date">Fecha de lanzamiento</string>
+    <string name="album_genre">Género</string>
+    <string name="album_record_label">Sello discográfico</string>
+    <string name="album_value_unknown">Sin información</string>
+    <string name="album_description">Descripción</string>
+    <string name="album_no_description">Este álbum no tiene descripción.</string>
+    <string name="album_tracks">Tracks</string>
+    <plurals name="album_tracks_count">
+        <item quantity="one">%d canción</item>
+        <item quantity="other">%d canciones</item>
+    </plurals>
+    <string name="album_no_tracks">Este álbum todavía no tiene canciones.</string>
+    <string name="album_comments">Comentarios</string>
+    <string name="album_no_comments">Todavía no hay comentarios.</string>
+    <string name="album_cover_description">Carátula de %1$s</string>
+    <string name="track_description">Canción %1$d: %2$s, duración %3$s</string>
+    <string name="comment_rating_description">%1$d de 5 estrellas</string>
+    <string name="add_track">Agregar track</string>
+    <string name="add_track_coming_soon">Agregar tracks estará disponible muy pronto.</string>
+    <string-array name="months_short">
+        <item>ene</item>
+        <item>feb</item>
+        <item>mar</item>
+        <item>abr</item>
+        <item>may</item>
+        <item>jun</item>
+        <item>jul</item>
+        <item>ago</item>
+        <item>sep</item>
+        <item>oct</item>
+        <item>nov</item>
+        <item>dic</item>
+    </string-array>
 </resources>

@@ -12,12 +12,14 @@ import co.edu.uniandes.misw4203.vinilos.databinding.ItemAlbumBinding
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 
-/** Adapter de la lista de álbumes: dibuja una tarjeta por álbum. */
-class AlbumAdapter : ListAdapter<Album, AlbumAdapter.AlbumViewHolder>(DIFF) {
+/** Adapter de la lista de álbumes: dibuja una tarjeta por álbum y avisa cuando se toca una. */
+class AlbumAdapter(
+    private val onAlbumClick: (Album) -> Unit
+) : ListAdapter<Album, AlbumAdapter.AlbumViewHolder>(DIFF) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlbumViewHolder {
         val binding = ItemAlbumBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return AlbumViewHolder(binding)
+        return AlbumViewHolder(binding, onAlbumClick)
     }
 
     override fun onBindViewHolder(holder: AlbumViewHolder, position: Int) {
@@ -30,9 +32,19 @@ class AlbumAdapter : ListAdapter<Album, AlbumAdapter.AlbumViewHolder>(DIFF) {
         super.onViewRecycled(holder)
     }
 
-    class AlbumViewHolder(val binding: ItemAlbumBinding) : RecyclerView.ViewHolder(binding.root) {
+    class AlbumViewHolder(
+        val binding: ItemAlbumBinding,
+        onAlbumClick: (Album) -> Unit
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        private var album: Album? = null
+
+        init {
+            binding.albumCard.setOnClickListener { album?.let(onAlbumClick) }
+        }
 
         fun bind(album: Album) {
+            this.album = album
             val context = binding.root.context
             val performers = album.performerNames
                 .ifBlank { context.getString(R.string.album_unknown_performer) }

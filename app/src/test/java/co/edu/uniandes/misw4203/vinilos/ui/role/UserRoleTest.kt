@@ -15,4 +15,10 @@ class UserRoleTest {
     fun `el visitante no puede agregar albumes`() {
         assertFalse(UserRole.VISITOR.canAddAlbums)
     }
+
+    @Test
+    fun `solo el coleccionista puede agregar tracks`() {
+        assertTrue(UserRole.COLLECTOR.canAddTracks)
+        assertFalse(UserRole.VISITOR.canAddTracks)
+    }
 }
