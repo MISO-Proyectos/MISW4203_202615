@@ -1,10 +1,12 @@
 package co.edu.uniandes.misw4203.vinilos.albums
 
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.rules.ActivityScenarioRule
@@ -12,6 +14,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import co.edu.uniandes.misw4203.vinilos.MainActivity
 import co.edu.uniandes.misw4203.vinilos.R
 import co.edu.uniandes.misw4203.vinilos.utils.TestUtils.abrirDetalleDeAlbum
+import co.edu.uniandes.misw4203.vinilos.utils.TestUtils.clicDirecto
 import co.edu.uniandes.misw4203.vinilos.utils.TestUtils.grantLocalNetworkAccess
 import co.edu.uniandes.misw4203.vinilos.utils.TestUtils.waitFor
 import org.hamcrest.Matchers.containsString
@@ -77,8 +80,66 @@ class AlbumDetailE2ETest {
         onView(withId(R.id.albumDescription)).check(matches(isDisplayed()))
     }
 
-    // Faltan estos casos:
-    // CP-HU02-03 volver al catálogo
-    // CP-HU02-06 ver los tracks del álbum
-    // CP-HU02-07 ver los comentarios del álbum
+    // CP-HU02-03 (con el botón Atrás del sistema)
+    @Test
+    fun el_boton_atras_regresa_al_catalogo() {
+        abrirDetalleDeAlbum(ALBUM)
+        waitFor { onView(withId(R.id.albumName)).check(matches(withText(ALBUM))) }
+
+        pressBack()
+
+        waitFor { onView(withId(R.id.albumList)).check(matches(isDisplayed())) }
+        onView(withId(R.id.topBarTitle)).check(matches(withText(R.string.nav_albums)))
+    }
+
+    // CP-HU02-03 (con la flecha de la barra superior)
+    @Test
+    fun la_flecha_de_la_barra_regresa_al_catalogo() {
+        abrirDetalleDeAlbum(ALBUM)
+        waitFor { onView(withId(R.id.albumName)).check(matches(withText(ALBUM))) }
+
+        onView(withContentDescription(R.string.navigate_up)).perform(clicDirecto())
+
+        waitFor { onView(withId(R.id.albumList)).check(matches(isDisplayed())) }
+        onView(withId(R.id.topBarTitle)).check(matches(withText(R.string.nav_albums)))
+    }
+
+    // CP-HU02-06
+    @Test
+    fun el_detalle_muestra_los_tracks_del_album() {
+        abrirDetalleDeAlbum(ALBUM)
+        waitFor { onView(withId(R.id.albumName)).check(matches(withText(ALBUM))) }
+
+        onView(withId(R.id.tracksCount)).perform(scrollTo())
+        onView(withId(R.id.tracksCount)).check(matches(withText("2 canciones")))
+        onView(withText("Decisiones")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("05:05")).check(matches(isDisplayed()))
+        onView(withText("Desapariciones")).perform(scrollTo()).check(matches(isDisplayed()))
+        onView(withText("06:29")).check(matches(isDisplayed()))
+    }
+
+    // CP-HU02-07
+    @Test
+    fun el_detalle_muestra_los_comentarios_del_album() {
+        abrirDetalleDeAlbum(ALBUM)
+        waitFor { onView(withId(R.id.albumName)).check(matches(withText(ALBUM))) }
+
+        onView(withId(R.id.commentsCount)).perform(scrollTo())
+        onView(withId(R.id.commentsCount)).check(matches(withText("1")))
+        onView(withText("The most relevant album of Ruben Blades"))
+            .perform(scrollTo())
+            .check(matches(isDisplayed()))
+    }
+
+    // CP-HU02-04 (automático)
+    @Test
+    fun el_detalle_de_un_album_sin_tracks_muestra_un_mensaje() {
+        abrirDetalleDeAlbum("Poeta del pueblo")
+        waitFor { onView(withId(R.id.albumName)).check(matches(withText("Poeta del pueblo"))) }
+
+        onView(withId(R.id.tracksCount)).perform(scrollTo())
+        onView(withId(R.id.tracksCount)).check(matches(withText("0 canciones")))
+        onView(withId(R.id.tracksEmpty)).perform(scrollTo())
+        onView(withId(R.id.tracksEmpty)).check(matches(withText(R.string.album_no_tracks)))
+    }
 }
