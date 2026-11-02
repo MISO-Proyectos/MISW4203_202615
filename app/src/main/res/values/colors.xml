@@ -1,5 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!--
+        Paleta del prototipo de Figma (Vinilos, Material Design 3, tema oscuro).
+        Los valores marcados con "inferido" no aparecen en el prototipo; se tomaron
+        de la escala tonal de Material 3 para el color más cercano.
+    -->
+
+    <!-- Naranja: logo, ícono de la barra superior y botón "Agregar álbum" -->
+    <color name="md_primary">#FFB693</color>
+    <color name="md_on_primary">#561F00</color> <!-- inferido -->
+    <color name="md_primary_container">#994A1E</color>
+    <color name="md_on_primary_container">#FFD2BE</color>
+
+    <!-- Vino: círculos de las tarjetas de rol e indicador de la barra inferior -->
+    <color name="md_secondary">#FFB1C3</color> <!-- inferido -->
+    <color name="md_on_secondary">#5E1130</color> <!-- inferido -->
+    <color name="md_secondary_container">#832644</color>
+    <color name="md_on_secondary_container">#FFD9DF</color>
+
+    <!-- Error (valores por defecto de Material 3, tema oscuro) -->
+    <color name="md_error">#FFB4AB</color>
+    <color name="md_on_error">#690005</color>
+    <color name="md_error_container">#93000A</color>
+    <color name="md_on_error_container">#FFDAD6</color>
+
+    <!-- Fondos y superficies -->
+    <color name="md_background">#1A1110</color>
+    <color name="md_on_background">#F1DEDC</color>
+    <color name="md_surface">#1A1110</color>
+    <color name="md_on_surface">#F1DEDC</color>
+    <color name="md_surface_variant">#55433B</color>
+    <color name="md_on_surface_variant">#DBC1B7</color>
+    <color name="md_surface_container_low">#271D1C</color>     <!-- tarjetas -->
+    <color name="md_surface_container">#231918</color>         <!-- barra inferior -->
+    <color name="md_surface_container_high">#322726</color>    <!-- etiquetas (género, año) -->
+    <color name="md_surface_container_highest">#3D3231</color> <!-- fondo de carátulas -->
+
+    <!-- Bordes y divisores -->
+    <color name="md_outline">#A08D85</color> <!-- inferido -->
+    <color name="md_outline_variant">#55433B</color>
 </resources>

@@ -1,9 +1,73 @@
 <resources>
     <string name="app_name">Vinilos</string>
-    <string name="setup_title">Base del proyecto lista</string>
-    <string name="setup_description">Arquitectura, navegación y conexión con el backend.</string>
-    <string name="backend_checking">Verificando conexión…</string>
-    <string name="backend_connected">Backend conectado correctamente</string>
-    <string name="backend_error">No fue posible conectar con el backend</string>
+
+    <!-- Selección de rol -->
+    <string name="role_selection_title">¿Cómo quieres ingresar?</string>
+    <string name="role_visitor">Visitante</string>
+    <string name="role_visitor_description">Consulta álbumes, artistas y coleccionistas.</string>
+    <string name="role_collector">Coleccionista</string>
+    <string name="role_collector_description">Además de consultar, agrega álbumes y tracks.</string>
+    <string name="role_selection_hint">Puedes cambiar de rol en cualquier momento desde la barra superior.</string>
+    <string name="change_role">Cambiar rol (rol actual: %1$s)</string>
+
+    <!-- Barra de navegación inferior y títulos -->
+    <string name="nav_albums">Álbumes</string>
+    <string name="nav_artists">Artistas</string>
+    <string name="nav_collectors">Coleccionistas</string>
+
+    <!-- Pantalla provisional -->
+    <string name="placeholder_next_sprint">Disponible en el Sprint 2</string>
+
+    <!-- HU01: catálogo de álbumes -->
+    <plurals name="albums_count">
+        <item quantity="one">%d álbum en el catálogo</item>
+        <item quantity="other">%d álbumes en el catálogo</item>
+    </plurals>
+    <string name="albums_loading">Cargando álbumes</string>
+    <string name="albums_empty_title">Aún no hay álbumes</string>
+    <string name="albums_empty_subtitle">Cuando se agregue un álbum al catálogo aparecerá aquí.</string>
+    <string name="albums_error_title">No pudimos cargar los álbumes</string>
+    <string name="albums_error_default">No se pudieron cargar los álbumes.</string>
     <string name="retry">Reintentar</string>
+    <string name="add_album">Agregar álbum</string>
+    <string name="add_album_coming_soon">Agregar álbumes estará disponible muy pronto.</string>
+    <string name="album_unknown_performer">Artista no disponible</string>
+
+    <!-- HU02: detalle de un álbum -->
+    <string name="album_detail_title">Detalle del álbum</string>
+    <string name="album_error_title">No pudimos cargar el álbum</string>
+    <string name="navigate_up">Volver</string>
+    <string name="album_release_date">Fecha de lanzamiento</string>
+    <string name="album_genre">Género</string>
+    <string name="album_record_label">Sello discográfico</string>
+    <string name="album_value_unknown">Sin información</string>
+    <string name="album_description">Descripción</string>
+    <string name="album_no_description">Este álbum no tiene descripción.</string>
+    <string name="album_tracks">Tracks</string>
+    <plurals name="album_tracks_count">
+        <item quantity="one">%d canción</item>
+        <item quantity="other">%d canciones</item>
+    </plurals>
+    <string name="album_no_tracks">Este álbum todavía no tiene canciones.</string>
+    <string name="album_comments">Comentarios</string>
+    <string name="album_no_comments">Todavía no hay comentarios.</string>
+    <string name="album_cover_description">Carátula de %1$s</string>
+    <string name="track_description">Canción %1$d: %2$s, duración %3$s</string>
+    <string name="comment_rating_description">%1$d de 5 estrellas</string>
+    <string name="add_track">Agregar track</string>
+    <string name="add_track_coming_soon">Agregar tracks estará disponible muy pronto.</string>
+    <string-array name="months_short">
+        <item>ene</item>
+        <item>feb</item>
+        <item>mar</item>
+        <item>abr</item>
+        <item>may</item>
+        <item>jun</item>
+        <item>jul</item>
+        <item>ago</item>
+        <item>sep</item>
+        <item>oct</item>
+        <item>nov</item>
+        <item>dic</item>
+    </string-array>
 </resources>
