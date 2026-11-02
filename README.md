@@ -24,9 +24,9 @@ https://github.com/MISO-Proyectos/MISW4203_202615/wiki
 ## Cómo construir y ejecutar
 1. Clonar: `git clone https://github.com/MISO-Proyectos/MISW4203_202615.git`
 2. Abrir la carpeta en Android Studio (File > Open) y esperar a que termine Gradle Sync.
-3. Levantar el backend (proyecto NestJS + PostgreSQL, carpeta `BackVynils`):
-   - Con Docker: `docker compose up --build` dentro de `BackVynils`, o
-   - Sin Docker: tener PostgreSQL en `localhost:5432` (base `vinyls`, usuario y clave `postgres`), y ejecutar `npm install` y `npm run start`.
+3. Levantar el backend. Es el proyecto BackVynils que entregó el curso (NestJS + PostgreSQL): https://github.com/TheSoftwareDesignLab/BackVynils. No viene dentro de este repositorio, así que hay que clonarlo en otra carpeta: `git clone https://github.com/TheSoftwareDesignLab/BackVynils.git`
+   - Con Docker (lo más fácil): `docker compose up --build` dentro de la carpeta `BackVynils`, o
+   - Sin Docker: tener PostgreSQL en `localhost:5432` (base `vinyls`, usuario y clave `postgres`) y Node.js 12 (el backend es viejo y con versiones más nuevas de Node puede fallar). Luego `npm install` y `npm run start` dentro de la carpeta `BackVynils`.
 4. Verificar que `http://localhost:3000/albums` responde en el navegador. Al arrancar con la base vacía, el backend carga solo cuatro álbumes por defecto.
 5. Ejecutar en un emulador (botón Run) o por consola: `.\gradlew.bat installDebug`
 
@@ -45,9 +45,13 @@ En Android 17 (API 37) la app pide al abrir el permiso de red local (aparece com
 - Estrategia y casos de prueba: ver la wiki.
 
 ## APK
-El APK de cada versión está en la sección Releases del repositorio:
+El APK está en la carpeta `releases/` del repositorio (`releases/vinilos-v1.0.0.apk`) y también en la sección Releases:
 https://github.com/MISO-Proyectos/MISW4203_202615/releases
 
+Para instalarlo en un emulador o en un celular con Android 5.0 o superior hay que tener el backend corriendo. Ojo: el APK usa `10.0.2.2`, que solo sirve en el emulador. En un celular físico hay que compilar de nuevo con la IP del computador (ver «URL del backend»).
+
 ## Ramas (GitFlow)
-`main` (versiones publicadas), `develop` (integración) y `feature/HUxx-Tn-descripcion` (cada tarea).
-Toda integración a `develop` se hace por pull request con *squash and merge*.
+- `main`: versiones publicadas (release `v1.0.0`).
+- `develop`: integración.
+- `feature/HUxx-Tn-descripcion`: una rama por tarea; se integra a `develop` con pull request revisado por otra persona.
+- `release/vX.Y.Z`: se crea desde `develop` para preparar una versión (por ejemplo, agregar el APK); luego se integra a `main` y vuelve a `develop`.
