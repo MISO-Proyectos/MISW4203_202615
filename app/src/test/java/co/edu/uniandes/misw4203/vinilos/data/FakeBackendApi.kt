@@ -2,8 +2,10 @@ package co.edu.uniandes.misw4203.vinilos.data
 
 import co.edu.uniandes.misw4203.vinilos.core.network.BackendApi
 import co.edu.uniandes.misw4203.vinilos.data.dto.AlbumDto
+import co.edu.uniandes.misw4203.vinilos.data.dto.BandDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.CollectorDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.CommentDto
+import co.edu.uniandes.misw4203.vinilos.data.dto.MusicianDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.PerformerDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.TrackDto
 import okhttp3.ResponseBody.Companion.toResponseBody
@@ -18,7 +20,12 @@ class FakeBackendApi(
     private val albums: List<AlbumDto> = emptyList(),
     /** Si no es null, todas las llamadas lanzan este error. Se puede cambiar para simular que vuelve la red. */
     var error: Throwable? = null,
-    private val collectors: List<CollectorDto> = emptyList()
+    private val collectors: List<CollectorDto> = emptyList(),
+    /** Se puede cambiar para simular que el backend tiene artistas nuevos. */
+    var musicians: List<MusicianDto> = emptyList(),
+    private val bands: List<BandDto> = emptyList(),
+    /** Si no es null, solo GET /bands lanza este error (para probar que falle una de las dos rutas). */
+    var bandsError: Throwable? = null
 ) : BackendApi {
 
     override suspend fun getAlbums(): List<AlbumDto> {
@@ -37,7 +44,30 @@ class FakeBackendApi(
         return collectors
     }
 
+    override suspend fun getMusicians(): List<MusicianDto> {
+        error?.let { throw it }
+        return musicians
+    }
+
+    override suspend fun getBands(): List<BandDto> {
+        error?.let { throw it }
+        bandsError?.let { throw it }
+        return bands
+    }
+
     companion object {
+        fun musicianDto(
+            id: Int? = 100,
+            name: String? = "Rubén Blades Bellido de Luna",
+            image: String? = "https://example.com/ruben.jpg"
+        ) = MusicianDto(id, name, image)
+
+        fun bandDto(
+            id: Int? = 101,
+            name: String? = "Queen",
+            image: String? = "https://example.com/queen.jpg"
+        ) = BandDto(id, name, image)
+
         fun collectorDto(
             id: Int? = 100,
             name: String? = "Manolo Bellon",

@@ -102,5 +102,9 @@ class AlbumListViewModelTest {
         override suspend fun getAlbum(albumId: Int) = delegate.getAlbum(albumId)
 
         override suspend fun getCollectors() = delegate.getCollectors()
+
+        override suspend fun getMusicians() = delegate.getMusicians()
+
+        override suspend fun getBands() = delegate.getBands()
     }
 }
