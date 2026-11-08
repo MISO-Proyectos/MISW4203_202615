@@ -70,4 +70,16 @@
         <item>nov</item>
         <item>dic</item>
     </string-array>
+
+    <!-- HU05: listado de coleccionistas -->
+    <plurals name="collectors_count">
+        <item quantity="one">%d coleccionista</item>
+        <item quantity="other">%d coleccionistas</item>
+    </plurals>
+    <string name="collectors_loading">Cargando coleccionistas</string>
+    <string name="collectors_empty_title">Aún no hay coleccionistas</string>
+    <string name="collectors_empty_subtitle">Cuando se registre un coleccionista aparecerá aquí.</string>
+    <string name="collectors_error_title">No pudimos cargar los coleccionistas</string>
+    <string name="collectors_error_default">No se pudieron cargar los coleccionistas.</string>
+    <string name="collector_detail_coming_soon">El detalle del coleccionista estará disponible muy pronto.</string>
 </resources>
