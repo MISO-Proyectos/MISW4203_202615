@@ -4,16 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ConcatAdapter
 import co.edu.uniandes.misw4203.vinilos.R
 import co.edu.uniandes.misw4203.vinilos.data.model.Artist
 import co.edu.uniandes.misw4203.vinilos.databinding.FragmentArtistListBinding
+import co.edu.uniandes.misw4203.vinilos.ui.artists.detail.ArtistDetailViewModel
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
@@ -71,11 +74,15 @@ class ArtistListFragment : Fragment() {
         }
     }
 
-    /** El detalle del artista es la HU04; mientras tanto se avisa que llega pronto. */
+    /** Navega al detalle del artista (HU04). */
     private fun openArtist(artist: Artist) {
-        // Cuando esté la HU04 aquí se navega al detalle con artist.id y artist.type
-        Snackbar.make(binding.root, R.string.artist_detail_coming_soon, Snackbar.LENGTH_SHORT)
-            .show()
+        findNavController().navigate(
+            R.id.action_artistList_to_artistDetail,
+            bundleOf(
+                ArtistDetailViewModel.ARG_ARTIST_ID to artist.id,
+                ArtistDetailViewModel.ARG_ARTIST_TYPE to artist.type.name
+            )
+        )
     }
 
     private fun render(state: ArtistListUiState) {
