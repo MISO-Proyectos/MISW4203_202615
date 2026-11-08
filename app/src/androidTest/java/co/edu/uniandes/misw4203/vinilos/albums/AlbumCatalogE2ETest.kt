@@ -98,7 +98,7 @@ class AlbumCatalogE2ETest {
     @Test
     fun se_puede_navegar_a_otra_seccion_y_volver_al_catalogo() {
         onView(withId(R.id.artistListFragment)).perform(click())
-        onView(withId(R.id.placeholderMessage)).check(matches(withText(R.string.placeholder_next_sprint)))
+        onView(withId(R.id.topBarTitle)).check(matches(withText(R.string.nav_artists)))
 
         onView(withId(R.id.albumListFragment)).perform(click())
         waitFor { onView(withId(R.id.albumList)).check(matches(isDisplayed())) }

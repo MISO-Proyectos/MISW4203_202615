@@ -5,8 +5,7 @@
     - Álbumes, Artistas y Coleccionistas son los destinos de la barra inferior
       (sus id coinciden con los de menu/bottom_nav_menu.xml).
     - Álbumes usa AlbumListFragment (HU01) y abre AlbumDetailFragment (HU02).
-      Coleccionistas usa CollectorListFragment (HU05). Artistas sigue con PlaceholderFragment
-      hasta que exista su pantalla (HU03).
+      Artistas usa ArtistListFragment (HU03) y Coleccionistas usa CollectorListFragment (HU05).
 -->
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -52,19 +51,11 @@
             app:argType="integer" />
     </fragment>
 
+    <!-- HU03: listado de artistas, músicos y bandas (el id coincide con el del menú inferior) -->
     <fragment
         android:id="@+id/artistListFragment"
-        android:name="co.edu.uniandes.misw4203.vinilos.ui.placeholder.PlaceholderFragment"
-        android:label="@string/nav_artists">
-        <argument
-            android:name="message"
-            android:defaultValue="@string/placeholder_next_sprint"
-            app:argType="reference" />
-        <argument
-            android:name="icon"
-            android:defaultValue="@drawable/ic_artist"
-            app:argType="reference" />
-    </fragment>
+        android:name="co.edu.uniandes.misw4203.vinilos.ui.artists.ArtistListFragment"
+        android:label="@string/nav_artists" />
 
     <!-- HU05: listado de coleccionistas (el id coincide con el del menú inferior) -->
     <fragment
