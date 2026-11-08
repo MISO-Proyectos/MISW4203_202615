@@ -82,6 +82,20 @@
     <string name="artist_type_band">Banda</string>
     <string name="artist_detail_coming_soon">El detalle del artista estará disponible muy pronto.</string>
 
+    <!-- HU04: detalle de un artista -->
+    <string name="artist_detail_title">Detalle del artista</string>
+    <string name="artist_error_title">No pudimos cargar el artista</string>
+    <string name="artist_birth_date">Fecha de nacimiento</string>
+    <string name="artist_creation_date">Fecha de creación</string>
+    <string name="artist_no_description">Este artista no tiene descripción.</string>
+    <string name="artist_albums">Álbumes</string>
+    <plurals name="artist_albums_count">
+        <item quantity="one">%d álbum</item>
+        <item quantity="other">%d álbumes</item>
+    </plurals>
+    <string name="artist_no_albums">Este artista todavía no tiene álbumes asociados.</string>
+    <string name="artist_image_description">Foto de %1$s</string>
+
     <!-- HU05: listado de coleccionistas -->
     <plurals name="collectors_count">
         <item quantity="one">%d coleccionista</item>

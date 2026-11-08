@@ -29,4 +29,12 @@ interface BackendApi {
     /** HU03: listado de artistas (bandas). */
     @GET("bands")
     suspend fun getBands(): List<BandDto>
+
+    /** HU04: detalle de un músico. */
+    @GET("musicians/{id}")
+    suspend fun getMusician(@Path("id") id: Int): MusicianDto
+
+    /** HU04: detalle de una banda. */
+    @GET("bands/{id}")
+    suspend fun getBand(@Path("id") id: Int): BandDto
 }

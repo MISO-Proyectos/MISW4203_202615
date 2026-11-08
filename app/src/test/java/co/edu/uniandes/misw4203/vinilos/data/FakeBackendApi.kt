@@ -23,7 +23,7 @@ class FakeBackendApi(
     private val collectors: List<CollectorDto> = emptyList(),
     /** Se puede cambiar para simular que el backend tiene artistas nuevos. */
     var musicians: List<MusicianDto> = emptyList(),
-    private val bands: List<BandDto> = emptyList(),
+    var bands: List<BandDto> = emptyList(),
     /** Si no es null, solo GET /bands lanza este error (para probar que falle una de las dos rutas). */
     var bandsError: Throwable? = null
 ) : BackendApi {
@@ -55,18 +55,37 @@ class FakeBackendApi(
         return bands
     }
 
+    override suspend fun getMusician(id: Int): MusicianDto {
+        error?.let { throw it }
+        return musicians.firstOrNull { it.id == id }
+            ?: throw HttpException(Response.error<Any>(404, "".toResponseBody(null)))
+    }
+
+    override suspend fun getBand(id: Int): BandDto {
+        error?.let { throw it }
+        bandsError?.let { throw it }
+        return bands.firstOrNull { it.id == id }
+            ?: throw HttpException(Response.error<Any>(404, "".toResponseBody(null)))
+    }
+
     companion object {
         fun musicianDto(
             id: Int? = 100,
             name: String? = "Rubén Blades Bellido de Luna",
-            image: String? = "https://example.com/ruben.jpg"
-        ) = MusicianDto(id, name, image)
+            image: String? = "https://example.com/ruben.jpg",
+            description: String? = "Cantante y compositor panameño.",
+            birthDate: String? = "1948-07-16T00:00:00.000Z",
+            albums: List<AlbumDto>? = listOf(albumDto())
+        ) = MusicianDto(id, name, image, description, birthDate, albums)
 
         fun bandDto(
             id: Int? = 101,
             name: String? = "Queen",
-            image: String? = "https://example.com/queen.jpg"
-        ) = BandDto(id, name, image)
+            image: String? = "https://example.com/queen.jpg",
+            description: String? = "Banda británica de rock.",
+            creationDate: String? = "1970-01-01T00:00:00.000Z",
+            albums: List<AlbumDto>? = listOf(albumDto(102, "A Night at the Opera"))
+        ) = BandDto(id, name, image, description, creationDate, albums)
 
         fun collectorDto(
             id: Int? = 100,
