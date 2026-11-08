@@ -2,6 +2,7 @@ package co.edu.uniandes.misw4203.vinilos.data
 
 import co.edu.uniandes.misw4203.vinilos.core.network.BackendApi
 import co.edu.uniandes.misw4203.vinilos.data.dto.AlbumDto
+import co.edu.uniandes.misw4203.vinilos.data.dto.CollectorDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.CommentDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.PerformerDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.TrackDto
@@ -10,12 +11,14 @@ import retrofit2.HttpException
 import retrofit2.Response
 
 /**
- * API falsa para las pruebas: devuelve la lista dada o lanza el error dado.
+ * API falsa para las pruebas: devuelve las listas dadas o lanza el error dado.
  * getAlbum busca por id en la misma lista y responde HTTP 404 si no lo encuentra.
  */
 class FakeBackendApi(
     private val albums: List<AlbumDto> = emptyList(),
-    private val error: Throwable? = null
+    /** Si no es null, todas las llamadas lanzan este error. Se puede cambiar para simular que vuelve la red. */
+    var error: Throwable? = null,
+    private val collectors: List<CollectorDto> = emptyList()
 ) : BackendApi {
 
     override suspend fun getAlbums(): List<AlbumDto> {
@@ -29,7 +32,19 @@ class FakeBackendApi(
             ?: throw HttpException(Response.error<Any>(404, "".toResponseBody(null)))
     }
 
+    override suspend fun getCollectors(): List<CollectorDto> {
+        error?.let { throw it }
+        return collectors
+    }
+
     companion object {
+        fun collectorDto(
+            id: Int? = 100,
+            name: String? = "Manolo Bellon",
+            telephone: String? = "3502457896",
+            email: String? = "manollo@caracol.com.co"
+        ) = CollectorDto(id, name, telephone, email)
+
         fun albumDto(
             id: Int? = 100,
             name: String? = "Buscando América",
