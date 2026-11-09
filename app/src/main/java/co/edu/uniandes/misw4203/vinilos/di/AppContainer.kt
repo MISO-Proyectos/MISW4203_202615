@@ -3,7 +3,11 @@ package co.edu.uniandes.misw4203.vinilos.di
 import co.edu.uniandes.misw4203.vinilos.BuildConfig
 import co.edu.uniandes.misw4203.vinilos.core.network.BackendApi
 import co.edu.uniandes.misw4203.vinilos.data.adapter.AlbumServiceAdapter
+import co.edu.uniandes.misw4203.vinilos.data.adapter.ArtistServiceAdapter
+import co.edu.uniandes.misw4203.vinilos.data.adapter.CollectorServiceAdapter
 import co.edu.uniandes.misw4203.vinilos.data.repository.AlbumRepository
+import co.edu.uniandes.misw4203.vinilos.data.repository.ArtistRepository
+import co.edu.uniandes.misw4203.vinilos.data.repository.CollectorRepository
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -42,4 +46,14 @@ class AppContainer(baseUrl: String) {
 
     /** HU01 y HU02: álbumes. */
     val albumRepository = AlbumRepository(albumServiceAdapter)
+
+    private val artistServiceAdapter = ArtistServiceAdapter(backendApi)
+
+    /** HU03 y HU04: artistas (músicos y bandas). */
+    val artistRepository = ArtistRepository(artistServiceAdapter)
+
+    private val collectorServiceAdapter = CollectorServiceAdapter(backendApi)
+
+    /** HU05 y HU06: coleccionistas. */
+    val collectorRepository = CollectorRepository(collectorServiceAdapter)
 }

@@ -100,5 +100,19 @@ class AlbumListViewModelTest {
             if (online) delegate.getAlbums() else throw IOException("sin red")
 
         override suspend fun getAlbum(albumId: Int) = delegate.getAlbum(albumId)
+
+        override suspend fun getCollectors() = delegate.getCollectors()
+
+        override suspend fun getCollector(id: Int) = delegate.getCollector(id)
+
+        override suspend fun getCollectorAlbums(id: Int) = delegate.getCollectorAlbums(id)
+
+        override suspend fun getMusicians() = delegate.getMusicians()
+
+        override suspend fun getBands() = delegate.getBands()
+
+        override suspend fun getMusician(id: Int) = delegate.getMusician(id)
+
+        override suspend fun getBand(id: Int) = delegate.getBand(id)
     }
 }

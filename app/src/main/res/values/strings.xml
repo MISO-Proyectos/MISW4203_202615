@@ -15,9 +15,6 @@
     <string name="nav_artists">Artistas</string>
     <string name="nav_collectors">Coleccionistas</string>
 
-    <!-- Pantalla provisional -->
-    <string name="placeholder_next_sprint">Disponible en el Sprint 2</string>
-
     <!-- HU01: catálogo de álbumes -->
     <plurals name="albums_count">
         <item quantity="one">%d álbum en el catálogo</item>
@@ -70,4 +67,57 @@
         <item>nov</item>
         <item>dic</item>
     </string-array>
+
+    <!-- HU03: listado de artistas -->
+    <plurals name="artists_count">
+        <item quantity="one">%d artista</item>
+        <item quantity="other">%d artistas</item>
+    </plurals>
+    <string name="artists_loading">Cargando artistas</string>
+    <string name="artists_empty_title">Aún no hay artistas</string>
+    <string name="artists_empty_subtitle">Cuando se registre un músico o una banda aparecerá aquí.</string>
+    <string name="artists_error_title">No pudimos cargar los artistas</string>
+    <string name="artists_error_default">No se pudieron cargar los artistas.</string>
+    <string name="artist_type_musician">Músico</string>
+    <string name="artist_type_band">Banda</string>
+    <string name="artist_detail_coming_soon">El detalle del artista estará disponible muy pronto.</string>
+
+    <!-- HU04: detalle de un artista -->
+    <string name="artist_detail_title">Detalle del artista</string>
+    <string name="artist_error_title">No pudimos cargar el artista</string>
+    <string name="artist_birth_date">Fecha de nacimiento</string>
+    <string name="artist_creation_date">Fecha de creación</string>
+    <string name="artist_no_description">Este artista no tiene descripción.</string>
+    <string name="artist_albums">Álbumes</string>
+    <plurals name="artist_albums_count">
+        <item quantity="one">%d álbum</item>
+        <item quantity="other">%d álbumes</item>
+    </plurals>
+    <string name="artist_no_albums">Este artista todavía no tiene álbumes asociados.</string>
+    <string name="artist_image_description">Foto de %1$s</string>
+
+    <!-- HU05: listado de coleccionistas -->
+    <plurals name="collectors_count">
+        <item quantity="one">%d coleccionista</item>
+        <item quantity="other">%d coleccionistas</item>
+    </plurals>
+    <string name="collectors_loading">Cargando coleccionistas</string>
+    <string name="collectors_empty_title">Aún no hay coleccionistas</string>
+    <string name="collectors_empty_subtitle">Cuando se registre un coleccionista aparecerá aquí.</string>
+    <string name="collectors_error_title">No pudimos cargar los coleccionistas</string>
+    <string name="collectors_error_default">No se pudieron cargar los coleccionistas.</string>
+
+    <!-- HU06: detalle de un coleccionista -->
+    <string name="collector_detail_title">Detalle del coleccionista</string>
+    <string name="collector_detail_loading">Cargando coleccionista</string>
+    <string name="collector_error_title">No pudimos cargar el coleccionista</string>
+    <string name="collector_telephone">Teléfono</string>
+    <string name="collector_email">Correo</string>
+    <string name="collector_albums">Álbumes</string>
+    <string name="collector_no_albums">Sin álbumes en su colección</string>
+    <string name="collector_favorite_performers">Artistas favoritos</string>
+    <string name="collector_no_performers">Sin artistas favoritos</string>
+    <string name="collector_album_status_active">Activo</string>
+    <string name="collector_album_status_inactive">Inactivo</string>
+    <string name="collector_album_price">Precio: %1$s</string>
 </resources>
