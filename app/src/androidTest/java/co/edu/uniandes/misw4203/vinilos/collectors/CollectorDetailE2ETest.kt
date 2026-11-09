@@ -42,18 +42,25 @@ class CollectorDetailE2ETest {
     @Before
     fun entrar_como_visitante_y_abrir_el_detalle_de_manolo() {
         onView(withId(R.id.visitorCard)).perform(click())
-        onView(withId(R.id.collectorListFragment)).perform(click())
-        waitFor { onView(withId(R.id.collectorList)).check(matches(hasDescendant(withText(COLECCIONISTA)))) }
+        // El emulador puede tardar en dibujar la barra inferior y en traer la lista: se reintenta
+        // el toque en la sección Coleccionistas y se espera más que los 10 s por defecto.
+        waitFor(timeoutMs = ESPERA_LARGA_MS) {
+            onView(withId(R.id.collectorListFragment)).perform(click())
+            onView(withId(R.id.collectorList)).check(matches(hasDescendant(withText(COLECCIONISTA))))
+        }
         onView(withId(R.id.collectorList)).perform(
             RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
                 hasDescendant(withText(COLECCIONISTA)),
                 click()
             )
         )
-        waitFor { onView(withId(R.id.collectorName)).check(matches(withText(COLECCIONISTA))) }
+        waitFor(timeoutMs = ESPERA_LARGA_MS) {
+            onView(withId(R.id.detailName)).check(matches(withText(COLECCIONISTA)))
+        }
     }
 
     private companion object {
+        const val ESPERA_LARGA_MS = 30_000L
         const val COLECCIONISTA = "Manolo Bellon"
         const val TELEFONO = "3502457896"
         const val CORREO = "manollo@caracol.com.co"
@@ -65,9 +72,9 @@ class CollectorDetailE2ETest {
     // CP-HU06-01
     @Test
     fun el_detalle_muestra_nombre_telefono_y_correo() {
-        onView(withId(R.id.collectorName)).check(matches(withText(COLECCIONISTA)))
-        onView(withId(R.id.collectorTelephone)).check(matches(withText(TELEFONO)))
-        onView(withId(R.id.collectorEmail)).check(matches(withText(CORREO)))
+        onView(withId(R.id.detailName)).check(matches(withText(COLECCIONISTA)))
+        onView(withId(R.id.detailTelephone)).check(matches(withText(TELEFONO)))
+        onView(withId(R.id.detailEmail)).check(matches(withText(CORREO)))
         onView(withId(R.id.topBarTitle)).check(matches(withText(R.string.collector_detail_title)))
     }
 

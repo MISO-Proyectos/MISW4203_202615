@@ -74,10 +74,10 @@ class CollectorDetailFragment : Fragment() {
 
     private fun showCollector(collector: Collector) {
         val unknown = getString(R.string.album_value_unknown)
-        binding.collectorAvatar.text = collector.initials
-        binding.collectorName.text = collector.name
-        binding.collectorTelephone.text = collector.telephone.ifBlank { unknown }
-        binding.collectorEmail.text = collector.email.ifBlank { unknown }
+        binding.detailAvatar.text = collector.initials
+        binding.detailName.text = collector.name
+        binding.detailTelephone.text = collector.telephone.ifBlank { unknown }
+        binding.detailEmail.text = collector.email.ifBlank { unknown }
         showAlbums(collector.albums)
         showPerformers(collector.favoritePerformers)
         showComments(collector.comments)

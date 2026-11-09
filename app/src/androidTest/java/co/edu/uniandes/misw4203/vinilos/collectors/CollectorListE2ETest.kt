@@ -83,7 +83,7 @@ class CollectorListE2ETest {
             )
         )
         waitFor {
-            onView(withId(R.id.collectorName)).check(matches(withText(PRIMER_COLECCIONISTA)))
+            onView(withId(R.id.detailName)).check(matches(withText(PRIMER_COLECCIONISTA)))
         }
         onView(withId(R.id.topBarTitle)).check(matches(withText(R.string.collector_detail_title)))
     }

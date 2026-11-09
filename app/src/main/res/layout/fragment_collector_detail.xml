@@ -37,7 +37,7 @@
             android:padding="16dp">
 
             <TextView
-                android:id="@+id/collectorAvatar"
+                android:id="@+id/detailAvatar"
                 android:layout_width="88dp"
                 android:layout_height="88dp"
                 android:layout_gravity="center_horizontal"
@@ -49,7 +49,7 @@
                 tools:text="MB" />
 
             <TextView
-                android:id="@+id/collectorName"
+                android:id="@+id/detailName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
@@ -98,7 +98,7 @@
                             android:textColor="?attr/colorOnSurfaceVariant" />
 
                         <TextView
-                            android:id="@+id/collectorEmail"
+                            android:id="@+id/detailEmail"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textAppearance="?attr/textAppearanceBodyMedium"
@@ -142,7 +142,7 @@
                             android:textColor="?attr/colorOnSurfaceVariant" />
 
                         <TextView
-                            android:id="@+id/collectorTelephone"
+                            android:id="@+id/detailTelephone"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textAppearance="?attr/textAppearanceBodyMedium"
