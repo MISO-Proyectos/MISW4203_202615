@@ -45,13 +45,13 @@ En Android 17 (API 37) la app pide al abrir el permiso de red local (aparece com
 - Estrategia y casos de prueba: ver la wiki.
 
 ## APK
-El APK está en la carpeta `releases/` del repositorio (`releases/vinilos-v1.0.0.apk`) y también en la sección Releases:
+El APK está en la carpeta `releases/` del repositorio (`releases/vinilos-v1.1.0.apk`) y también en la sección Releases:
 https://github.com/MISO-Proyectos/MISW4203_202615/releases
 
 Para instalarlo en un emulador o en un celular con Android 5.0 o superior hay que tener el backend corriendo. Ojo: el APK usa `10.0.2.2`, que solo sirve en el emulador. En un celular físico hay que compilar de nuevo con la IP del computador (ver «URL del backend»).
 
 ## Ramas (GitFlow)
-- `main`: versiones publicadas (release `v1.0.0`).
+- `main`: versiones publicadas (release `v1.1.0`).
 - `develop`: integración.
 - `feature/HUxx-Tn-descripcion`: una rama por tarea; se integra a `develop` con pull request revisado por otra persona.
 - `release/vX.Y.Z`: se crea desde `develop` para preparar una versión (por ejemplo, agregar el APK); luego se integra a `main` y vuelve a `develop`.
