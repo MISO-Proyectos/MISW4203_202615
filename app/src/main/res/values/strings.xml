@@ -106,5 +106,18 @@
     <string name="collectors_empty_subtitle">Cuando se registre un coleccionista aparecerá aquí.</string>
     <string name="collectors_error_title">No pudimos cargar los coleccionistas</string>
     <string name="collectors_error_default">No se pudieron cargar los coleccionistas.</string>
-    <string name="collector_detail_coming_soon">El detalle del coleccionista estará disponible muy pronto.</string>
+
+    <!-- HU06: detalle de un coleccionista -->
+    <string name="collector_detail_title">Detalle del coleccionista</string>
+    <string name="collector_detail_loading">Cargando coleccionista</string>
+    <string name="collector_error_title">No pudimos cargar el coleccionista</string>
+    <string name="collector_telephone">Teléfono</string>
+    <string name="collector_email">Correo</string>
+    <string name="collector_albums">Álbumes</string>
+    <string name="collector_no_albums">Sin álbumes en su colección</string>
+    <string name="collector_favorite_performers">Artistas favoritos</string>
+    <string name="collector_no_performers">Sin artistas favoritos</string>
+    <string name="collector_album_status_active">Activo</string>
+    <string name="collector_album_status_inactive">Inactivo</string>
+    <string name="collector_album_price">Precio: %1$s</string>
 </resources>

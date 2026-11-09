@@ -2,6 +2,7 @@ package co.edu.uniandes.misw4203.vinilos.core.network
 
 import co.edu.uniandes.misw4203.vinilos.data.dto.AlbumDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.BandDto
+import co.edu.uniandes.misw4203.vinilos.data.dto.CollectorAlbumDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.CollectorDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.MusicianDto
 import retrofit2.http.GET
@@ -21,6 +22,14 @@ interface BackendApi {
     /** HU05: listado de coleccionistas. */
     @GET("collectors")
     suspend fun getCollectors(): List<CollectorDto>
+
+    /** HU06: detalle de un coleccionista, con comentarios, artistas favoritos y su colección (sin nombre de álbum). */
+    @GET("collectors/{id}")
+    suspend fun getCollector(@Path("id") id: Int): CollectorDto
+
+    /** HU06: álbumes de la colección de un coleccionista, con precio, estado y datos del álbum. */
+    @GET("collectors/{id}/albums")
+    suspend fun getCollectorAlbums(@Path("id") id: Int): List<CollectorAlbumDto>
 
     /** HU03: listado de artistas (músicos). */
     @GET("musicians")

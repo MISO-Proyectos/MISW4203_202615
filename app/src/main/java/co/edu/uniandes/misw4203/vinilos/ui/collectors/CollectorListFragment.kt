@@ -4,17 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ConcatAdapter
 import co.edu.uniandes.misw4203.vinilos.R
 import co.edu.uniandes.misw4203.vinilos.data.model.Collector
 import co.edu.uniandes.misw4203.vinilos.databinding.FragmentCollectorListBinding
-import com.google.android.material.snackbar.Snackbar
+import co.edu.uniandes.misw4203.vinilos.ui.collectors.detail.CollectorDetailViewModel
 import kotlinx.coroutines.launch
 
 /**
@@ -53,11 +55,12 @@ class CollectorListFragment : Fragment() {
         }
     }
 
-    /** El detalle del coleccionista es la HU06; mientras tanto se avisa que llega pronto. */
+    /** HU06: abre el detalle del coleccionista tocado. */
     private fun openCollector(collector: Collector) {
-        // Cuando esté la HU06 aquí se navega al detalle con collector.id, como en openAlbum
-        Snackbar.make(binding.root, R.string.collector_detail_coming_soon, Snackbar.LENGTH_SHORT)
-            .show()
+        findNavController().navigate(
+            R.id.action_collectorList_to_collectorDetail,
+            bundleOf(CollectorDetailViewModel.ARG_COLLECTOR_ID to collector.id)
+        )
     }
 
     private fun render(state: CollectorListUiState) {
