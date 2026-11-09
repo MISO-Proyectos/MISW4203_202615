@@ -18,6 +18,10 @@ class CollectorRepository(
     suspend fun getCollectors(): Result<List<Collector>> =
         safeCall { serviceAdapter.getCollectors() }
 
+    /** HU06: detalle de un coleccionista. Si no existe devuelve NotFound. */
+    suspend fun getCollector(id: Int): Result<Collector> =
+        safeCall { serviceAdapter.getCollector(id) }
+
     /** Ejecuta la llamada y traduce los errores técnicos a CollectorRepositoryException. */
     private suspend fun <T> safeCall(call: suspend () -> T): Result<T> =
         try {
@@ -28,8 +32,17 @@ class CollectorRepository(
         } catch (e: IOException) {
             Result.failure(CollectorRepositoryException.NoConnection(e))
         } catch (e: HttpException) {
-            Result.failure(CollectorRepositoryException.Server(e.code(), e))
+            val error = if (e.code() == HTTP_NOT_FOUND) {
+                CollectorRepositoryException.NotFound(e)
+            } else {
+                CollectorRepositoryException.Server(e.code(), e)
+            }
+            Result.failure(error)
         } catch (e: Exception) {
             Result.failure(CollectorRepositoryException.Unexpected(e))
         }
+
+    private companion object {
+        const val HTTP_NOT_FOUND = 404
+    }
 }

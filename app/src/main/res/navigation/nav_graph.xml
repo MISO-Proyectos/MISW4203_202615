@@ -82,5 +82,22 @@
     <fragment
         android:id="@+id/collectorListFragment"
         android:name="co.edu.uniandes.misw4203.vinilos.ui.collectors.CollectorListFragment"
-        android:label="@string/nav_collectors" />
+        android:label="@string/nav_collectors">
+        <action
+            android:id="@+id/action_collectorList_to_collectorDetail"
+            app:destination="@id/collectorDetailFragment" />
+    </fragment>
+
+    <!-- HU06: detalle de un coleccionista -->
+    <fragment
+        android:id="@+id/collectorDetailFragment"
+        android:name="co.edu.uniandes.misw4203.vinilos.ui.collectors.detail.CollectorDetailFragment"
+        android:label="@string/collector_detail_title">
+        <argument
+            android:name="collectorId"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_collectorDetail_to_albumDetail"
+            app:destination="@id/albumDetailFragment" />
+    </fragment>
 </navigation>

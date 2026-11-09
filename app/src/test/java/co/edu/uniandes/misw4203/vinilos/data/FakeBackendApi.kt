@@ -3,6 +3,7 @@ package co.edu.uniandes.misw4203.vinilos.data
 import co.edu.uniandes.misw4203.vinilos.core.network.BackendApi
 import co.edu.uniandes.misw4203.vinilos.data.dto.AlbumDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.BandDto
+import co.edu.uniandes.misw4203.vinilos.data.dto.CollectorAlbumDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.CollectorDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.CommentDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.MusicianDto
@@ -21,6 +22,8 @@ class FakeBackendApi(
     /** Si no es null, todas las llamadas lanzan este error. Se puede cambiar para simular que vuelve la red. */
     var error: Throwable? = null,
     private val collectors: List<CollectorDto> = emptyList(),
+    /** Álbumes de la colección que devuelve GET /collectors/{id}/albums (iguales para cualquier coleccionista). */
+    private val collectorAlbums: List<CollectorAlbumDto> = emptyList(),
     /** Se puede cambiar para simular que el backend tiene artistas nuevos. */
     var musicians: List<MusicianDto> = emptyList(),
     var bands: List<BandDto> = emptyList(),
@@ -42,6 +45,20 @@ class FakeBackendApi(
     override suspend fun getCollectors(): List<CollectorDto> {
         error?.let { throw it }
         return collectors
+    }
+
+    override suspend fun getCollector(id: Int): CollectorDto {
+        error?.let { throw it }
+        return collectors.firstOrNull { it.id == id }
+            ?: throw HttpException(Response.error<Any>(404, "".toResponseBody(null)))
+    }
+
+    override suspend fun getCollectorAlbums(id: Int): List<CollectorAlbumDto> {
+        error?.let { throw it }
+        if (collectors.none { it.id == id }) {
+            throw HttpException(Response.error<Any>(404, "".toResponseBody(null)))
+        }
+        return collectorAlbums
     }
 
     override suspend fun getMusicians(): List<MusicianDto> {
@@ -91,8 +108,17 @@ class FakeBackendApi(
             id: Int? = 100,
             name: String? = "Manolo Bellon",
             telephone: String? = "3502457896",
-            email: String? = "manollo@caracol.com.co"
-        ) = CollectorDto(id, name, telephone, email)
+            email: String? = "manollo@caracol.com.co",
+            comments: List<CommentDto>? = null,
+            favoritePerformers: List<PerformerDto>? = null
+        ) = CollectorDto(id, name, telephone, email, comments, favoritePerformers)
+
+        fun collectorAlbumDto(
+            id: Int? = 100,
+            price: Int? = 35,
+            status: String? = "Active",
+            album: AlbumDto? = albumDto()
+        ) = CollectorAlbumDto(id, price, status, album)
 
         fun albumDto(
             id: Int? = 100,

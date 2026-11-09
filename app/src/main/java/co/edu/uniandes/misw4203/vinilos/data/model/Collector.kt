@@ -5,7 +5,11 @@ data class Collector(
     val id: Int,
     val name: String,
     val telephone: String,
-    val email: String
+    val email: String,
+    /** Solo viene lleno en el detalle (HU06). */
+    val albums: List<CollectorAlbum> = emptyList(),
+    val favoritePerformers: List<Performer> = emptyList(),
+    val comments: List<Comment> = emptyList()
 ) {
     /**
      * Iniciales para el avatar de la lista: "Manolo Bellon" da "MB".

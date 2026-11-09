@@ -15,6 +15,12 @@ sealed class CollectorRepositoryException(
         cause
     )
 
+    /** HU06: el coleccionista pedido no existe (HTTP 404). */
+    class NotFound(cause: Throwable? = null) : CollectorRepositoryException(
+        "No encontramos este coleccionista. Puede que haya sido eliminado.",
+        cause
+    )
+
     /** El servidor respondió con un error HTTP. */
     class Server(val code: Int, cause: Throwable? = null) : CollectorRepositoryException(
         "El servidor no pudo responder (error $code). Inténtalo más tarde.",

@@ -72,9 +72,9 @@ class CollectorListE2ETest {
         laListaMuestra(TELEFONO_PRIMERO)
     }
 
-    // CP-HU05-03 (el detalle llega con la HU06: por ahora se muestra un aviso)
+    // CP-HU05-03 (con la HU06, tocar un coleccionista abre su detalle)
     @Test
-    fun tocar_un_coleccionista_muestra_el_aviso_del_detalle() {
+    fun tocar_un_coleccionista_abre_su_detalle() {
         laListaMuestra(PRIMER_COLECCIONISTA)
         onView(withId(R.id.collectorList)).perform(
             RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
@@ -83,8 +83,9 @@ class CollectorListE2ETest {
             )
         )
         waitFor {
-            onView(withText(R.string.collector_detail_coming_soon)).check(matches(isDisplayed()))
+            onView(withId(R.id.collectorName)).check(matches(withText(PRIMER_COLECCIONISTA)))
         }
+        onView(withId(R.id.topBarTitle)).check(matches(withText(R.string.collector_detail_title)))
     }
 
     // CP-HU05-04
