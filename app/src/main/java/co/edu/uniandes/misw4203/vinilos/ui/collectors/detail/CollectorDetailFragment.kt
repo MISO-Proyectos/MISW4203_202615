@@ -24,6 +24,7 @@ import co.edu.uniandes.misw4203.vinilos.databinding.ItemCollectorAlbumBinding
 import co.edu.uniandes.misw4203.vinilos.databinding.ItemCommentBinding
 import co.edu.uniandes.misw4203.vinilos.ui.albums.detail.AlbumDetailViewModel
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.material.chip.Chip
 import com.google.android.material.color.MaterialColors
@@ -84,10 +85,12 @@ class CollectorDetailFragment : Fragment() {
     }
 
     private fun showAlbums(albums: List<CollectorAlbum>) {
-        binding.albumsCount.text = albums.size.toString()
+        binding.albumsCount.text = CollectorDetailFormatter.formatCount(albums.size)
         binding.albumsContainer.isVisible = albums.isNotEmpty()
         binding.albumsEmpty.isVisible = albums.isEmpty()
         binding.albumsContainer.removeAllViews()
+        // Tamaño de la carátula: se calcula una vez para todas las filas
+        val coverSize = resources.getDimensionPixelSize(R.dimen.collector_album_cover_size)
         albums.forEachIndexed { index, item ->
             val row = ItemCollectorAlbumBinding.inflate(layoutInflater, binding.albumsContainer, true)
             val album = item.album
@@ -105,6 +108,8 @@ class CollectorDetailFragment : Fragment() {
                 .load(album.cover.ifBlank { null })
                 .placeholder(R.drawable.ic_album)
                 .error(R.drawable.ic_album)
+                .override(coverSize)
+                .format(DecodeFormat.PREFER_RGB_565)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .centerCrop()
                 .into(row.albumCover)
@@ -114,7 +119,7 @@ class CollectorDetailFragment : Fragment() {
 
     /** Artistas favoritos como chips con borde (sin acción: el backend no dice si son músicos o bandas). */
     private fun showPerformers(performers: List<Performer>) {
-        binding.performersCount.text = performers.size.toString()
+        binding.performersCount.text = CollectorDetailFormatter.formatCount(performers.size)
         binding.performersGroup.isVisible = performers.isNotEmpty()
         binding.performersEmpty.isVisible = performers.isEmpty()
         binding.performersGroup.removeAllViews()
@@ -132,33 +137,31 @@ class CollectorDetailFragment : Fragment() {
     }
 
     private fun showComments(comments: List<Comment>) {
-        binding.commentsCount.text = comments.size.toString()
+        binding.commentsCount.text = CollectorDetailFormatter.formatCount(comments.size)
         binding.commentsContainer.isVisible = comments.isNotEmpty()
         binding.commentsEmpty.isVisible = comments.isEmpty()
         binding.commentsContainer.removeAllViews()
+        // Colores y tamaños de las estrellas: se resuelven una vez para todos los comentarios
+        val starStyle = StarStyle.from(binding.commentsContainer)
         comments.forEachIndexed { index, comment ->
             val row = ItemCommentBinding.inflate(layoutInflater, binding.commentsContainer, true)
             row.commentDivider.isVisible = index > 0
             row.commentText.text = comment.description
-            showStars(row.commentStars, comment.rating)
+            showStars(row.commentStars, comment.rating, starStyle)
         }
     }
 
     /** Dibuja las cinco estrellas: llenas hasta [rating] y vacías el resto. */
-    private fun showStars(container: LinearLayout, rating: Int) {
-        val filled = MaterialColors.getColor(container, androidx.appcompat.R.attr.colorPrimary)
-        val empty = MaterialColors.getColor(container, com.google.android.material.R.attr.colorOutlineVariant)
-        val size = resources.getDimensionPixelSize(R.dimen.comment_star_size)
-        val gap = resources.getDimensionPixelSize(R.dimen.comment_star_gap)
+    private fun showStars(container: LinearLayout, rating: Int, style: StarStyle) {
         container.removeAllViews()
         container.contentDescription = getString(R.string.comment_rating_description, rating)
         repeat(MAX_RATING) { position ->
             val star = ImageView(container.context).apply {
                 setImageResource(R.drawable.ic_star)
-                setColorFilter(if (position < rating) filled else empty)
+                setColorFilter(if (position < rating) style.filledColor else style.emptyColor)
                 importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
             }
-            container.addView(star, LinearLayout.LayoutParams(size, size).apply { marginEnd = gap })
+            container.addView(star, LinearLayout.LayoutParams(style.size, style.size).apply { marginEnd = style.gap })
         }
     }
 
@@ -172,6 +175,21 @@ class CollectorDetailFragment : Fragment() {
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
+    }
+
+    /** Colores y medidas de las estrellas, iguales para todos los comentarios. */
+    private class StarStyle(val filledColor: Int, val emptyColor: Int, val size: Int, val gap: Int) {
+        companion object {
+            fun from(view: View): StarStyle {
+                val resources = view.resources
+                return StarStyle(
+                    filledColor = MaterialColors.getColor(view, androidx.appcompat.R.attr.colorPrimary),
+                    emptyColor = MaterialColors.getColor(view, com.google.android.material.R.attr.colorOutlineVariant),
+                    size = resources.getDimensionPixelSize(R.dimen.comment_star_size),
+                    gap = resources.getDimensionPixelSize(R.dimen.comment_star_gap)
+                )
+            }
+        }
     }
 
     private companion object {
