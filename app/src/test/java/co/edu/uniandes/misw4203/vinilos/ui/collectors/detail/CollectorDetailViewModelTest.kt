@@ -38,7 +38,7 @@ class CollectorDetailViewModelTest {
     private fun viewModelWith(api: FakeBackendApi, collectorId: Int = 100) =
         CollectorDetailViewModel(
             SavedStateHandle(mapOf(CollectorDetailViewModel.ARG_COLLECTOR_ID to collectorId)),
-            CollectorRepository(CollectorServiceAdapter(api))
+            CollectorRepository(CollectorServiceAdapter(api, dispatcher), dispatcher)
         )
 
     @Test
@@ -110,7 +110,7 @@ class CollectorDetailViewModelTest {
     fun `sin el argumento obligatorio no se puede crear`() {
         CollectorDetailViewModel(
             SavedStateHandle(),
-            CollectorRepository(CollectorServiceAdapter(FakeBackendApi()))
+            CollectorRepository(CollectorServiceAdapter(FakeBackendApi(), dispatcher), dispatcher)
         )
     }
 }

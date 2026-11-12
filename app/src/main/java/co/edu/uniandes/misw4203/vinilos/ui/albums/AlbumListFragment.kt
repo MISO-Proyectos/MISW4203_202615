@@ -54,7 +54,7 @@ class AlbumListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.albumList.adapter = ConcatAdapter(countAdapter, albumAdapter)
-        binding.retryButton.setOnClickListener { viewModel.loadAlbums() }
+        binding.retryButton.setOnClickListener { viewModel.loadAlbums(forceRefresh = true) }
         binding.addAlbumButton.setOnClickListener {
             // TODO: navegar al formulario de creación de álbum cuando exista su HU
             Snackbar.make(binding.root, R.string.add_album_coming_soon, Snackbar.LENGTH_SHORT)

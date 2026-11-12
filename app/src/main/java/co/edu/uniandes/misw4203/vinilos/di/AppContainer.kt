@@ -8,6 +8,8 @@ import co.edu.uniandes.misw4203.vinilos.data.adapter.CollectorServiceAdapter
 import co.edu.uniandes.misw4203.vinilos.data.repository.AlbumRepository
 import co.edu.uniandes.misw4203.vinilos.data.repository.ArtistRepository
 import co.edu.uniandes.misw4203.vinilos.data.repository.CollectorRepository
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -17,8 +19,14 @@ import java.util.concurrent.TimeUnit
 /**
  * Arma a mano las piezas de la app (Retrofit, adapters y repositorios) y las comparte.
  * Se crea una sola vez en VinilosApplication.
+ * Los repositorios corren en [ioDispatcher] (red) y los adapters en [defaultDispatcher]
+ * (conversión DTO → modelo y ordenamientos).
  */
-class AppContainer(baseUrl: String) {
+class AppContainer(
+    baseUrl: String,
+    ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    defaultDispatcher: CoroutineDispatcher = Dispatchers.Default
+) {
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = if (BuildConfig.DEBUG) {
@@ -42,18 +50,18 @@ class AppContainer(baseUrl: String) {
 
     private val backendApi = retrofit.create(BackendApi::class.java)
 
-    private val albumServiceAdapter = AlbumServiceAdapter(backendApi)
+    private val albumServiceAdapter = AlbumServiceAdapter(backendApi, defaultDispatcher)
 
     /** HU01 y HU02: álbumes. */
-    val albumRepository = AlbumRepository(albumServiceAdapter)
+    val albumRepository = AlbumRepository(albumServiceAdapter, ioDispatcher)
 
-    private val artistServiceAdapter = ArtistServiceAdapter(backendApi)
+    private val artistServiceAdapter = ArtistServiceAdapter(backendApi, defaultDispatcher)
 
     /** HU03 y HU04: artistas (músicos y bandas). */
-    val artistRepository = ArtistRepository(artistServiceAdapter)
+    val artistRepository = ArtistRepository(artistServiceAdapter, ioDispatcher)
 
-    private val collectorServiceAdapter = CollectorServiceAdapter(backendApi)
+    private val collectorServiceAdapter = CollectorServiceAdapter(backendApi, defaultDispatcher)
 
     /** HU05 y HU06: coleccionistas. */
-    val collectorRepository = CollectorRepository(collectorServiceAdapter)
+    val collectorRepository = CollectorRepository(collectorServiceAdapter, ioDispatcher)
 }

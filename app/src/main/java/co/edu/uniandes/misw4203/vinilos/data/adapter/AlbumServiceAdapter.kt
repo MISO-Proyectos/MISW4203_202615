@@ -10,23 +10,33 @@ import co.edu.uniandes.misw4203.vinilos.data.model.Comment
 import co.edu.uniandes.misw4203.vinilos.data.model.Performer
 import co.edu.uniandes.misw4203.vinilos.data.model.ReleaseDate
 import co.edu.uniandes.misw4203.vinilos.data.model.Track
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 /**
  * Service Adapter de álbumes: llama a la API REST y convierte el JSON (DTO)
  * en los modelos de la app. Si cambia la librería de red, solo se toca esta clase.
  * Los errores de red se propagan; AlbumRepository los traduce.
+ * La conversión DTO → modelo corre en [dispatcher] (por defecto Dispatchers.Default).
  */
 class AlbumServiceAdapter(
-    private val api: BackendApi
+    private val api: BackendApi,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.Default
 ) {
 
-    suspend fun getAlbums(): List<Album> =
-        api.getAlbums().mapNotNull { it.toModel() }
+    suspend fun getAlbums(): List<Album> {
+        val dtos = api.getAlbums()
+        return withContext(dispatcher) { dtos.mapNotNull { it.toModel() } }
+    }
 
     /** HU02: un álbum con su detalle. Si el JSON no trae id se trata como respuesta inválida. */
-    suspend fun getAlbum(albumId: Int): Album =
-        api.getAlbum(albumId).toModel()
-            ?: throw IllegalStateException("El backend devolvió un álbum sin id")
+    suspend fun getAlbum(albumId: Int): Album {
+        val dto = api.getAlbum(albumId)
+        return withContext(dispatcher) {
+            dto.toModel() ?: throw IllegalStateException("El backend devolvió un álbum sin id")
+        }
+    }
 
     companion object {
 

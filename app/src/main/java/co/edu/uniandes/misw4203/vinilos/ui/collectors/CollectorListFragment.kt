@@ -46,7 +46,7 @@ class CollectorListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.collectorList.adapter = ConcatAdapter(countAdapter, collectorAdapter)
-        binding.retryButton.setOnClickListener { viewModel.loadCollectors() }
+        binding.retryButton.setOnClickListener { viewModel.loadCollectors(forceRefresh = true) }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {

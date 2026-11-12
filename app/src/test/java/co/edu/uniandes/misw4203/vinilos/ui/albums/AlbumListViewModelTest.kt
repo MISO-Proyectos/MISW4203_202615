@@ -37,7 +37,7 @@ class AlbumListViewModelTest {
     }
 
     private fun viewModelWith(api: FakeBackendApi) =
-        AlbumListViewModel(AlbumRepository(AlbumServiceAdapter(api)))
+        AlbumListViewModel(AlbumRepository(AlbumServiceAdapter(api, dispatcher), dispatcher))
 
     @Test
     fun `empieza en Loading mientras llegan los albumes`() = runTest(dispatcher) {
@@ -79,7 +79,7 @@ class AlbumListViewModelTest {
     @Test
     fun `reintentar despues de un error vuelve a pedir los albumes`() = runTest(dispatcher) {
         val api = SwitchableApi()
-        val viewModel = AlbumListViewModel(AlbumRepository(AlbumServiceAdapter(api)))
+        val viewModel = AlbumListViewModel(AlbumRepository(AlbumServiceAdapter(api, dispatcher), dispatcher))
         advanceUntilIdle()
         assertTrue(viewModel.uiState.value is AlbumListUiState.Error)
 
