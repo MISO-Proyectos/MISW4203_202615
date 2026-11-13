@@ -10,6 +10,7 @@ import co.edu.uniandes.misw4203.vinilos.R
 import co.edu.uniandes.misw4203.vinilos.data.model.Album
 import co.edu.uniandes.misw4203.vinilos.databinding.ItemAlbumBinding
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 
 /** Adapter de la lista de álbumes: dibuja una tarjeta por álbum y avisa cuando se toca una. */
@@ -41,6 +42,10 @@ class AlbumAdapter(
 
         private var album: Album? = null
 
+        /** Tamaño de la carátula: se lee una sola vez por tarjeta, no en cada bind. */
+        private val coverSize =
+            binding.root.resources.getDimensionPixelSize(R.dimen.album_cover_size)
+
         init {
             binding.albumCard.setOnClickListener { album?.let(onAlbumClick) }
         }
@@ -69,6 +74,8 @@ class AlbumAdapter(
                 .load(album.cover.ifBlank { null })
                 .placeholder(R.drawable.ic_album)
                 .error(R.drawable.ic_album)
+                .override(coverSize)
+                .format(DecodeFormat.PREFER_RGB_565)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .centerCrop()
                 .into(binding.albumCover)

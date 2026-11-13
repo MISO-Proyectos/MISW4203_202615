@@ -53,6 +53,8 @@ class AlbumListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // El RecyclerView ocupa toda la pantalla: su tamaño no cambia al llegar los datos
+        binding.albumList.setHasFixedSize(true)
         binding.albumList.adapter = ConcatAdapter(countAdapter, albumAdapter)
         binding.retryButton.setOnClickListener { viewModel.loadAlbums(forceRefresh = true) }
         binding.addAlbumButton.setOnClickListener {
