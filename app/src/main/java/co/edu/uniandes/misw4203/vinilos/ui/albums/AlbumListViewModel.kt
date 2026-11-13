@@ -29,11 +29,14 @@ class AlbumListViewModel(
         loadAlbums()
     }
 
-    /** Pide los álbumes. Se llama al abrir la pantalla y desde el botón "Reintentar". */
-    fun loadAlbums() {
+    /**
+     * Pide los álbumes. Se llama al abrir la pantalla (usa la caché) y desde el botón
+     * "Reintentar" (con [forceRefresh] en true para volver a ir a la red).
+     */
+    fun loadAlbums(forceRefresh: Boolean = false) {
         _uiState.value = AlbumListUiState.Loading
         viewModelScope.launch {
-            _uiState.value = albumRepository.getAlbums().fold(
+            _uiState.value = albumRepository.getAlbums(forceRefresh).fold(
                 onSuccess = { albums ->
                     if (albums.isEmpty()) AlbumListUiState.Empty
                     else AlbumListUiState.Success(albums)

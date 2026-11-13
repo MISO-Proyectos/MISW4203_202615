@@ -36,7 +36,7 @@ class CollectorListViewModelTest {
     }
 
     private fun viewModelWith(api: FakeBackendApi) =
-        CollectorListViewModel(CollectorRepository(CollectorServiceAdapter(api)))
+        CollectorListViewModel(CollectorRepository(CollectorServiceAdapter(api, dispatcher), dispatcher))
 
     @Test
     fun `empieza en Loading mientras llegan los coleccionistas`() = runTest(dispatcher) {
