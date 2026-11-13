@@ -4,6 +4,10 @@
     <dimen name="list_bottom_padding">4dp</dimen>
     <!-- Alto del botón flotante (56dp) + margen (16dp) + aire (16dp) -->
     <dimen name="fab_list_clearance">88dp</dimen>
+    <!-- Carátula de un álbum en el catálogo (HU01): la usan el layout y Glide -->
+    <dimen name="album_cover_size">76dp</dimen>
+    <!-- Carátula grande del detalle de un álbum (HU02): la usan el layout y Glide -->
+    <dimen name="album_detail_cover_size">232dp</dimen>
     <!-- Estrellas de la calificación de un comentario -->
     <!-- Carátula de un álbum en la colección de un coleccionista (HU06) -->
     <dimen name="collector_album_cover_size">56dp</dimen>

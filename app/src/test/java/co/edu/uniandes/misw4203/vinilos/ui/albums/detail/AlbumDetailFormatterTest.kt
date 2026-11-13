@@ -35,6 +35,12 @@ class AlbumDetailFormatterTest {
     }
 
     @Test
+    fun `el contador muestra la cantidad como numero`() {
+        assertEquals("0", AlbumDetailFormatter.formatCount(0))
+        assertEquals("3", AlbumDetailFormatter.formatCount(3))
+    }
+
+    @Test
     fun `una duracion con otro formato se muestra tal como llego`() {
         assertEquals("3 min", AlbumDetailFormatter.formatDuration("3 min"))
         assertEquals("", AlbumDetailFormatter.formatDuration(""))

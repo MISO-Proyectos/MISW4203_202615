@@ -94,10 +94,13 @@ class AlbumDetailFragment : Fragment() {
         binding.albumPerformers.text = album.performerNames
             .ifBlank { getString(R.string.album_unknown_performer) }
         binding.albumCover.contentDescription = getString(R.string.album_cover_description, album.name)
-        Glide.with(this)
+        // Se ata a la vista (no al fragment) para que la carga se cancele al destruir la vista.
+        // La carátula se decodifica al tamaño con que se dibuja, no al de la imagen original.
+        Glide.with(binding.albumCover)
             .load(album.cover.ifBlank { null })
             .placeholder(R.drawable.ic_album)
             .error(R.drawable.ic_album)
+            .override(resources.getDimensionPixelSize(R.dimen.album_detail_cover_size))
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .centerCrop()
             .into(binding.albumCover)
@@ -135,35 +138,32 @@ class AlbumDetailFragment : Fragment() {
     }
 
     private fun showComments(comments: List<Comment>) {
-        binding.commentsCount.text = comments.size.toString()
+        binding.commentsCount.text = AlbumDetailFormatter.formatCount(comments.size)
         binding.commentsContainer.isVisible = comments.isNotEmpty()
         binding.commentsEmpty.isVisible = comments.isEmpty()
 
         binding.commentsContainer.removeAllViews()
+        // Colores y tamaños de las estrellas: se resuelven una vez para todos los comentarios
+        val starStyle = StarStyle.from(binding.commentsContainer)
         comments.forEachIndexed { index, comment ->
             val row = ItemCommentBinding.inflate(layoutInflater, binding.commentsContainer, true)
             row.commentDivider.isVisible = index > 0
             row.commentText.text = comment.description
-            showStars(row.commentStars, comment.rating)
+            showStars(row.commentStars, comment.rating, starStyle)
         }
     }
 
     /** Dibuja cinco estrellas: las primeras [rating] en naranja y el resto apagadas. */
-    private fun showStars(container: LinearLayout, rating: Int) {
-        val filled = MaterialColors.getColor(container, androidx.appcompat.R.attr.colorPrimary)
-        val empty = MaterialColors.getColor(container, com.google.android.material.R.attr.colorOutlineVariant)
-        val size = resources.getDimensionPixelSize(R.dimen.comment_star_size)
-        val gap = resources.getDimensionPixelSize(R.dimen.comment_star_gap)
-
+    private fun showStars(container: LinearLayout, rating: Int, style: StarStyle) {
         container.removeAllViews()
         container.contentDescription = getString(R.string.comment_rating_description, rating)
         repeat(MAX_RATING) { position ->
             val star = ImageView(container.context).apply {
                 setImageResource(R.drawable.ic_star)
-                setColorFilter(if (position < rating) filled else empty)
+                setColorFilter(if (position < rating) style.filledColor else style.emptyColor)
                 importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
             }
-            val params = LinearLayout.LayoutParams(size, size).apply { marginEnd = gap }
+            val params = LinearLayout.LayoutParams(style.size, style.size).apply { marginEnd = style.gap }
             container.addView(star, params)
         }
     }
@@ -171,6 +171,21 @@ class AlbumDetailFragment : Fragment() {
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
+    }
+
+    /** Colores y medidas de las estrellas, iguales para todos los comentarios. */
+    private class StarStyle(val filledColor: Int, val emptyColor: Int, val size: Int, val gap: Int) {
+        companion object {
+            fun from(view: View): StarStyle {
+                val resources = view.resources
+                return StarStyle(
+                    filledColor = MaterialColors.getColor(view, androidx.appcompat.R.attr.colorPrimary),
+                    emptyColor = MaterialColors.getColor(view, com.google.android.material.R.attr.colorOutlineVariant),
+                    size = resources.getDimensionPixelSize(R.dimen.comment_star_size),
+                    gap = resources.getDimensionPixelSize(R.dimen.comment_star_gap)
+                )
+            }
+        }
     }
 
     private companion object {
