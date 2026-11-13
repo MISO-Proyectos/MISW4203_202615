@@ -5,6 +5,8 @@
     <!-- Alto del botón flotante (56dp) + margen (16dp) + aire (16dp) -->
     <dimen name="fab_list_clearance">88dp</dimen>
     <!-- Estrellas de la calificación de un comentario -->
+    <!-- Carátula de un álbum en la colección de un coleccionista (HU06) -->
+    <dimen name="collector_album_cover_size">56dp</dimen>
     <dimen name="comment_star_size">16dp</dimen>
     <dimen name="comment_star_gap">2dp</dimen>
 </resources>

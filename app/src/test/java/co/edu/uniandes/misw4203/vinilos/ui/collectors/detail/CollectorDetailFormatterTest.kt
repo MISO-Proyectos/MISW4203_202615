@@ -14,6 +14,12 @@ class CollectorDetailFormatterTest {
     }
 
     @Test
+    fun `el contador muestra la cantidad como numero`() {
+        assertEquals("0", CollectorDetailFormatter.formatCount(0))
+        assertEquals("3", CollectorDetailFormatter.formatCount(3))
+    }
+
+    @Test
     fun `Active es activo sin importar mayusculas`() {
         assertTrue(CollectorDetailFormatter.isActive("Active"))
         assertTrue(CollectorDetailFormatter.isActive("active"))
