@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
  */
 class ArtistDetailViewModel(
     savedStateHandle: SavedStateHandle,
-    private val artistRepository: ArtistRepository
+    private val artistRepository: ArtistRepository,
 ) : ViewModel() {
 
     private val artistId: Int = requireNotNull(savedStateHandle.get<Int>(ARG_ARTIST_ID)) {
@@ -34,7 +34,7 @@ class ArtistDetailViewModel(
 
     private val artistType: ArtistType = try {
         ArtistType.valueOf(artistTypeString)
-    } catch (e: Exception) {
+    } catch (_: Exception) {
         ArtistType.MUSICIAN
     }
 
@@ -50,7 +50,7 @@ class ArtistDetailViewModel(
         viewModelScope.launch {
             _uiState.value = artistRepository.getArtistDetail(artistId, artistType).fold(
                 onSuccess = { ArtistDetailUiState.Success(it) },
-                onFailure = { ArtistDetailUiState.Error(it.message.orEmpty()) }
+                onFailure = { ArtistDetailUiState.Error(it.message.orEmpty()) },
             )
         }
     }

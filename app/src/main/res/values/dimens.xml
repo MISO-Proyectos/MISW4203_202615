@@ -7,4 +7,8 @@
     <!-- Estrellas de la calificación de un comentario -->
     <dimen name="comment_star_size">16dp</dimen>
     <dimen name="comment_star_gap">2dp</dimen>
+
+    <!-- Medidas de imágenes de la HU04 -->
+    <dimen name="artist_detail_image_size">160dp</dimen>
+    <dimen name="artist_album_cover_size">56dp</dimen>
 </resources>
