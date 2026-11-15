@@ -1,6 +1,19 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
 }
+
+// URL del backend: se lee de local.properties (git lo ignora) para no editar archivos del
+// repo al usar un celular físico. Si no está, se usa la del emulador.
+val localProperties = Properties().apply {
+    val archivo = rootProject.file("local.properties")
+    if (archivo.exists()) archivo.inputStream().use { load(it) }
+}
+val baseUrl: String = (localProperties.getProperty("vinilos.baseUrl")?.trim()
+    ?.takeIf { it.isNotEmpty() } ?: "http://10.0.2.2:3000/")
+    // Retrofit exige que termine en /
+    .let { if (it.endsWith("/")) it else "$it/" }
 
 android {
     namespace = "co.edu.uniandes.misw4203.vinilos"
@@ -24,11 +37,11 @@ android {
         testInstrumentationRunner =
             "androidx.test.runner.AndroidJUnitRunner"
 
-        // IMPORTANTE: la URL siempre debe terminar en /
+        // IMPORTANTE: la URL siempre debe terminar en / (ya se arregla arriba)
         buildConfigField(
             "String",
             "BASE_URL",
-            "\"http://10.0.2.2:3000/\""
+            "\"$baseUrl\""
         )
     }
 
