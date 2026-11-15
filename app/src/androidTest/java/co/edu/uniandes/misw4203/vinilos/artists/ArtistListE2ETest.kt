@@ -71,9 +71,9 @@ class ArtistListE2ETest {
         laListaMuestra(TIPO_BANDA)
     }
 
-    // CP-HU03-03 (el detalle llega con la HU04: por ahora se muestra un aviso)
+    // CP-HU03-03 (desde la HU04 tocar un artista abre su detalle)
     @Test
-    fun tocar_un_artista_muestra_el_aviso_del_detalle() {
+    fun tocar_un_artista_abre_su_detalle() {
         laListaMuestra(BANDA)
         onView(withId(R.id.artistList)).perform(
             RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
@@ -82,7 +82,7 @@ class ArtistListE2ETest {
             )
         )
         waitFor {
-            onView(withText(R.string.artist_detail_coming_soon)).check(matches(isDisplayed()))
+            onView(withId(R.id.artistName)).check(matches(withText(BANDA)))
         }
     }
 
