@@ -19,6 +19,11 @@ class CollectorRepository(
     @Volatile
     private var cachedCollectors: List<Collector>? = null
 
+    /** Borra la lista de coleccionistas guardada (se usa con poca memoria); la próxima consulta va a la red. */
+    fun clearCache() {
+        cachedCollectors = null
+    }
+
     /**
      * HU05: listado de coleccionistas. Una lista vacía es un resultado válido (estado Empty).
      * Si ya hay un listado en memoria lo devuelve sin ir a la red, salvo que
