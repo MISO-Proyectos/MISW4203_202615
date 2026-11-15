@@ -29,8 +29,8 @@
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/albumCover"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
+            android:layout_width="@dimen/collector_album_cover_size"
+            android:layout_height="@dimen/collector_album_cover_size"
             android:background="?attr/colorSurfaceContainerHighest"
             android:importantForAccessibility="no"
             android:scaleType="centerCrop"

@@ -18,10 +18,12 @@ import retrofit2.Response
  * getAlbum busca por id en la misma lista y responde HTTP 404 si no lo encuentra.
  */
 class FakeBackendApi(
-    private val albums: List<AlbumDto> = emptyList(),
+    /** Se puede cambiar para simular que el backend tiene álbumes nuevos. */
+    var albums: List<AlbumDto> = emptyList(),
     /** Si no es null, todas las llamadas lanzan este error. Se puede cambiar para simular que vuelve la red. */
     var error: Throwable? = null,
-    private val collectors: List<CollectorDto> = emptyList(),
+    /** Se puede cambiar para simular que el backend tiene coleccionistas nuevos. */
+    var collectors: List<CollectorDto> = emptyList(),
     /** Álbumes de la colección que devuelve GET /collectors/{id}/albums (iguales para cualquier coleccionista). */
     private val collectorAlbums: List<CollectorAlbumDto> = emptyList(),
     /** Se puede cambiar para simular que el backend tiene artistas nuevos. */
@@ -31,7 +33,12 @@ class FakeBackendApi(
     var bandsError: Throwable? = null
 ) : BackendApi {
 
+    /** Cuántas veces se pidió un listado (álbumes, coleccionistas o músicos) a la "red". */
+    var listRequests = 0
+        private set
+
     override suspend fun getAlbums(): List<AlbumDto> {
+        listRequests++
         error?.let { throw it }
         return albums
     }
@@ -43,6 +50,7 @@ class FakeBackendApi(
     }
 
     override suspend fun getCollectors(): List<CollectorDto> {
+        listRequests++
         error?.let { throw it }
         return collectors
     }
@@ -62,6 +70,7 @@ class FakeBackendApi(
     }
 
     override suspend fun getMusicians(): List<MusicianDto> {
+        listRequests++
         error?.let { throw it }
         return musicians
     }

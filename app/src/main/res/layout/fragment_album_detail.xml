@@ -9,7 +9,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorSurface"
     tools:context=".ui.albums.detail.AlbumDetailFragment">
 
     <androidx.core.widget.NestedScrollView
@@ -31,8 +30,8 @@
             <!-- Encabezado: carátula, nombre e intérpretes -->
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/albumCover"
-                android:layout_width="232dp"
-                android:layout_height="232dp"
+                android:layout_width="@dimen/album_detail_cover_size"
+                android:layout_height="@dimen/album_detail_cover_size"
                 android:layout_gravity="center_horizontal"
                 android:background="?attr/colorSurfaceContainerHighest"
                 android:scaleType="centerCrop"

@@ -8,16 +8,21 @@ import co.edu.uniandes.misw4203.vinilos.data.dto.MusicianDto
 import co.edu.uniandes.misw4203.vinilos.data.model.Artist
 import co.edu.uniandes.misw4203.vinilos.data.model.ArtistDetail
 import co.edu.uniandes.misw4203.vinilos.data.model.ArtistType
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 
 /**
  * Service Adapter de artistas: llama a la API REST y convierte el JSON (DTO)
  * en los modelos de la app. Los errores de red se propagan;
- * ArtistRepository los traduce.
+ * ArtistRepository los traduce. La conversión DTO → modelo y el ordenamiento corren en
+ * [dispatcher] (por defecto Dispatchers.Default).
  */
 class ArtistServiceAdapter(
-    private val api: BackendApi
+    private val api: BackendApi,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.Default
 ) {
 
     /**
@@ -27,22 +32,36 @@ class ArtistServiceAdapter(
      * Descarta los que lleguen sin id.
      */
     suspend fun getArtists(): List<Artist> = coroutineScope {
-        val musicians = async { api.getMusicians().mapNotNull { it.toModel() } }
-        val bands = async { api.getBands().mapNotNull { it.toModel() } }
-        (musicians.await() + bands.await()).sortedBy { it.id }
+        val musicians = async { api.getMusicians() }
+        val bands = async { api.getBands() }
+        val musicianDtos = musicians.await()
+        val bandDtos = bands.await()
+        withContext(dispatcher) {
+            (musicianDtos.mapNotNull { it.toModel() } + bandDtos.mapNotNull { it.toModel() })
+                .sortedBy { it.id }
+        }
     }
 
     /**
      * HU04: detalle de un artista (músico o banda).
      */
-    suspend fun getArtistDetail(id: Int, type: ArtistType): ArtistDetail {
-        return when (type) {
-            ArtistType.MUSICIAN -> api.getMusician(id).toDetailModel()
-                ?: throw IllegalStateException("El backend devolvió un músico sin id")
-            ArtistType.BAND -> api.getBand(id).toDetailModel()
-                ?: throw IllegalStateException("El backend devolvió una banda sin id")
+    suspend fun getArtistDetail(id: Int, type: ArtistType): ArtistDetail =
+        when (type) {
+            ArtistType.MUSICIAN -> {
+                val dto = api.getMusician(id)
+                withContext(dispatcher) {
+                    dto.toDetailModel()
+                        ?: throw IllegalStateException("El backend devolvió un músico sin id")
+                }
+            }
+            ArtistType.BAND -> {
+                val dto = api.getBand(id)
+                withContext(dispatcher) {
+                    dto.toDetailModel()
+                        ?: throw IllegalStateException("El backend devolvió una banda sin id")
+                }
+            }
         }
-    }
 
     companion object {
 

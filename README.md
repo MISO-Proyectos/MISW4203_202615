@@ -31,9 +31,12 @@ https://github.com/MISO-Proyectos/MISW4203_202615/wiki
 5. Ejecutar en un emulador (botón Run) o por consola: `.\gradlew.bat installDebug`
 
 ### URL del backend
-Está definida en `app/build.gradle.kts` (`BASE_URL`) y debe terminar en `/`.
-- Emulador de Android Studio: `http://10.0.2.2:3000/` (valor por defecto)
-- Dispositivo físico: `http://<IP-de-tu-computador>:3000/` (mismo wifi)
+Se lee de `local.properties` (en la raíz del proyecto). Git lo ignora, así que no hay que tocar archivos del repo.
+- Emulador de Android Studio: no hay que hacer nada, el valor por defecto es `http://10.0.2.2:3000/`.
+- Dispositivo físico (mismo wifi): agrega esta línea a `local.properties` (créalo si no existe y no borres `sdk.dir`):
+  `vinilos.baseUrl=http://<IP-de-tu-computador>:3000/`
+- Si la URL no termina en `/`, el build se lo agrega (Retrofit lo pide).
+- Si cambias `local.properties`, vuelve a compilar (Run o `.\gradlew.bat installDebug`).
 
 En Android 17 (API 37) la app pide al abrir el permiso de red local (aparece como «dispositivos cercanos»). Hay que aceptarlo; si no, el catálogo muestra el error de conexión.
 
@@ -45,13 +48,13 @@ En Android 17 (API 37) la app pide al abrir el permiso de red local (aparece com
 - Estrategia y casos de prueba: ver la wiki.
 
 ## APK
-El APK está en la carpeta `releases/` del repositorio (`releases/vinilos-v1.1.0.apk`) y también en la sección Releases:
+El APK está en la carpeta `releases/` del repositorio (`releases/vinilos-v2.0.0.apk`) y también en la sección Releases:
 https://github.com/MISO-Proyectos/MISW4203_202615/releases
 
 Para instalarlo en un emulador o en un celular con Android 5.0 o superior hay que tener el backend corriendo. Ojo: el APK usa `10.0.2.2`, que solo sirve en el emulador. En un celular físico hay que compilar de nuevo con la IP del computador (ver «URL del backend»).
 
 ## Ramas (GitFlow)
-- `main`: versiones publicadas (release `v1.1.0`).
+- `main`: versiones publicadas (release `v2.0.0`).
 - `develop`: integración.
 - `feature/HUxx-Tn-descripcion`: una rama por tarea; se integra a `develop` con pull request revisado por otra persona.
 - `release/vX.Y.Z`: se crea desde `develop` para preparar una versión (por ejemplo, agregar el APK); luego se integra a `main` y vuelve a `develop`.

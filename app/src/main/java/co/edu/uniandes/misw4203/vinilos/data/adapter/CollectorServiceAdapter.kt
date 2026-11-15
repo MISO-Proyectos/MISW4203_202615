@@ -6,21 +6,28 @@ import co.edu.uniandes.misw4203.vinilos.data.dto.CollectorAlbumDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.CollectorDto
 import co.edu.uniandes.misw4203.vinilos.data.model.Collector
 import co.edu.uniandes.misw4203.vinilos.data.model.CollectorAlbum
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 
 /**
  * Service Adapter de coleccionistas: llama a la API REST y convierte el JSON (DTO)
  * en los modelos de la app. Los errores de red se propagan;
- * CollectorRepository los traduce.
+ * CollectorRepository los traduce. La conversión DTO → modelo corre en [dispatcher]
+ * (por defecto Dispatchers.Default).
  */
 class CollectorServiceAdapter(
-    private val api: BackendApi
+    private val api: BackendApi,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.Default
 ) {
 
     /** HU05: listado de coleccionistas. Descarta los que lleguen sin id. */
-    suspend fun getCollectors(): List<Collector> =
-        api.getCollectors().mapNotNull { it.toModel() }
+    suspend fun getCollectors(): List<Collector> {
+        val dtos = api.getCollectors()
+        return withContext(dispatcher) { dtos.mapNotNull { it.toModel() } }
+    }
 
     /**
      * HU06: detalle de un coleccionista. Pide en paralelo GET /collectors/{id} (datos, favoritos
@@ -30,8 +37,12 @@ class CollectorServiceAdapter(
     suspend fun getCollector(id: Int): Collector = coroutineScope {
         val detail = async { api.getCollector(id) }
         val albums = async { api.getCollectorAlbums(id) }
-        detail.await().toDetailModel(albums.await().mapNotNull { it.toModel() })
-            ?: throw IllegalStateException("El backend devolvió un coleccionista sin id")
+        val detailDto = detail.await()
+        val albumDtos = albums.await()
+        withContext(dispatcher) {
+            detailDto.toDetailModel(albumDtos.mapNotNull { it.toModel() })
+                ?: throw IllegalStateException("El backend devolvió un coleccionista sin id")
+        }
     }
 
     companion object {

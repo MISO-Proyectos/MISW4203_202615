@@ -4,9 +4,11 @@ import co.edu.uniandes.misw4203.vinilos.data.FakeBackendApi.Companion.collectorA
 import co.edu.uniandes.misw4203.vinilos.data.FakeBackendApi.Companion.collectorDto
 import co.edu.uniandes.misw4203.vinilos.data.adapter.CollectorServiceAdapter
 import co.edu.uniandes.misw4203.vinilos.data.repository.CollectorRepository
-import co.edu.uniandes.misw4203.vinilos.data.repository.CollectorRepositoryException
+import co.edu.uniandes.misw4203.vinilos.data.repository.RepositoryException
 import com.google.gson.JsonSyntaxException
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -15,10 +17,14 @@ import retrofit2.HttpException
 import retrofit2.Response
 import java.io.IOException
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class CollectorRepositoryTest {
 
+    // Se ejecuta de inmediato en el hilo de la prueba: sin hilos reales ni esperas
+    private val dispatcher = UnconfinedTestDispatcher()
+
     private fun repositoryWith(api: FakeBackendApi) =
-        CollectorRepository(CollectorServiceAdapter(api))
+        CollectorRepository(CollectorServiceAdapter(api, dispatcher), dispatcher)
 
     @Test
     fun `devuelve los coleccionistas cuando el backend responde`() = runBlocking {
@@ -51,7 +57,7 @@ class CollectorRepositoryTest {
     fun `sin conexion devuelve NoConnection`() = runBlocking {
         val result = repositoryWith(FakeBackendApi(error = IOException("timeout"))).getCollectors()
 
-        assertTrue(result.exceptionOrNull() is CollectorRepositoryException.NoConnection)
+        assertTrue(result.exceptionOrNull() is RepositoryException.NoConnection)
     }
 
     @Test
@@ -60,15 +66,15 @@ class CollectorRepositoryTest {
 
         val error = repositoryWith(FakeBackendApi(error = httpError)).getCollectors().exceptionOrNull()
 
-        assertTrue(error is CollectorRepositoryException.Server)
-        assertEquals(500, (error as CollectorRepositoryException.Server).code)
+        assertTrue(error is RepositoryException.Server)
+        assertEquals(500, (error as RepositoryException.Server).code)
     }
 
     @Test
     fun `un JSON invalido devuelve Unexpected`() = runBlocking {
         val result = repositoryWith(FakeBackendApi(error = JsonSyntaxException("bad json"))).getCollectors()
 
-        assertTrue(result.exceptionOrNull() is CollectorRepositoryException.Unexpected)
+        assertTrue(result.exceptionOrNull() is RepositoryException.Unexpected)
     }
 
     @Test
@@ -98,7 +104,7 @@ class CollectorRepositoryTest {
     fun `getCollector de un coleccionista que no existe devuelve NotFound`() = runBlocking {
         val error = repositoryWith(FakeBackendApi()).getCollector(999).exceptionOrNull()
 
-        assertTrue(error is CollectorRepositoryException.NotFound)
+        assertTrue(error is RepositoryException.NotFound)
         assertTrue(error?.message.orEmpty().contains("No encontramos este coleccionista"))
     }
 
@@ -106,7 +112,7 @@ class CollectorRepositoryTest {
     fun `getCollector sin conexion devuelve NoConnection`() = runBlocking {
         val result = repositoryWith(FakeBackendApi(error = IOException("timeout"))).getCollector(100)
 
-        assertTrue(result.exceptionOrNull() is CollectorRepositoryException.NoConnection)
+        assertTrue(result.exceptionOrNull() is RepositoryException.NoConnection)
     }
 
     @Test
@@ -114,14 +120,14 @@ class CollectorRepositoryTest {
         val httpError = HttpException(Response.error<Any>(500, "".toResponseBody(null)))
         val error = repositoryWith(FakeBackendApi(error = httpError)).getCollector(100).exceptionOrNull()
 
-        assertTrue(error is CollectorRepositoryException.Server)
-        assertEquals(500, (error as CollectorRepositoryException.Server).code)
+        assertTrue(error is RepositoryException.Server)
+        assertEquals(500, (error as RepositoryException.Server).code)
     }
 
     @Test
     fun `getCollector con JSON invalido devuelve Unexpected`() = runBlocking {
         val result = repositoryWith(FakeBackendApi(error = JsonSyntaxException("bad json"))).getCollector(100)
 
-        assertTrue(result.exceptionOrNull() is CollectorRepositoryException.Unexpected)
+        assertTrue(result.exceptionOrNull() is RepositoryException.Unexpected)
     }
 }

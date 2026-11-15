@@ -47,8 +47,10 @@ class ArtistListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // El RecyclerView ocupa toda la pantalla: su tamaño no cambia al llegar los datos
+        binding.artistList.setHasFixedSize(true)
         binding.artistList.adapter = ConcatAdapter(countAdapter, artistAdapter)
-        binding.retryButton.setOnClickListener { viewModel.loadArtists() }
+        binding.retryButton.setOnClickListener { viewModel.loadArtists(forceRefresh = true) }
         setUpSwipeRefresh()
 
         viewLifecycleOwner.lifecycleScope.launch {

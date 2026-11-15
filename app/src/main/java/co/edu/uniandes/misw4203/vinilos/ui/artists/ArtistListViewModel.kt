@@ -30,11 +30,14 @@ class ArtistListViewModel(
         loadArtists()
     }
 
-    /** Pide los artistas. Se llama al abrir la pantalla y desde el botón "Reintentar". */
-    fun loadArtists() {
+    /**
+     * Pide los artistas. Se llama al abrir la pantalla (usa la caché) y desde el botón
+     * "Reintentar" (con [forceRefresh] en true para volver a ir a la red).
+     */
+    fun loadArtists(forceRefresh: Boolean = false) {
         _uiState.value = ArtistListUiState.Loading
         viewModelScope.launch {
-            _uiState.value = artistRepository.getArtists().fold(
+            _uiState.value = artistRepository.getArtists(forceRefresh).fold(
                 onSuccess = ::listState,
                 onFailure = { error ->
                     ArtistListUiState.Error(error.message.orEmpty())
@@ -46,19 +49,19 @@ class ArtistListViewModel(
     /**
      * Recarga al deslizar hacia abajo. Si ya hay una lista, se queda en pantalla mientras
      * llegan los datos nuevos y, si la recarga falla, se conserva con un aviso del error.
-     * Desde Vacío o Error se comporta como [loadArtists].
+     * Desde Vacío o Error se comporta como [loadArtists] con forceRefresh.
      */
     fun refresh() {
         val current = _uiState.value
         if (current !is ArtistListUiState.Success) {
-            loadArtists()
+            loadArtists(forceRefresh = true)
             return
         }
         if (current.isRefreshing) return
 
         _uiState.value = current.copy(isRefreshing = true, refreshError = null)
         viewModelScope.launch {
-            _uiState.value = artistRepository.getArtists().fold(
+            _uiState.value = artistRepository.getArtists(forceRefresh = true).fold(
                 onSuccess = ::listState,
                 onFailure = { error ->
                     current.copy(isRefreshing = false, refreshError = error.message.orEmpty())

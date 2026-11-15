@@ -1,6 +1,19 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
 }
+
+// URL del backend: se lee de local.properties (git lo ignora) para no editar archivos del
+// repo al usar un celular físico. Si no está, se usa la del emulador.
+val localProperties = Properties().apply {
+    val archivo = rootProject.file("local.properties")
+    if (archivo.exists()) archivo.inputStream().use { load(it) }
+}
+val baseUrl: String = (localProperties.getProperty("vinilos.baseUrl")?.trim()
+    ?.takeIf { it.isNotEmpty() } ?: "http://10.0.2.2:3000/")
+    // Retrofit exige que termine en /
+    .let { if (it.endsWith("/")) it else "$it/" }
 
 android {
     namespace = "co.edu.uniandes.misw4203.vinilos"
@@ -18,17 +31,17 @@ android {
         // Versión de Android contra la cual se prueba la aplicación
         targetSdk = 37
 
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "2.0.0"
 
         testInstrumentationRunner =
             "androidx.test.runner.AndroidJUnitRunner"
 
-        // IMPORTANTE: la URL siempre debe terminar en /
+        // IMPORTANTE: la URL siempre debe terminar en / (ya se arregla arriba)
         buildConfigField(
             "String",
             "BASE_URL",
-            "\"http://10.0.2.2:3000/\""
+            "\"$baseUrl\""
         )
     }
 
@@ -74,6 +87,8 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.16.0")
     // HU03: deslizar hacia abajo para recargar la lista
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+    // Solo en debug: detecta fugas de memoria. No va en release (gasta CPU y memoria al perfilar)
+    debugImplementation("com.squareup.leakcanary:leakcanary-android:2.14")
     testImplementation(libs.junit)
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
     androidTestImplementation(libs.androidx.espresso.core)

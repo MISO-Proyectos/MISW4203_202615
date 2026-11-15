@@ -29,11 +29,14 @@ class CollectorListViewModel(
         loadCollectors()
     }
 
-    /** Pide los coleccionistas. Se llama al abrir la pantalla y desde el botón "Reintentar". */
-    fun loadCollectors() {
+    /**
+     * Pide los coleccionistas. Se llama al abrir la pantalla (usa la caché) y desde el botón
+     * "Reintentar" (con [forceRefresh] en true para volver a ir a la red).
+     */
+    fun loadCollectors(forceRefresh: Boolean = false) {
         _uiState.value = CollectorListUiState.Loading
         viewModelScope.launch {
-            _uiState.value = collectorRepository.getCollectors().fold(
+            _uiState.value = collectorRepository.getCollectors(forceRefresh).fold(
                 onSuccess = { collectors ->
                     if (collectors.isEmpty()) CollectorListUiState.Empty
                     else CollectorListUiState.Success(collectors)

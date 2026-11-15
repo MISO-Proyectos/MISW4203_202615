@@ -1,6 +1,7 @@
 package co.edu.uniandes.misw4203.vinilos.ui.albums.detail
 
 import co.edu.uniandes.misw4203.vinilos.data.model.ReleaseDate
+import java.text.NumberFormat
 
 /**
  * Convierte los datos del álbum en el texto que muestra el detalle (HU02).
@@ -20,6 +21,9 @@ object AlbumDetailFormatter {
     /** Número de la canción con dos cifras: 1 → "01". */
     fun formatTrackNumber(position: Int): String =
         position.toString().padStart(2, '0')
+
+    /** Cantidad para el contador de comentarios, con los dígitos del idioma del dispositivo. */
+    fun formatCount(count: Int): String = NumberFormat.getIntegerInstance().format(count)
 
     /**
      * Duración con minutos de dos cifras: "5:05" → "05:05". Si el texto no tiene

@@ -38,7 +38,7 @@ class AlbumDetailViewModelTest {
     private fun viewModelWith(api: FakeBackendApi, albumId: Int = 100) =
         AlbumDetailViewModel(
             SavedStateHandle(mapOf(AlbumDetailViewModel.ARG_ALBUM_ID to albumId)),
-            AlbumRepository(AlbumServiceAdapter(api))
+            AlbumRepository(AlbumServiceAdapter(api, dispatcher), dispatcher)
         )
 
     @Test
@@ -82,6 +82,6 @@ class AlbumDetailViewModelTest {
 
     @Test(expected = IllegalArgumentException::class)
     fun `sin el argumento albumId no se puede crear`() {
-        AlbumDetailViewModel(SavedStateHandle(), AlbumRepository(AlbumServiceAdapter(FakeBackendApi())))
+        AlbumDetailViewModel(SavedStateHandle(), AlbumRepository(AlbumServiceAdapter(FakeBackendApi(), dispatcher), dispatcher))
     }
 }

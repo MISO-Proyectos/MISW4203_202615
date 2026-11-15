@@ -21,6 +21,7 @@ import co.edu.uniandes.misw4203.vinilos.databinding.ItemArtistAlbumBinding
 import co.edu.uniandes.misw4203.vinilos.ui.albums.detail.AlbumDetailViewModel
 import co.edu.uniandes.misw4203.vinilos.ui.artists.labelRes
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import kotlinx.coroutines.launch
 
@@ -37,7 +38,7 @@ class ArtistDetailFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentArtistDetailBinding.inflate(inflater, container, false)
         return binding.root
@@ -75,10 +76,12 @@ class ArtistDetailFragment : Fragment() {
         binding.artistType.text = getString(artist.type.labelRes)
         binding.artistImage.contentDescription = getString(R.string.artist_image_description, artist.name)
 
-        Glide.with(this)
+        val imageSize = resources.getDimensionPixelSize(R.dimen.artist_detail_image_size)
+        Glide.with(binding.artistImage)
             .load(artist.image.ifBlank { null })
             .placeholder(R.drawable.ic_artist)
             .error(R.drawable.ic_artist)
+            .override(imageSize)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .centerCrop()
             .into(binding.artistImage)
@@ -102,12 +105,13 @@ class ArtistDetailFragment : Fragment() {
         binding.albumsContainer.isVisible = albums.isNotEmpty()
         binding.albumsEmpty.isVisible = albums.isEmpty()
 
+        val coverSize = resources.getDimensionPixelSize(R.dimen.artist_album_cover_size)
         binding.albumsContainer.removeAllViews()
         albums.forEach { album ->
             val row = ItemArtistAlbumBinding.inflate(layoutInflater, binding.albumsContainer, true)
             row.albumName.text = album.name
             val genreAndYear = listOf(album.genre, album.releaseDate?.year?.toString())
-                .filter { !it.isNullOrBlank() }
+                .filterNot { it.isNullOrBlank() }
                 .joinToString(" • ")
             row.albumGenreAndYear.text = genreAndYear.ifBlank { getString(R.string.album_value_unknown) }
 
@@ -115,6 +119,8 @@ class ArtistDetailFragment : Fragment() {
                 .load(album.cover.ifBlank { null })
                 .placeholder(R.drawable.ic_album)
                 .error(R.drawable.ic_album)
+                .override(coverSize)
+                .format(DecodeFormat.PREFER_RGB_565)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .centerCrop()
                 .into(row.albumCover)

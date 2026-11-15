@@ -47,7 +47,7 @@ class ArtistDetailViewModelTest {
                 ArtistDetailViewModel.ARG_ARTIST_TYPE to type.name
             )
         ),
-        ArtistRepository(ArtistServiceAdapter(api))
+        ArtistRepository(ArtistServiceAdapter(api, dispatcher), dispatcher)
     )
 
     @Test
@@ -103,6 +103,6 @@ class ArtistDetailViewModelTest {
 
     @Test(expected = IllegalArgumentException::class)
     fun `sin los argumentos obligatorios no se puede crear`() {
-        ArtistDetailViewModel(SavedStateHandle(), ArtistRepository(ArtistServiceAdapter(FakeBackendApi())))
+        ArtistDetailViewModel(SavedStateHandle(), ArtistRepository(ArtistServiceAdapter(FakeBackendApi(), dispatcher), dispatcher))
     }
 }

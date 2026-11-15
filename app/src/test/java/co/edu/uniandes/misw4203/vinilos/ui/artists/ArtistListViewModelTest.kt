@@ -39,7 +39,7 @@ class ArtistListViewModelTest {
     }
 
     private fun viewModelWith(api: FakeBackendApi) =
-        ArtistListViewModel(ArtistRepository(ArtistServiceAdapter(api)))
+        ArtistListViewModel(ArtistRepository(ArtistServiceAdapter(api, dispatcher), dispatcher))
 
     @Test
     fun `empieza en Loading mientras llegan los artistas`() = runTest(dispatcher) {

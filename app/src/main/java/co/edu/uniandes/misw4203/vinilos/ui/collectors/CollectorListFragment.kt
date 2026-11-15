@@ -45,8 +45,10 @@ class CollectorListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // El RecyclerView ocupa toda la pantalla: su tamaño no cambia al llegar los datos
+        binding.collectorList.setHasFixedSize(true)
         binding.collectorList.adapter = ConcatAdapter(countAdapter, collectorAdapter)
-        binding.retryButton.setOnClickListener { viewModel.loadCollectors() }
+        binding.retryButton.setOnClickListener { viewModel.loadCollectors(forceRefresh = true) }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
