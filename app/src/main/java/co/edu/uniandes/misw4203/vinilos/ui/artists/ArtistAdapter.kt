@@ -11,6 +11,7 @@ import co.edu.uniandes.misw4203.vinilos.data.model.Artist
 import co.edu.uniandes.misw4203.vinilos.data.model.ArtistType
 import co.edu.uniandes.misw4203.vinilos.databinding.ItemArtistBinding
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 
 /** Adapter de la lista de artistas: dibuja una tarjeta por artista y avisa cuando se toca una. */
@@ -42,6 +43,10 @@ class ArtistAdapter(
 
         private var artist: Artist? = null
 
+        /** Tamaño de la foto: se lee una sola vez por tarjeta, no en cada bind. */
+        private val imageSize =
+            binding.root.resources.getDimensionPixelSize(R.dimen.artist_list_image_size)
+
         init {
             binding.artistCard.setOnClickListener { artist?.let(onArtistClick) }
         }
@@ -61,6 +66,8 @@ class ArtistAdapter(
                 .load(artist.image.ifBlank { null })
                 .placeholder(R.drawable.ic_artist)
                 .error(R.drawable.ic_artist)
+                .override(imageSize)
+                .format(DecodeFormat.PREFER_RGB_565)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .centerCrop()
                 .into(binding.artistImage)
