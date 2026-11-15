@@ -6,6 +6,8 @@
     <dimen name="fab_list_clearance">88dp</dimen>
     <!-- Carátula de un álbum en el catálogo (HU01): la usan el layout y Glide -->
     <dimen name="album_cover_size">76dp</dimen>
+    <!-- Foto del artista en el listado (HU03). La usan el layout y Glide -->
+    <dimen name="artist_list_image_size">56dp</dimen>
     <!-- Carátula grande del detalle de un álbum (HU02): la usan el layout y Glide -->
     <dimen name="album_detail_cover_size">232dp</dimen>
     <!-- Estrellas de la calificación de un comentario -->
