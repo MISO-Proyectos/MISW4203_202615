@@ -154,4 +154,43 @@ class RepositoryCacheTest {
         assertTrue(repository.getCollectors().isSuccess)
         assertEquals(2, api.listRequests)
     }
+
+    // clearCache: después de limpiar, la siguiente llamada va a la red
+
+    @Test
+    fun `albumes - clearCache hace que la siguiente llamada vuelva a la red`() = runBlocking {
+        val api = FakeBackendApi(albums = listOf(albumDto(id = 1)))
+        val repository = albums(api)
+        repository.getAlbums()
+
+        repository.clearCache()
+        val result = repository.getAlbums().getOrThrow()
+
+        assertEquals(2, api.listRequests)
+        assertEquals(listOf(1), result.map { it.id })
+    }
+
+    @Test
+    fun `artistas - clearCache hace que la siguiente llamada vuelva a la red`() = runBlocking {
+        val api = FakeBackendApi(musicians = listOf(musicianDto(id = 100)))
+        val repository = artists(api)
+        repository.getArtists()
+
+        repository.clearCache()
+        repository.getArtists().getOrThrow()
+
+        assertEquals(2, api.listRequests)
+    }
+
+    @Test
+    fun `coleccionistas - clearCache hace que la siguiente llamada vuelva a la red`() = runBlocking {
+        val api = FakeBackendApi(collectors = listOf(collectorDto(id = 100)))
+        val repository = collectors(api)
+        repository.getCollectors()
+
+        repository.clearCache()
+        repository.getCollectors().getOrThrow()
+
+        assertEquals(2, api.listRequests)
+    }
 }

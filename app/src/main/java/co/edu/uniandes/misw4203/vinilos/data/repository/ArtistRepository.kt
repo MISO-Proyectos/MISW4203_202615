@@ -21,6 +21,11 @@ class ArtistRepository(
     @Volatile
     private var cachedArtists: List<Artist>? = null
 
+    /** Borra la lista de artistas guardada (se usa con poca memoria); la próxima consulta va a la red. */
+    fun clearCache() {
+        cachedArtists = null
+    }
+
     /**
      * HU03: listado de artistas (músicos y bandas). Una lista vacía es un resultado válido
      * (estado Empty). Si ya hay un listado en memoria lo devuelve sin ir a la red, salvo que

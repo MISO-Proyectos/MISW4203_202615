@@ -19,6 +19,11 @@ class AlbumRepository(
     @Volatile
     private var cachedAlbums: List<Album>? = null
 
+    /** Borra la lista de álbumes guardada (se usa con poca memoria); la próxima consulta va a la red. */
+    fun clearCache() {
+        cachedAlbums = null
+    }
+
     /**
      * HU01: catálogo de álbumes. Una lista vacía es un resultado válido (estado Empty).
      * Si ya hay un catálogo en memoria lo devuelve sin ir a la red, salvo que

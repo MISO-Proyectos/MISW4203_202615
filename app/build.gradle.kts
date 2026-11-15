@@ -74,6 +74,8 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.16.0")
     // HU03: deslizar hacia abajo para recargar la lista
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+    // Solo en debug: detecta fugas de memoria. No va en release (gasta CPU y memoria al perfilar)
+    debugImplementation("com.squareup.leakcanary:leakcanary-android:2.14")
     testImplementation(libs.junit)
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
     androidTestImplementation(libs.androidx.espresso.core)
