@@ -2,6 +2,7 @@ package co.edu.uniandes.misw4203.vinilos.data.repository
 
 import co.edu.uniandes.misw4203.vinilos.data.adapter.AlbumServiceAdapter
 import co.edu.uniandes.misw4203.vinilos.data.model.Album
+import co.edu.uniandes.misw4203.vinilos.data.model.NewAlbum
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
@@ -37,6 +38,13 @@ class AlbumRepository(
     /** HU02: detalle de un álbum (no se cachea). Si no existe devuelve NotFound. */
     suspend fun getAlbum(albumId: Int): Result<Album> =
         call { serviceAdapter.getAlbum(albumId) }
+
+    /**
+     * HU07: crea un álbum. Si sale bien se borra el catálogo en memoria para que la
+     * próxima consulta traiga de la red la lista con el álbum nuevo.
+     */
+    suspend fun createAlbum(album: NewAlbum): Result<Album> =
+        call { serviceAdapter.createAlbum(album) }.onSuccess { clearCache() }
 
     private suspend fun <T> call(block: suspend () -> T): Result<T> =
         safeCall(

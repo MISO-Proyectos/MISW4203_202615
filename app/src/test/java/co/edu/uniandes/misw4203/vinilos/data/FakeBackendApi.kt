@@ -1,6 +1,7 @@
 package co.edu.uniandes.misw4203.vinilos.data
 
 import co.edu.uniandes.misw4203.vinilos.core.network.BackendApi
+import co.edu.uniandes.misw4203.vinilos.data.dto.AlbumCreateDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.AlbumDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.BandDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.CollectorAlbumDto
@@ -47,6 +48,28 @@ class FakeBackendApi(
         error?.let { throw it }
         return albums.firstOrNull { it.id == albumId }
             ?: throw HttpException(Response.error<Any>(404, "".toResponseBody(null)))
+    }
+
+    /** Cuerpos recibidos en POST /albums, en orden. */
+    val createdAlbums = mutableListOf<AlbumCreateDto>()
+
+    /** Crea el álbum con el siguiente id libre y lo agrega a [albums]. */
+    override suspend fun createAlbum(album: AlbumCreateDto): AlbumDto {
+        error?.let { throw it }
+        createdAlbums += album
+        val created = AlbumDto(
+            id = (albums.mapNotNull { it.id }.maxOrNull() ?: 0) + 1,
+            name = album.name,
+            cover = album.cover,
+            releaseDate = album.releaseDate,
+            description = album.description,
+            genre = album.genre,
+            recordLabel = album.recordLabel,
+            tracks = emptyList(),
+            performers = emptyList()
+        )
+        albums = albums + created
+        return created
     }
 
     override suspend fun getCollectors(): List<CollectorDto> {
