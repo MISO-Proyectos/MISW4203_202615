@@ -7,6 +7,7 @@
     - Álbumes usa AlbumListFragment (HU01) y abre AlbumDetailFragment (HU02).
       Artistas usa ArtistListFragment (HU03) y abre ArtistDetailFragment (HU04).
       Coleccionistas usa CollectorListFragment (HU05).
+    - Desde el detalle de un álbum, el coleccionista abre AddTrackFragment (HU08).
 -->
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -47,6 +48,19 @@
         android:id="@+id/albumDetailFragment"
         android:name="co.edu.uniandes.misw4203.vinilos.ui.albums.detail.AlbumDetailFragment"
         android:label="@string/album_detail_title">
+        <argument
+            android:name="albumId"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_albumDetail_to_addTrack"
+            app:destination="@id/addTrackFragment" />
+    </fragment>
+
+    <!-- HU08: formulario para agregar una canción a un álbum. "albumId" lo lee AddTrackViewModel -->
+    <fragment
+        android:id="@+id/addTrackFragment"
+        android:name="co.edu.uniandes.misw4203.vinilos.ui.albums.tracks.AddTrackFragment"
+        android:label="@string/add_track_title">
         <argument
             android:name="albumId"
             app:argType="integer" />

@@ -52,7 +52,6 @@
     <string name="track_description">Canción %1$d: %2$s, duración %3$s</string>
     <string name="comment_rating_description">%1$d de 5 estrellas</string>
     <string name="add_track">Agregar track</string>
-    <string name="add_track_coming_soon">Agregar tracks estará disponible muy pronto.</string>
     <string-array name="months_short">
         <item>ene</item>
         <item>feb</item>
@@ -119,4 +118,28 @@
     <string name="collector_album_status_active">Activo</string>
     <string name="collector_album_status_inactive">Inactivo</string>
     <string name="collector_album_price">Precio: %1$s</string>
+
+    <!-- HU08: asociar tracks a un álbum -->
+    <string name="add_track_title">Agregar track</string>
+    <string name="close">Cerrar</string>
+    <string name="add_track_error_banner">Completa los campos obligatorios para guardar.</string>
+    <string name="add_track_album_label">Álbum</string>
+    <plurals name="add_track_album_tracks">
+        <item quantity="one">%d track</item>
+        <item quantity="other">%d tracks</item>
+    </plurals>
+    <string name="add_track_album_info">%1$s · %2$s</string>
+    <string name="add_track_required_hint">Los campos marcados con * son obligatorios.</string>
+    <string name="add_track_name_label">Nombre del track *</string>
+    <string name="add_track_name_placeholder">Nombre de la canción</string>
+    <string name="add_track_duration_label">Duración *</string>
+    <string name="add_track_duration_placeholder">MM:SS</string>
+    <string name="add_track_duration_helper">Minutos y segundos, por ejemplo 05:03.</string>
+    <string name="add_track_save">Guardar track</string>
+    <string name="add_track_saving">Guardando track</string>
+    <string name="add_track_cancel">Cancelar</string>
+    <string name="add_track_error_required">Este campo es obligatorio</string>
+    <string name="add_track_error_duration">Usa el formato MM:SS</string>
+    <string name="add_track_error_default">No se pudo guardar el track. Inténtalo de nuevo.</string>
+    <string name="add_track_success">Track «%1$s» agregado</string>
 </resources>

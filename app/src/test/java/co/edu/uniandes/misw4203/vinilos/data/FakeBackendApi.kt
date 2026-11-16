@@ -8,6 +8,7 @@ import co.edu.uniandes.misw4203.vinilos.data.dto.CollectorDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.CommentDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.MusicianDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.PerformerDto
+import co.edu.uniandes.misw4203.vinilos.data.dto.TrackCreateDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.TrackDto
 import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.HttpException
@@ -47,6 +48,24 @@ class FakeBackendApi(
         error?.let { throw it }
         return albums.firstOrNull { it.id == albumId }
             ?: throw HttpException(Response.error<Any>(404, "".toResponseBody(null)))
+    }
+
+    /**
+     * Agrega la canción al álbum (con el siguiente id libre) para que getAlbum ya la
+     * devuelva. Responde HTTP 404 si el álbum no existe.
+     */
+    /** Canciones recibidas en POST /albums/{id}/tracks, con el id del álbum, en orden. */
+    val addedTracks = mutableListOf<Pair<Int, TrackCreateDto>>()
+
+    override suspend fun addTrack(albumId: Int, track: TrackCreateDto): TrackDto {
+        error?.let { throw it }
+        addedTracks += albumId to track
+        val album = albums.firstOrNull { it.id == albumId }
+            ?: throw HttpException(Response.error<Any>(404, "".toResponseBody(null)))
+        val nextId = (albums.flatMap { it.tracks.orEmpty() }.mapNotNull { it.id }.maxOrNull() ?: 0) + 1
+        val created = TrackDto(nextId, track.name, track.duration)
+        albums = albums.map { if (it.id == albumId) it.copy(tracks = album.tracks.orEmpty() + created) else it }
+        return created
     }
 
     override suspend fun getCollectors(): List<CollectorDto> {

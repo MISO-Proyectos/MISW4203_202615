@@ -5,7 +5,11 @@ import co.edu.uniandes.misw4203.vinilos.data.dto.BandDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.CollectorAlbumDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.CollectorDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.MusicianDto
+import co.edu.uniandes.misw4203.vinilos.data.dto.TrackCreateDto
+import co.edu.uniandes.misw4203.vinilos.data.dto.TrackDto
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 
 /** Rutas de la API REST de Vinilos (Retrofit). */
@@ -18,6 +22,10 @@ interface BackendApi {
     /** HU02: detalle de un álbum, con sus tracks, intérpretes y comentarios. */
     @GET("albums/{id}")
     suspend fun getAlbum(@Path("id") albumId: Int): AlbumDto
+
+    /** HU08: asocia una canción nueva a un álbum. El backend responde con la canción creada. */
+    @POST("albums/{id}/tracks")
+    suspend fun addTrack(@Path("id") albumId: Int, @Body track: TrackCreateDto): TrackDto
 
     /** HU05: listado de coleccionistas. */
     @GET("collectors")

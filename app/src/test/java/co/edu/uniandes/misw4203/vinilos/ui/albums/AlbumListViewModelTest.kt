@@ -1,6 +1,7 @@
 package co.edu.uniandes.misw4203.vinilos.ui.albums
 
 import co.edu.uniandes.misw4203.vinilos.core.network.BackendApi
+import co.edu.uniandes.misw4203.vinilos.data.dto.TrackCreateDto
 import co.edu.uniandes.misw4203.vinilos.data.FakeBackendApi
 import co.edu.uniandes.misw4203.vinilos.data.FakeBackendApi.Companion.albumDto
 import co.edu.uniandes.misw4203.vinilos.data.adapter.AlbumServiceAdapter
@@ -100,6 +101,8 @@ class AlbumListViewModelTest {
             if (online) delegate.getAlbums() else throw IOException("sin red")
 
         override suspend fun getAlbum(albumId: Int) = delegate.getAlbum(albumId)
+
+        override suspend fun addTrack(albumId: Int, track: TrackCreateDto) = delegate.addTrack(albumId, track)
 
         override suspend fun getCollectors() = delegate.getCollectors()
 
