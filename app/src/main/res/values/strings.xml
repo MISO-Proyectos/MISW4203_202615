@@ -27,7 +27,6 @@
     <string name="albums_error_default">No se pudieron cargar los álbumes.</string>
     <string name="retry">Reintentar</string>
     <string name="add_album">Agregar álbum</string>
-    <string name="add_album_coming_soon">Agregar álbumes estará disponible muy pronto.</string>
     <string name="album_unknown_performer">Artista no disponible</string>
 
     <!-- HU02: detalle de un álbum -->
@@ -119,4 +118,37 @@
     <string name="collector_album_status_active">Activo</string>
     <string name="collector_album_status_inactive">Inactivo</string>
     <string name="collector_album_price">Precio: %1$s</string>
+
+    <!-- HU07: crear un álbum -->
+    <string name="create_album_title">Agregar álbum</string>
+    <string name="close">Cerrar</string>
+    <string name="create_album_required_hint">Los campos marcados con * son obligatorios.</string>
+    <string name="create_album_name_label">Nombre *</string>
+    <string name="create_album_name_placeholder">Nombre del álbum</string>
+    <string name="create_album_cover_label">URL de la portada *</string>
+    <string name="create_album_cover_placeholder">https://…</string>
+    <string name="create_album_cover_helper">Enlace a la imagen de la portada.</string>
+    <string name="create_album_release_date_label">Fecha de lanzamiento *</string>
+    <string name="create_album_release_date_placeholder">DD/MM/AAAA</string>
+    <string name="create_album_pick_date">Elegir fecha de lanzamiento</string>
+    <string name="create_album_genre_label">Género *</string>
+    <string name="create_album_genre_placeholder">Selecciona un género</string>
+    <string name="create_album_genre_helper">Opciones: Clásica, Salsa, Rock, Folk.</string>
+    <string name="create_album_record_label_label">Sello discográfico *</string>
+    <string name="create_album_record_label_placeholder">Selecciona un sello</string>
+    <string name="create_album_record_label_helper">Opciones: Sony Music, EMI, Discos Fuentes, Elektra, Fania Records.</string>
+    <string name="create_album_description_label">Descripción *</string>
+    <string name="create_album_description_placeholder">Describe el álbum</string>
+    <string name="create_album_save">Guardar álbum</string>
+    <string name="create_album_saving">Guardando álbum</string>
+    <string name="create_album_cancel">Cancelar</string>
+    <string name="create_album_error_required">Este campo es obligatorio.</string>
+    <string name="create_album_error_url">Ingresa un enlace válido que empiece por http:// o https://.</string>
+    <string name="create_album_error_future_date">La fecha no puede ser posterior a hoy.</string>
+    <string name="create_album_error_default">No se pudo guardar el álbum. Inténtalo de nuevo.</string>
+    <string name="create_album_success">Álbum «%1$s» creado</string>
+    <string name="genre_classical">Clásica</string>
+    <string name="genre_salsa">Salsa</string>
+    <string name="genre_rock">Rock</string>
+    <string name="genre_folk">Folk</string>
 </resources>

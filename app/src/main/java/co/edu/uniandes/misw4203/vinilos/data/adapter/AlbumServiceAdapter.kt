@@ -1,18 +1,21 @@
 package co.edu.uniandes.misw4203.vinilos.data.adapter
 
 import co.edu.uniandes.misw4203.vinilos.core.network.BackendApi
+import co.edu.uniandes.misw4203.vinilos.data.dto.AlbumCreateDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.AlbumDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.CommentDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.PerformerDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.TrackDto
 import co.edu.uniandes.misw4203.vinilos.data.model.Album
 import co.edu.uniandes.misw4203.vinilos.data.model.Comment
+import co.edu.uniandes.misw4203.vinilos.data.model.NewAlbum
 import co.edu.uniandes.misw4203.vinilos.data.model.Performer
 import co.edu.uniandes.misw4203.vinilos.data.model.ReleaseDate
 import co.edu.uniandes.misw4203.vinilos.data.model.Track
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.Locale
 
 /**
  * Service Adapter de álbumes: llama a la API REST y convierte el JSON (DTO)
@@ -38,7 +41,38 @@ class AlbumServiceAdapter(
         }
     }
 
+    /** HU07: crea un álbum y devuelve el álbum guardado por el backend (con su id). */
+    suspend fun createAlbum(album: NewAlbum): Album {
+        val dto = api.createAlbum(album.toDto())
+        return withContext(dispatcher) {
+            dto.toModel() ?: throw IllegalStateException("El backend devolvió un álbum sin id")
+        }
+    }
+
     companion object {
+
+        /** Convierte el álbum nuevo en el JSON que espera POST /albums. */
+        fun NewAlbum.toDto(): AlbumCreateDto = AlbumCreateDto(
+            name = name.trim(),
+            cover = cover.trim(),
+            releaseDate = formatReleaseDate(releaseDate),
+            description = description.trim(),
+            genre = genre.apiValue,
+            recordLabel = recordLabel.apiValue
+        )
+
+        /**
+         * Escribe la fecha en ISO 8601 a medianoche UTC ("1984-08-01T00:00:00.000Z"),
+         * igual a como el backend la guarda y la devuelve. Si falta el mes o el día se usa 1.
+         */
+        fun formatReleaseDate(date: ReleaseDate): String =
+            String.format(
+                Locale.US,
+                "%04d-%02d-%02dT00:00:00.000Z",
+                date.year,
+                date.month ?: 1,
+                date.day ?: 1
+            )
 
         /** Convierte un álbum del JSON en modelo. Descarta los álbumes sin id. */
         fun AlbumDto.toModel(): Album? {
