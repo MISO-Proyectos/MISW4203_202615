@@ -3,6 +3,8 @@ package co.edu.uniandes.misw4203.vinilos.data.adapter
 import co.edu.uniandes.misw4203.vinilos.core.network.BackendApi
 import co.edu.uniandes.misw4203.vinilos.data.dto.AlbumCreateDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.AlbumDto
+import co.edu.uniandes.misw4203.vinilos.data.dto.CollectorRefDto
+import co.edu.uniandes.misw4203.vinilos.data.dto.CommentCreateDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.CommentDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.PerformerDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.TrackDto
@@ -46,6 +48,24 @@ class AlbumServiceAdapter(
         val dto = api.createAlbum(album.toDto())
         return withContext(dispatcher) {
             dto.toModel() ?: throw IllegalStateException("El backend devolvió un álbum sin id")
+        }
+    }
+
+    /** HU09: agrega un comentario a un álbum y devuelve el comentario creado. */
+    suspend fun addComment(
+        albumId: Int,
+        collectorId: Int,
+        rating: Int,
+        description: String
+    ): Comment {
+        val dto = CommentCreateDto(
+            description = description.trim(),
+            rating = rating,
+            collector = CollectorRefDto(collectorId)
+        )
+        val resultDto = api.addComment(albumId, dto)
+        return withContext(dispatcher) {
+            resultDto.toModel() ?: throw IllegalStateException("El backend devolvió un comentario sin id")
         }
     }
 

@@ -52,6 +52,19 @@
     <string name="comment_rating_description">%1$d de 5 estrellas</string>
     <string name="add_track">Agregar track</string>
     <string name="add_track_coming_soon">Agregar tracks estará disponible muy pronto.</string>
+
+    <!-- HU09: comentar un álbum -->
+    <string name="add_comment">Comentar</string>
+    <string name="add_comment_title">Agregar comentario</string>
+    <string name="add_comment_rating_label">Calificación *</string>
+    <string name="add_comment_description_label">Comentario *</string>
+    <string name="add_comment_description_hint">Escribe tu opinión sobre este álbum…</string>
+    <string name="add_comment_description_error">Ingresa un comentario.</string>
+    <string name="add_comment_submit">Publicar</string>
+    <string name="add_comment_submitting">Publicando comentario…</string>
+    <string name="add_comment_success">Comentario publicado con éxito</string>
+    <string name="add_comment_error_default">No se pudo publicar el comentario. Inténtalo de nuevo.</string>
+    <string name="cancel">Cancelar</string>
     <string-array name="months_short">
         <item>ene</item>
         <item>feb</item>

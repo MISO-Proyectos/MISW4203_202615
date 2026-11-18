@@ -5,6 +5,8 @@ import co.edu.uniandes.misw4203.vinilos.data.dto.AlbumDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.BandDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.CollectorAlbumDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.CollectorDto
+import co.edu.uniandes.misw4203.vinilos.data.dto.CommentCreateDto
+import co.edu.uniandes.misw4203.vinilos.data.dto.CommentDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.MusicianDto
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -25,6 +27,13 @@ interface BackendApi {
     /** HU07: crea un álbum. El backend responde con el álbum creado (ya con su id). */
     @POST("albums")
     suspend fun createAlbum(@Body album: AlbumCreateDto): AlbumDto
+
+    /** HU09: agrega un comentario a un álbum. */
+    @POST("albums/{albumId}/comments")
+    suspend fun addComment(
+        @Path("albumId") albumId: Int,
+        @Body comment: CommentCreateDto
+    ): CommentDto
 
     /** HU05: listado de coleccionistas. */
     @GET("collectors")
