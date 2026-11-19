@@ -10,6 +10,7 @@ import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.action.ViewActions.scrollTo
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.RootMatchers.isPlatformPopup
@@ -294,6 +295,27 @@ class AddToCollectionE2ETest {
             activityRule.scenario.onActivity {
                 it.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             }
+        }
+    }
+
+    // CP-HU11-11
+    @Test
+    fun el_aviso_del_detalle_se_cierra_al_volver_al_catalogo() {
+        abrirFormulario()
+        llenarFormulario()
+        tocarAgregar()
+        volvioAlDetalle()
+        // El aviso se ve en el detalle...
+        waitFor {
+            onView(withId(com.google.android.material.R.id.snackbar_text)).check(matches(isDisplayed()))
+        }
+
+        // ...pero no sigue visible sobre la barra inferior del catálogo. El plazo es menor que
+        // la duración del aviso (LENGTH_LONG, 2,75 s): si cerrarse dependiera del tiempo, fallaría.
+        pressBack()
+        waitFor { onView(withId(R.id.albumList)).check(matches(isDisplayed())) }
+        waitFor(timeoutMs = 2_000) {
+            onView(withId(com.google.android.material.R.id.snackbar_text)).check(doesNotExist())
         }
     }
 }
