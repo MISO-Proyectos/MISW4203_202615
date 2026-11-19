@@ -46,7 +46,10 @@ class CollectorDetailE2ETest {
         // el toque en la sección Coleccionistas y se espera más que los 10 s por defecto.
         waitFor(timeoutMs = ESPERA_LARGA_MS) {
             onView(withId(R.id.collectorListFragment)).perform(click())
-            onView(withId(R.id.collectorList)).check(matches(hasDescendant(withText(COLECCIONISTA))))
+            // El backend no ordena la lista y otras pruebas agregan coleccionistas: se desplaza hasta el elemento
+            onView(withId(R.id.collectorList)).perform(
+                RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(hasDescendant(withText(COLECCIONISTA)))
+            )
         }
         onView(withId(R.id.collectorList)).perform(
             RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
