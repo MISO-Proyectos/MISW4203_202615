@@ -149,11 +149,13 @@
                 android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Estado: el grupo no tiene error propio, por eso el error va en un TextView debajo -->
+        <!-- Estado: el grupo no tiene error propio, por eso el error va en un TextView debajo.
+             La etiqueta no usa labelFor (solo sirve para campos de texto): TalkBack la lee como
+             un elemento propio justo antes de los botones. -->
         <TextView
             android:id="@+id/statusLabel"
             style="@style/Widget.Vinilos.FormLabel"
-            android:labelFor="@id/statusGroup"
+            android:contentDescription="@string/add_to_collection_status_label_description"
             android:text="@string/add_to_collection_status_label" />
 
         <com.google.android.material.button.MaterialButtonToggleGroup
