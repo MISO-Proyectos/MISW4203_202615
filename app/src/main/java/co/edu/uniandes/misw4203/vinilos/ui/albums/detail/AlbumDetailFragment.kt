@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -20,12 +19,13 @@ import co.edu.uniandes.misw4203.vinilos.R
 import co.edu.uniandes.misw4203.vinilos.data.model.Album
 import co.edu.uniandes.misw4203.vinilos.data.model.Comment
 import co.edu.uniandes.misw4203.vinilos.data.model.Track
-import co.edu.uniandes.misw4203.vinilos.databinding.DialogAddCommentBinding
 import co.edu.uniandes.misw4203.vinilos.databinding.FragmentAlbumDetailBinding
 import co.edu.uniandes.misw4203.vinilos.databinding.ItemCommentBinding
 import co.edu.uniandes.misw4203.vinilos.databinding.ItemTrackBinding
 import co.edu.uniandes.misw4203.vinilos.ui.albums.collection.AddToCollectionFragment
 import co.edu.uniandes.misw4203.vinilos.ui.albums.collection.AddToCollectionViewModel
+import co.edu.uniandes.misw4203.vinilos.ui.albums.comments.AddCommentFragment
+import co.edu.uniandes.misw4203.vinilos.ui.albums.comments.AddCommentViewModel
 import co.edu.uniandes.misw4203.vinilos.ui.albums.tracks.AddTrackFragment
 import co.edu.uniandes.misw4203.vinilos.ui.albums.tracks.AddTrackViewModel
 import co.edu.uniandes.misw4203.vinilos.ui.role.SessionViewModel
@@ -33,7 +33,6 @@ import co.edu.uniandes.misw4203.vinilos.ui.role.UserRole
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.material.color.MaterialColors
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 
@@ -80,8 +79,12 @@ class AlbumDetailFragment : Fragment() {
         }
         observeAddedTrack()
         observeAddedToCollection()
+        observeAddedComment()
         binding.addCommentButton.setOnClickListener {
-            showAddCommentDialog()
+            findNavController().navigate(
+                R.id.action_albumDetail_to_addComment,
+                bundleOf(AddCommentViewModel.ARG_ALBUM_ID to viewModel.currentAlbumId)
+            )
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -111,6 +114,21 @@ class AlbumDetailFragment : Fragment() {
                     ),
                     Snackbar.LENGTH_LONG
                 ).show()
+            }
+    }
+
+    /**
+     * HU09: al volver del formulario con un comentario publicado, se recarga el álbum
+     * para que aparezca el comentario nuevo y se muestra el aviso.
+     */
+    private fun observeAddedComment() {
+        val savedStateHandle = findNavController().currentBackStackEntry?.savedStateHandle ?: return
+        savedStateHandle.getLiveData<Boolean>(AddCommentFragment.RESULT_ADDED_COMMENT)
+            .observe(viewLifecycleOwner) { added ->
+                if (added != true) return@observe
+                savedStateHandle.remove<Boolean>(AddCommentFragment.RESULT_ADDED_COMMENT)
+                viewModel.loadAlbum()
+                Snackbar.make(binding.root, R.string.add_comment_success, Snackbar.LENGTH_LONG).show()
             }
     }
 
@@ -226,77 +244,6 @@ class AlbumDetailFragment : Fragment() {
             row.commentText.text = comment.description
             showStars(row.commentStars, comment.rating, starStyle)
         }
-    }
-
-    /** HU09: Muestra el cuadro de diálogo para que un coleccionista agregue un comentario. */
-    private fun showAddCommentDialog() {
-        val dialogBinding = DialogAddCommentBinding.inflate(layoutInflater)
-        var selectedRating = MAX_RATING
-        var dialog: AlertDialog? = null
-
-        val starStyle = StarStyle.from(binding.root)
-        val stars = listOf(
-            dialogBinding.star1,
-            dialogBinding.star2,
-            dialogBinding.star3,
-            dialogBinding.star4,
-            dialogBinding.star5
-        )
-
-        fun updateStarRating(rating: Int) {
-            selectedRating = rating
-            stars.forEachIndexed { index, starImageView ->
-                starImageView.setColorFilter(
-                    if (index < rating) starStyle.filledColor else starStyle.emptyColor
-                )
-            }
-        }
-
-        stars.forEachIndexed { index, starImageView ->
-            starImageView.setOnClickListener {
-                updateStarRating(index + 1)
-            }
-        }
-
-        dialogBinding.cancelButton.setOnClickListener {
-            dialog?.dismiss()
-        }
-
-        dialogBinding.submitButton.setOnClickListener {
-            val description = dialogBinding.descriptionInput.text?.toString().orEmpty().trim()
-            if (description.isBlank()) {
-                dialogBinding.descriptionLayout.error = getString(R.string.add_comment_description_error)
-                return@setOnClickListener
-            }
-            dialogBinding.descriptionLayout.error = null
-
-            // Mostrar estado de carga en el diálogo
-            dialogBinding.loadingIndicator.isVisible = true
-            dialogBinding.submitButton.isEnabled = false
-            dialogBinding.cancelButton.isEnabled = false
-
-            viewModel.addComment(
-                rating = selectedRating,
-                description = description
-            ) { result ->
-                if (_binding == null) return@addComment
-                dialog?.dismiss()
-                result.fold(
-                    onSuccess = {
-                        Snackbar.make(binding.root, R.string.add_comment_success, Snackbar.LENGTH_SHORT).show()
-                    },
-                    onFailure = {
-                        Snackbar.make(binding.root, R.string.add_comment_error_default, Snackbar.LENGTH_LONG).show()
-                    }
-                )
-            }
-        }
-
-        dialog = MaterialAlertDialogBuilder(requireContext())
-            .setView(dialogBinding.root)
-            .create()
-
-        dialog.show()
     }
 
     /** Dibuja cinco estrellas: las primeras [rating] en naranja y el resto apagadas. */

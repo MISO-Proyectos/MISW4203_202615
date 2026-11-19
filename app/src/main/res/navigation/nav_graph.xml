@@ -67,6 +67,19 @@
         <action
             android:id="@+id/action_albumDetail_to_addToCollection"
             app:destination="@id/addToCollectionFragment" />
+        <action
+            android:id="@+id/action_albumDetail_to_addComment"
+            app:destination="@id/addCommentFragment" />
+    </fragment>
+
+    <!-- HU09: formulario para comentar un álbum. "albumId" lo lee AddCommentViewModel -->
+    <fragment
+        android:id="@+id/addCommentFragment"
+        android:name="co.edu.uniandes.misw4203.vinilos.ui.albums.comments.AddCommentFragment"
+        android:label="@string/add_comment_title">
+        <argument
+            android:name="albumId"
+            app:argType="integer" />
     </fragment>
 
     <!-- HU11: formulario para agregar un álbum a la colección de un coleccionista. "albumId" lo lee AddToCollectionViewModel -->

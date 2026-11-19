@@ -6,6 +6,7 @@ import co.edu.uniandes.misw4203.vinilos.data.model.NewTrack
 import co.edu.uniandes.misw4203.vinilos.data.model.Track
 import co.edu.uniandes.misw4203.vinilos.data.model.Comment
 import co.edu.uniandes.misw4203.vinilos.data.model.NewAlbum
+import co.edu.uniandes.misw4203.vinilos.data.model.NewComment
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
@@ -57,15 +58,12 @@ class AlbumRepository(
         call { serviceAdapter.createAlbum(album) }.onSuccess { clearCache() }
 
     /**
-     * HU09: agrega un comentario a un álbum.
+     * HU09: publica un comentario en un álbum. Si el álbum o el coleccionista no existen
+     * devuelve NotFound. El detalle del álbum no se cachea, así que no hay caché que
+     * invalidar: al volver a pedirlo ya trae el comentario nuevo.
      */
-    suspend fun addComment(
-        albumId: Int,
-        collectorId: Int,
-        rating: Int,
-        description: String
-    ): Result<Comment> =
-        call { serviceAdapter.addComment(albumId, collectorId, rating, description) }
+    suspend fun addComment(albumId: Int, comment: NewComment): Result<Comment> =
+        call { serviceAdapter.addComment(albumId, comment) }
 
     private suspend fun <T> call(block: suspend () -> T): Result<T> =
         safeCall(

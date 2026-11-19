@@ -11,6 +11,7 @@ import co.edu.uniandes.misw4203.vinilos.data.dto.TrackCreateDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.TrackDto
 import co.edu.uniandes.misw4203.vinilos.data.model.Album
 import co.edu.uniandes.misw4203.vinilos.data.model.Comment
+import co.edu.uniandes.misw4203.vinilos.data.model.NewComment
 import co.edu.uniandes.misw4203.vinilos.data.model.NewTrack
 import co.edu.uniandes.misw4203.vinilos.data.model.NewAlbum
 import co.edu.uniandes.misw4203.vinilos.data.model.Performer
@@ -61,21 +62,11 @@ class AlbumServiceAdapter(
         }
     }
 
-    /** HU09: agrega un comentario a un álbum y devuelve el comentario creado. */
-    suspend fun addComment(
-        albumId: Int,
-        collectorId: Int,
-        rating: Int,
-        description: String
-    ): Comment {
-        val dto = CommentCreateDto(
-            description = description.trim(),
-            rating = rating,
-            collector = CollectorRefDto(collectorId)
-        )
-        val resultDto = api.addComment(albumId, dto)
+    /** HU09: agrega un comentario a un álbum y devuelve el comentario creado (con su id). */
+    suspend fun addComment(albumId: Int, comment: NewComment): Comment {
+        val dto = api.addComment(albumId, comment.toDto())
         return withContext(dispatcher) {
-            resultDto.toModel() ?: throw IllegalStateException("El backend devolvió un comentario sin id")
+            dto.toModel() ?: throw IllegalStateException("El backend devolvió un comentario sin id")
         }
     }
 
@@ -83,6 +74,13 @@ class AlbumServiceAdapter(
 
         /** Convierte la canción nueva en el JSON que espera POST /albums/{id}/tracks. */
         fun NewTrack.toDto(): TrackCreateDto = TrackCreateDto(name.trim(), duration.trim())
+
+        /** Convierte el comentario nuevo en el JSON que espera POST /albums/{id}/comments. */
+        fun NewComment.toDto(): CommentCreateDto = CommentCreateDto(
+            description = description.trim(),
+            rating = rating,
+            collector = CollectorRefDto(collectorId)
+        )
 
         /** Convierte el álbum nuevo en el JSON que espera POST /albums. */
         fun NewAlbum.toDto(): AlbumCreateDto = AlbumCreateDto(
