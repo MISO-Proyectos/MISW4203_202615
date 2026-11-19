@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.core.os.bundleOf
+import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
@@ -60,6 +61,8 @@ class AddToCollectionFragment : Fragment() {
             onRetry = viewModel::retryCollectors
         )
         setUpStatusGroup()
+        // La tarjeta del álbum se lee de una vez: "Álbum, nombre, artista · n tracks"
+        ViewCompat.setScreenReaderFocusable(binding.albumSummary, true)
 
         binding.priceInput.doAfterTextChanged { viewModel.onPriceChanged(it?.toString().orEmpty()) }
         binding.priceInput.setOnEditorActionListener { _, _, _ ->
