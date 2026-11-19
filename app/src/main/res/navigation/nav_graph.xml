@@ -64,6 +64,19 @@
         <action
             android:id="@+id/action_albumDetail_to_addTrack"
             app:destination="@id/addTrackFragment" />
+        <action
+            android:id="@+id/action_albumDetail_to_addToCollection"
+            app:destination="@id/addToCollectionFragment" />
+    </fragment>
+
+    <!-- HU11: formulario para agregar un álbum a la colección de un coleccionista. "albumId" lo lee AddToCollectionViewModel -->
+    <fragment
+        android:id="@+id/addToCollectionFragment"
+        android:name="co.edu.uniandes.misw4203.vinilos.ui.albums.collection.AddToCollectionFragment"
+        android:label="@string/add_to_collection_title">
+        <argument
+            android:name="albumId"
+            app:argType="integer" />
     </fragment>
 
     <!-- HU08: formulario para agregar una canción a un álbum. "albumId" lo lee AddTrackViewModel -->
