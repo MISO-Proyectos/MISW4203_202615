@@ -16,11 +16,13 @@
     <string name="add_to_collection_required_hint">Los campos marcados con * son obligatorios.</string>
 
     <string name="add_to_collection_price_label">Precio *</string>
+    <string name="add_to_collection_price_label_description">Precio, obligatorio</string>
     <string name="add_to_collection_price_placeholder">Valor en pesos</string>
     <string name="add_to_collection_price_helper">Solo números, sin puntos ni comas.</string>
     <string name="add_to_collection_price_prefix">$</string>
 
     <string name="add_to_collection_status_label">Estado *</string>
+    <string name="add_to_collection_status_label_description">Estado, obligatorio</string>
     <string name="add_to_collection_status_active">Activo</string>
     <string name="add_to_collection_status_inactive">Inactivo</string>
     <string name="add_to_collection_status_helper">Activo: disponible para vender o intercambiar.</string>

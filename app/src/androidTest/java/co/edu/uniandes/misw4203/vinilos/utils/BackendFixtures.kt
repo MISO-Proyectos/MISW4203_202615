@@ -42,7 +42,7 @@ object BackendFixtures {
         val body = JSONObject()
             .put("name", nombre)
             .put("telephone", "3${sufijo % 1_000_000_000L}")
-            .put("email", "e2e$sufijo@vinilos.test")
+            .put("email", "e2e$sufijo@example.com")
         val id = enviar("collectors", body, "el coleccionista \"$nombre\"")
         appContainer.collectorRepository.clearCache()
         return id

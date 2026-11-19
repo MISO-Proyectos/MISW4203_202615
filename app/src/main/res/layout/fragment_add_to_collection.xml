@@ -28,8 +28,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:accessibilityLiveRegion="polite"
             android:background="@drawable/bg_error_banner"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="12dp"
@@ -105,7 +106,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:ellipsize="end"
-                    android:maxLines="1"
+                    android:maxLines="2"
                     android:textAppearance="?attr/textAppearanceBodySmall"
                     android:textColor="?attr/colorOnSurfaceVariant"
                     tools:text="Rubén Blades · 4 tracks" />
@@ -129,7 +130,7 @@
         <TextView
             android:id="@+id/priceLabel"
             style="@style/Widget.Vinilos.FormLabel"
-            android:labelFor="@id/priceInput"
+            android:contentDescription="@string/add_to_collection_price_label_description"
             android:text="@string/add_to_collection_price_label" />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -149,11 +150,13 @@
                 android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Estado: el grupo no tiene error propio, por eso el error va en un TextView debajo -->
+        <!-- Estado: el grupo no tiene error propio, por eso el error va en un TextView debajo.
+             La etiqueta no usa labelFor (solo sirve para campos de texto): TalkBack la lee como
+             un elemento propio justo antes de los botones. -->
         <TextView
             android:id="@+id/statusLabel"
             style="@style/Widget.Vinilos.FormLabel"
-            android:labelFor="@id/statusGroup"
+            android:contentDescription="@string/add_to_collection_status_label_description"
             android:text="@string/add_to_collection_status_label" />
 
         <com.google.android.material.button.MaterialButtonToggleGroup
@@ -167,7 +170,8 @@
                 android:id="@+id/statusActiveButton"
                 style="?attr/materialButtonOutlinedStyle"
                 android:layout_width="0dp"
-                android:layout_height="48dp"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
                 android:layout_weight="1"
                 android:text="@string/add_to_collection_status_active" />
 
@@ -175,7 +179,8 @@
                 android:id="@+id/statusInactiveButton"
                 style="?attr/materialButtonOutlinedStyle"
                 android:layout_width="0dp"
-                android:layout_height="48dp"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
                 android:layout_weight="1"
                 android:text="@string/add_to_collection_status_inactive" />
         </com.google.android.material.button.MaterialButtonToggleGroup>
@@ -186,7 +191,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="4dp"
-            android:accessibilityLiveRegion="polite"
             android:text="@string/add_to_collection_error_status"
             android:textAppearance="?attr/textAppearanceBodySmall"
             android:textColor="?attr/colorError"
@@ -205,7 +209,8 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/saveButton"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="wrap_content"
+            android:minHeight="56dp"
             android:layout_marginTop="24dp"
             android:text="@string/add_to_collection_save"
             android:textAppearance="?attr/textAppearanceLabelLarge"

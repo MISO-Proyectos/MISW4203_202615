@@ -12,7 +12,7 @@
     <TextView
         android:id="@+id/collectorLabel"
         style="@style/Widget.Vinilos.FormLabel"
-        android:labelFor="@id/collectorInput"
+        android:contentDescription="@string/collector_field_label_description"
         android:text="@string/collector_field_label" />
 
     <com.google.android.material.textfield.TextInputLayout
