@@ -126,6 +126,28 @@
         <action
             android:id="@+id/action_artistDetail_to_albumDetail"
             app:destination="@id/albumDetailFragment" />
+        <action
+            android:id="@+id/action_artistDetail_to_addFavorite"
+            app:destination="@id/addFavoriteArtistFragment" />
+    </fragment>
+
+    <!-- HU10: formulario para agregar un artista a los favoritos de un coleccionista. Los argumentos los lee AddFavoriteArtistViewModel -->
+    <fragment
+        android:id="@+id/addFavoriteArtistFragment"
+        android:name="co.edu.uniandes.misw4203.vinilos.ui.artists.favorite.AddFavoriteArtistFragment"
+        android:label="@string/add_favorite_title">
+        <argument
+            android:name="artistId"
+            app:argType="integer" />
+        <argument
+            android:name="artistType"
+            app:argType="string" />
+        <argument
+            android:name="artistName"
+            app:argType="string" />
+        <argument
+            android:name="albumCount"
+            app:argType="integer" />
     </fragment>
 
     <!-- HU05: listado de coleccionistas (el id coincide con el del menú inferior) -->
