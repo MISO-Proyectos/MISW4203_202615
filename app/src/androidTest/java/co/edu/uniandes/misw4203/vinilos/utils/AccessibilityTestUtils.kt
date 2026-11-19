@@ -7,9 +7,11 @@ import com.google.android.apps.common.testing.accessibility.framework.integratio
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import com.google.android.apps.common.testing.accessibility.framework.AccessibilityCheckResult.AccessibilityCheckResultType
 import com.google.android.apps.common.testing.accessibility.framework.AccessibilityViewCheckResult
+import com.google.android.apps.common.testing.accessibility.framework.checks.DuplicateSpeakableTextCheck
 import com.google.android.apps.common.testing.accessibility.framework.checks.TouchTargetSizeCheck
 import org.hamcrest.Description
 import org.hamcrest.Matcher
+import org.hamcrest.Matchers.anyOf
 import org.hamcrest.TypeSafeMatcher
 
 /**
@@ -54,6 +56,28 @@ object AccessibilityTestUtils {
         }
 
     /**
+     * Texto duplicado entre la etiqueta y su campo (Coleccionista y Precio de HU11). La etiqueta
+     * y el campo son dos paradas de foco unidas por labelFor: es el mismo patrón de HU07 y HU08,
+     * que el Accessibility Scanner acepta sin sugerencias. El contentDescription de la etiqueta
+     * ("... obligatorio") es lo que evita que se lea "asterisco", y labelFor hace que el campo
+     * se anuncie con su nombre (WCAG 1.3.1). Solo se suprime este chequeo para estos dos ids.
+     */
+    private fun duplicadoDeEtiquetaYCampo(): Matcher<AccessibilityViewCheckResult> =
+        object : TypeSafeMatcher<AccessibilityViewCheckResult>() {
+            override fun describeTo(description: Description) {
+                description.appendText("DuplicateSpeakableTextCheck sobre collectorInput o priceInput")
+            }
+
+            override fun matchesSafely(r: AccessibilityViewCheckResult): Boolean {
+                val vista = r.view ?: return false
+                return r.accessibilityHierarchyCheck == DuplicateSpeakableTextCheck::class.java &&
+                    vista.id != View.NO_ID &&
+                    vista.resources.getResourceEntryName(vista.id) in
+                    setOf("collectorInput", "priceInput")
+            }
+        }
+
+    /**
      * Corre los chequeos de ATF sobre toda la vista raíz y falla si hay errores o advertencias.
      * El mensaje de la falla lista cada hallazgo.
      */
@@ -63,7 +87,9 @@ object AccessibilityTestUtils {
         override fun perform(uiController: UiController, view: View) {
             val validator = AccessibilityValidator()
                 .setRunChecksFromRootView(true)
-                .setSuppressingResultMatcher(falsoPositivoDeLaBarraSuperior())
+                .setSuppressingResultMatcher(
+                    anyOf(falsoPositivoDeLaBarraSuperior(), duplicadoDeEtiquetaYCampo())
+                )
             val hallazgos = validator.checkAndReturnResults(view).filter {
                 it.type == AccessibilityCheckResultType.ERROR ||
                     it.type == AccessibilityCheckResultType.WARNING

@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.core.os.bundleOf
 import androidx.core.view.ViewCompat
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
@@ -63,6 +64,8 @@ class AddToCollectionFragment : Fragment() {
         setUpStatusGroup()
         // La tarjeta del álbum se lee de una vez: "Álbum, nombre, artista · n tracks"
         ViewCompat.setScreenReaderFocusable(binding.albumSummary, true)
+        // El aviso de errores también se lee como un solo elemento, sin entrar al orden del teclado
+        ViewCompat.setScreenReaderFocusable(binding.errorBanner, true)
 
         binding.priceInput.doAfterTextChanged { viewModel.onPriceChanged(it?.toString().orEmpty()) }
         binding.priceInput.setOnEditorActionListener { _, _, _ ->
@@ -109,9 +112,16 @@ class AddToCollectionFragment : Fragment() {
         // El aviso está arriba: si recién aparece, se sube para que el usuario lo vea
         if (state.showErrorBanner && !bannerWasVisible) {
             binding.addToCollectionScroll.smoothScrollTo(0, 0)
-            // El foco pasa al aviso (un solo elemento que TalkBack lee primero); después el
-            // usuario recorre los campos con error en orden. El teclado ya se cerró al guardar.
-            binding.errorBanner.post { _binding?.errorBanner?.requestFocus() }
+            // El aviso es una live region (se anuncia solo) y además se lleva el foco de
+            // TalkBack a él; requestFocus() movería el foco del teclado, no el de TalkBack.
+            // Después el usuario recorre los campos con error en orden.
+            binding.errorBanner.post {
+                _binding?.errorBanner?.let {
+                    ViewCompat.performAccessibilityAction(
+                        it, AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS, null
+                    )
+                }
+            }
         }
 
         binding.albumSummary.isVisible = state.album != null
