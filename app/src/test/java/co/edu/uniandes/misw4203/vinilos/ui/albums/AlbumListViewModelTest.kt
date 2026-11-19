@@ -3,6 +3,7 @@ package co.edu.uniandes.misw4203.vinilos.ui.albums
 import co.edu.uniandes.misw4203.vinilos.core.network.BackendApi
 import co.edu.uniandes.misw4203.vinilos.data.dto.TrackCreateDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.AlbumCreateDto
+import co.edu.uniandes.misw4203.vinilos.data.dto.CollectorAlbumCreateDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.CommentCreateDto
 import co.edu.uniandes.misw4203.vinilos.data.FakeBackendApi
 import co.edu.uniandes.misw4203.vinilos.data.FakeBackendApi.Companion.albumDto
@@ -114,6 +115,9 @@ class AlbumListViewModelTest {
         override suspend fun getCollector(id: Int) = delegate.getCollector(id)
 
         override suspend fun getCollectorAlbums(id: Int) = delegate.getCollectorAlbums(id)
+
+        override suspend fun addAlbumToCollector(collectorId: Int, albumId: Int, body: CollectorAlbumCreateDto) =
+            delegate.addAlbumToCollector(collectorId, albumId, body)
 
         override suspend fun getMusicians() = delegate.getMusicians()
 

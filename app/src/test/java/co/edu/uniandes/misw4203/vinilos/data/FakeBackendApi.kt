@@ -4,6 +4,7 @@ import co.edu.uniandes.misw4203.vinilos.core.network.BackendApi
 import co.edu.uniandes.misw4203.vinilos.data.dto.AlbumCreateDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.AlbumDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.BandDto
+import co.edu.uniandes.misw4203.vinilos.data.dto.CollectorAlbumCreateDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.CollectorAlbumDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.CollectorDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.CommentCreateDto
@@ -28,7 +29,7 @@ class FakeBackendApi(
     /** Se puede cambiar para simular que el backend tiene coleccionistas nuevos. */
     var collectors: List<CollectorDto> = emptyList(),
     /** Álbumes de la colección que devuelve GET /collectors/{id}/albums (iguales para cualquier coleccionista). */
-    private val collectorAlbums: List<CollectorAlbumDto> = emptyList(),
+    var collectorAlbums: List<CollectorAlbumDto> = emptyList(),
     /** Se puede cambiar para simular que el backend tiene artistas nuevos. */
     var musicians: List<MusicianDto> = emptyList(),
     var bands: List<BandDto> = emptyList(),
@@ -129,6 +130,35 @@ class FakeBackendApi(
             throw HttpException(Response.error<Any>(404, "".toResponseBody(null)))
         }
         return collectorAlbums
+    }
+
+    /** Llamadas recibidas en POST /collectors/{id}/albums/{albumId}: (coleccionista, álbum, cuerpo), en orden. */
+    val addedToCollection = mutableListOf<Triple<Int, Int, CollectorAlbumCreateDto>>()
+
+    /**
+     * Guarda la relación en [collectorAlbums] para que getCollectorAlbums ya la devuelva.
+     * Responde HTTP 404 si no existe el coleccionista o el álbum. Como el backend real,
+     * no impide repetir el álbum.
+     */
+    override suspend fun addAlbumToCollector(
+        collectorId: Int,
+        albumId: Int,
+        body: CollectorAlbumCreateDto
+    ): CollectorAlbumDto {
+        error?.let { throw it }
+        addedToCollection += Triple(collectorId, albumId, body)
+        val album = albums.firstOrNull { it.id == albumId }
+        if (collectors.none { it.id == collectorId } || album == null) {
+            throw HttpException(Response.error<Any>(404, "".toResponseBody(null)))
+        }
+        val created = CollectorAlbumDto(
+            id = 500 + addedToCollection.size,
+            price = body.price,
+            status = body.status,
+            album = album
+        )
+        collectorAlbums = collectorAlbums + created
+        return created
     }
 
     override suspend fun getMusicians(): List<MusicianDto> {

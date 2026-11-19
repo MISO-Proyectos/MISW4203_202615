@@ -2,10 +2,12 @@ package co.edu.uniandes.misw4203.vinilos.data.adapter
 
 import co.edu.uniandes.misw4203.vinilos.core.network.BackendApi
 import co.edu.uniandes.misw4203.vinilos.data.adapter.AlbumServiceAdapter.Companion.toModel
+import co.edu.uniandes.misw4203.vinilos.data.dto.CollectorAlbumCreateDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.CollectorAlbumDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.CollectorDto
 import co.edu.uniandes.misw4203.vinilos.data.model.Collector
 import co.edu.uniandes.misw4203.vinilos.data.model.CollectorAlbum
+import co.edu.uniandes.misw4203.vinilos.data.model.CollectorAlbumStatus
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -43,6 +45,26 @@ class CollectorServiceAdapter(
             detailDto.toDetailModel(albumDtos.mapNotNull { it.toModel() })
                 ?: throw IllegalStateException("El backend devolvió un coleccionista sin id")
         }
+    }
+
+    /** HU11: ids de los álbumes que ya están en la colección del coleccionista. */
+    suspend fun getCollectorAlbumIds(collectorId: Int): Set<Int> {
+        val dtos = api.getCollectorAlbums(collectorId)
+        return withContext(dispatcher) { dtos.mapNotNull { it.album?.id }.toSet() }
+    }
+
+    /** HU11: agrega el álbum a la colección del coleccionista (POST). Los errores se propagan. */
+    suspend fun addAlbumToCollector(
+        collectorId: Int,
+        albumId: Int,
+        price: Int,
+        status: CollectorAlbumStatus
+    ) {
+        api.addAlbumToCollector(
+            collectorId,
+            albumId,
+            CollectorAlbumCreateDto(price = price, status = status.apiValue)
+        )
     }
 
     companion object {
