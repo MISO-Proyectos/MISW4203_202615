@@ -24,8 +24,10 @@
 
         <TextView
             android:id="@+id/collectorAvatar"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="56dp"
+            android:minHeight="56dp"
             android:background="@drawable/bg_avatar"
             android:gravity="center"
             android:importantForAccessibility="no"

@@ -1,10 +1,12 @@
 package co.edu.uniandes.misw4203.vinilos.data
 
 import co.edu.uniandes.misw4203.vinilos.core.network.BackendApi
+import co.edu.uniandes.misw4203.vinilos.data.dto.AlbumCreateDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.AlbumDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.BandDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.CollectorAlbumDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.CollectorDto
+import co.edu.uniandes.misw4203.vinilos.data.dto.CommentCreateDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.CommentDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.MusicianDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.PerformerDto
@@ -50,13 +52,13 @@ class FakeBackendApi(
             ?: throw HttpException(Response.error<Any>(404, "".toResponseBody(null)))
     }
 
+    /** Canciones recibidas en POST /albums/{id}/tracks, con el id del álbum, en orden. */
+    val addedTracks = mutableListOf<Pair<Int, TrackCreateDto>>()
+
     /**
      * Agrega la canción al álbum (con el siguiente id libre) para que getAlbum ya la
      * devuelva. Responde HTTP 404 si el álbum no existe.
      */
-    /** Canciones recibidas en POST /albums/{id}/tracks, con el id del álbum, en orden. */
-    val addedTracks = mutableListOf<Pair<Int, TrackCreateDto>>()
-
     override suspend fun addTrack(albumId: Int, track: TrackCreateDto): TrackDto {
         error?.let { throw it }
         addedTracks += albumId to track
@@ -65,6 +67,47 @@ class FakeBackendApi(
         val nextId = (albums.flatMap { it.tracks.orEmpty() }.mapNotNull { it.id }.maxOrNull() ?: 0) + 1
         val created = TrackDto(nextId, track.name, track.duration)
         albums = albums.map { if (it.id == albumId) it.copy(tracks = album.tracks.orEmpty() + created) else it }
+        return created
+    }
+
+    /** Cuerpos recibidos en POST /albums, en orden. */
+    val createdAlbums = mutableListOf<AlbumCreateDto>()
+
+    /** Crea el álbum con el siguiente id libre y lo agrega a [albums]. */
+    override suspend fun createAlbum(album: AlbumCreateDto): AlbumDto {
+        error?.let { throw it }
+        createdAlbums += album
+        val created = AlbumDto(
+            id = (albums.mapNotNull { it.id }.maxOrNull() ?: 0) + 1,
+            name = album.name,
+            cover = album.cover,
+            releaseDate = album.releaseDate,
+            description = album.description,
+            genre = album.genre,
+            recordLabel = album.recordLabel,
+            tracks = emptyList(),
+            performers = emptyList()
+        )
+        albums = albums + created
+        return created
+    }
+
+    /** Cuerpos recibidos en POST /albums/{id}/comments, en orden. */
+    val addedComments = mutableListOf<CommentCreateDto>()
+
+    override suspend fun addComment(albumId: Int, comment: CommentCreateDto): CommentDto {
+        error?.let { throw it }
+        addedComments += comment
+        val created = CommentDto(
+            id = 200,
+            description = comment.description,
+            rating = comment.rating
+        )
+        val album = albums.firstOrNull { it.id == albumId }
+        if (album != null) {
+            val updatedComments = album.comments.orEmpty() + created
+            albums = albums.map { if (it.id == albumId) it.copy(comments = updatedComments) else it }
+        }
         return created
     }
 

@@ -52,7 +52,7 @@ class AppContainer(
 
     private val albumServiceAdapter = AlbumServiceAdapter(backendApi, defaultDispatcher)
 
-    /** HU01, HU02 y HU08: álbumes y sus canciones. */
+    /** HU01, HU02, HU07, HU08 y HU09: álbumes, sus canciones y comentarios. */
     val albumRepository = AlbumRepository(albumServiceAdapter, ioDispatcher)
 
     private val artistServiceAdapter = ArtistServiceAdapter(backendApi, defaultDispatcher)

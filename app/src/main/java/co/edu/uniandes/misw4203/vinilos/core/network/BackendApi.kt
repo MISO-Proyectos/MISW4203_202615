@@ -1,9 +1,12 @@
 package co.edu.uniandes.misw4203.vinilos.core.network
 
+import co.edu.uniandes.misw4203.vinilos.data.dto.AlbumCreateDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.AlbumDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.BandDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.CollectorAlbumDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.CollectorDto
+import co.edu.uniandes.misw4203.vinilos.data.dto.CommentCreateDto
+import co.edu.uniandes.misw4203.vinilos.data.dto.CommentDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.MusicianDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.TrackCreateDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.TrackDto
@@ -26,6 +29,16 @@ interface BackendApi {
     /** HU08: asocia una canción nueva a un álbum. El backend responde con la canción creada. */
     @POST("albums/{id}/tracks")
     suspend fun addTrack(@Path("id") albumId: Int, @Body track: TrackCreateDto): TrackDto
+    /** HU07: crea un álbum. El backend responde con el álbum creado (ya con su id). */
+    @POST("albums")
+    suspend fun createAlbum(@Body album: AlbumCreateDto): AlbumDto
+
+    /** HU09: agrega un comentario a un álbum. */
+    @POST("albums/{albumId}/comments")
+    suspend fun addComment(
+        @Path("albumId") albumId: Int,
+        @Body comment: CommentCreateDto
+    ): CommentDto
 
     /** HU05: listado de coleccionistas. */
     @GET("collectors")
