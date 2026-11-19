@@ -96,19 +96,20 @@ class FakeBackendApi(
     /** Cuerpos recibidos en POST /albums/{id}/comments, en orden. */
     val addedComments = mutableListOf<CommentCreateDto>()
 
+    /**
+     * Agrega el comentario al álbum (con el siguiente id libre) para que getAlbum ya lo
+     * devuelva. Como el backend real, responde HTTP 404 si no existe el álbum o el coleccionista.
+     */
     override suspend fun addComment(albumId: Int, comment: CommentCreateDto): CommentDto {
         error?.let { throw it }
         addedComments += comment
-        val created = CommentDto(
-            id = 200,
-            description = comment.description,
-            rating = comment.rating
-        )
         val album = albums.firstOrNull { it.id == albumId }
-        if (album != null) {
-            val updatedComments = album.comments.orEmpty() + created
-            albums = albums.map { if (it.id == albumId) it.copy(comments = updatedComments) else it }
+        if (album == null || collectors.none { it.id == comment.collector.id }) {
+            throw HttpException(Response.error<Any>(404, "".toResponseBody(null)))
         }
+        val nextId = (albums.flatMap { it.comments.orEmpty() }.mapNotNull { it.id }.maxOrNull() ?: 0) + 1
+        val created = CommentDto(id = nextId, description = comment.description, rating = comment.rating)
+        albums = albums.map { if (it.id == albumId) it.copy(comments = album.comments.orEmpty() + created) else it }
         return created
     }
 
