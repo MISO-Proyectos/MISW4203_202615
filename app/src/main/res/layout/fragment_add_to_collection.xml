@@ -129,7 +129,7 @@
         <TextView
             android:id="@+id/priceLabel"
             style="@style/Widget.Vinilos.FormLabel"
-            android:labelFor="@id/priceInput"
+            android:contentDescription="@string/add_to_collection_price_label_description"
             android:text="@string/add_to_collection_price_label" />
 
         <com.google.android.material.textfield.TextInputLayout
