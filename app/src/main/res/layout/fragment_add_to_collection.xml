@@ -167,7 +167,8 @@
                 android:id="@+id/statusActiveButton"
                 style="?attr/materialButtonOutlinedStyle"
                 android:layout_width="0dp"
-                android:layout_height="48dp"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
                 android:layout_weight="1"
                 android:text="@string/add_to_collection_status_active" />
 
@@ -175,7 +176,8 @@
                 android:id="@+id/statusInactiveButton"
                 style="?attr/materialButtonOutlinedStyle"
                 android:layout_width="0dp"
-                android:layout_height="48dp"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
                 android:layout_weight="1"
                 android:text="@string/add_to_collection_status_inactive" />
         </com.google.android.material.button.MaterialButtonToggleGroup>
