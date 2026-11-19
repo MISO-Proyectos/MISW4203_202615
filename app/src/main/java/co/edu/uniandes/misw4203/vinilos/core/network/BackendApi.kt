@@ -3,6 +3,7 @@ package co.edu.uniandes.misw4203.vinilos.core.network
 import co.edu.uniandes.misw4203.vinilos.data.dto.AlbumCreateDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.AlbumDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.BandDto
+import co.edu.uniandes.misw4203.vinilos.data.dto.CollectorAlbumCreateDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.CollectorAlbumDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.CollectorDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.CommentCreateDto
@@ -51,6 +52,17 @@ interface BackendApi {
     /** HU06: álbumes de la colección de un coleccionista, con precio, estado y datos del álbum. */
     @GET("collectors/{id}/albums")
     suspend fun getCollectorAlbums(@Path("id") id: Int): List<CollectorAlbumDto>
+
+    /**
+     * HU11: agrega un álbum a la colección de un coleccionista, con su precio y estado.
+     * El backend responde con la relación guardada y no impide repetir el álbum.
+     */
+    @POST("collectors/{collectorId}/albums/{albumId}")
+    suspend fun addAlbumToCollector(
+        @Path("collectorId") collectorId: Int,
+        @Path("albumId") albumId: Int,
+        @Body body: CollectorAlbumCreateDto
+    ): CollectorAlbumDto
 
     /** HU03: listado de artistas (músicos). */
     @GET("musicians")

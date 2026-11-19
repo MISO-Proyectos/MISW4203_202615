@@ -62,6 +62,6 @@ class AppContainer(
 
     private val collectorServiceAdapter = CollectorServiceAdapter(backendApi, defaultDispatcher)
 
-    /** HU05 y HU06: coleccionistas. */
+    /** HU05, HU06 y HU11: coleccionistas. */
     val collectorRepository = CollectorRepository(collectorServiceAdapter, ioDispatcher)
 }

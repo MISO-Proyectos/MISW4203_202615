@@ -7,6 +7,7 @@ import co.edu.uniandes.misw4203.vinilos.data.adapter.CollectorServiceAdapter
 import co.edu.uniandes.misw4203.vinilos.data.adapter.CollectorServiceAdapter.Companion.toDetailModel
 import co.edu.uniandes.misw4203.vinilos.data.adapter.CollectorServiceAdapter.Companion.toModel
 import co.edu.uniandes.misw4203.vinilos.data.dto.CommentDto
+import co.edu.uniandes.misw4203.vinilos.data.model.CollectorAlbumStatus
 import co.edu.uniandes.misw4203.vinilos.data.dto.PerformerDto
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -143,5 +144,37 @@ class CollectorServiceAdapterTest {
         val adapter = CollectorServiceAdapter(FakeBackendApi())
 
         assertThrows(retrofit2.HttpException::class.java) { runBlocking { adapter.getCollector(999) } }
+    }
+
+    // HU11
+
+    @Test
+    fun `getCollectorAlbumIds devuelve los ids de los albumes de la coleccion`() = runBlocking {
+        val adapter = CollectorServiceAdapter(
+            FakeBackendApi(
+                collectors = listOf(collectorDto(id = 100)),
+                collectorAlbums = listOf(
+                    collectorAlbumDto(id = 1, album = albumDto(id = 100)),
+                    collectorAlbumDto(id = 2, album = albumDto(id = 102)),
+                    collectorAlbumDto(id = 3, album = null)
+                )
+            )
+        )
+
+        assertEquals(setOf(100, 102), adapter.getCollectorAlbumIds(100))
+    }
+
+    @Test
+    fun `addAlbumToCollector envia el precio y el estado en el formato del backend`() = runBlocking {
+        val api = FakeBackendApi(
+            albums = listOf(albumDto(id = 100)),
+            collectors = listOf(collectorDto(id = 100))
+        )
+
+        CollectorServiceAdapter(api).addAlbumToCollector(100, 100, 35000, CollectorAlbumStatus.ACTIVE)
+
+        val (_, _, body) = api.addedToCollection.single()
+        assertEquals(35000, body.price)
+        assertEquals("Active", body.status)
     }
 }

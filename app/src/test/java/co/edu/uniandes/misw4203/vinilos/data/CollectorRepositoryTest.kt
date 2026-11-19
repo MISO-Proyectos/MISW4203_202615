@@ -2,7 +2,10 @@ package co.edu.uniandes.misw4203.vinilos.data
 
 import co.edu.uniandes.misw4203.vinilos.data.FakeBackendApi.Companion.collectorAlbumDto
 import co.edu.uniandes.misw4203.vinilos.data.FakeBackendApi.Companion.collectorDto
+import co.edu.uniandes.misw4203.vinilos.data.FakeBackendApi.Companion.albumDto
 import co.edu.uniandes.misw4203.vinilos.data.adapter.CollectorServiceAdapter
+import co.edu.uniandes.misw4203.vinilos.data.model.CollectionResult
+import co.edu.uniandes.misw4203.vinilos.data.model.CollectorAlbumStatus
 import co.edu.uniandes.misw4203.vinilos.data.repository.CollectorRepository
 import co.edu.uniandes.misw4203.vinilos.data.repository.RepositoryException
 import com.google.gson.JsonSyntaxException
@@ -129,5 +132,77 @@ class CollectorRepositoryTest {
         val result = repositoryWith(FakeBackendApi(error = JsonSyntaxException("bad json"))).getCollector(100)
 
         assertTrue(result.exceptionOrNull() is RepositoryException.Unexpected)
+    }
+
+    // HU11
+
+    private fun apiWithAlbumAndCollector(inCollection: Boolean = false) = FakeBackendApi(
+        albums = listOf(albumDto(id = 100)),
+        collectors = listOf(collectorDto(id = 100)),
+        collectorAlbums = if (inCollection) listOf(collectorAlbumDto(album = albumDto(id = 100))) else emptyList()
+    )
+
+    @Test
+    fun `addAlbumToCollector agrega el album con su precio y estado`() = runBlocking {
+        val api = apiWithAlbumAndCollector()
+
+        val result = repositoryWith(api).addAlbumToCollector(100, 100, 35000, CollectorAlbumStatus.INACTIVE)
+
+        assertEquals(CollectionResult.ADDED, result.getOrThrow())
+        val (collectorId, albumId, body) = api.addedToCollection.single()
+        assertEquals(100, collectorId)
+        assertEquals(100, albumId)
+        assertEquals(35000, body.price)
+        assertEquals("Inactive", body.status)
+    }
+
+    @Test
+    fun `addAlbumToCollector no hace el POST si el album ya esta en la coleccion`() = runBlocking {
+        val api = apiWithAlbumAndCollector(inCollection = true)
+
+        val result = repositoryWith(api).addAlbumToCollector(100, 100, 35000, CollectorAlbumStatus.ACTIVE)
+
+        assertEquals(CollectionResult.ALREADY_IN_COLLECTION, result.getOrThrow())
+        assertTrue(api.addedToCollection.isEmpty())
+    }
+
+    @Test
+    fun `addAlbumToCollector sin conexion devuelve NoConnection`() = runBlocking {
+        val result = repositoryWith(FakeBackendApi(error = IOException("timeout")))
+            .addAlbumToCollector(100, 100, 35000, CollectorAlbumStatus.ACTIVE)
+
+        assertTrue(result.exceptionOrNull() is RepositoryException.NoConnection)
+    }
+
+    @Test
+    fun `addAlbumToCollector con coleccionista inexistente devuelve NotFound con su mensaje`() = runBlocking {
+        val error = repositoryWith(FakeBackendApi(albums = listOf(albumDto(id = 100))))
+            .addAlbumToCollector(999, 100, 35000, CollectorAlbumStatus.ACTIVE).exceptionOrNull()
+
+        assertTrue(error is RepositoryException.NotFound)
+        assertEquals(
+            "No encontramos el álbum o el coleccionista. Puede que hayan sido eliminados.",
+            error?.message
+        )
+    }
+
+    @Test
+    fun `addAlbumToCollector con JSON invalido devuelve Unexpected con el mensaje de la accion`() = runBlocking {
+        val error = repositoryWith(FakeBackendApi(error = JsonSyntaxException("bad json")))
+            .addAlbumToCollector(100, 100, 35000, CollectorAlbumStatus.ACTIVE).exceptionOrNull()
+
+        assertTrue(error is RepositoryException.Unexpected)
+        assertEquals("No pudimos agregar el álbum a la colección. Intenta de nuevo.", error?.message)
+    }
+
+    @Test
+    fun `al agregar con exito el album aparece en el detalle del coleccionista`() = runBlocking {
+        val repository = repositoryWith(apiWithAlbumAndCollector())
+
+        repository.addAlbumToCollector(100, 100, 35000, CollectorAlbumStatus.ACTIVE)
+
+        val collector = repository.getCollector(100).getOrThrow()
+        assertEquals(35000, collector.albums.single().price)
+        assertEquals("Active", collector.albums.single().status)
     }
 }

@@ -24,6 +24,8 @@ import co.edu.uniandes.misw4203.vinilos.databinding.DialogAddCommentBinding
 import co.edu.uniandes.misw4203.vinilos.databinding.FragmentAlbumDetailBinding
 import co.edu.uniandes.misw4203.vinilos.databinding.ItemCommentBinding
 import co.edu.uniandes.misw4203.vinilos.databinding.ItemTrackBinding
+import co.edu.uniandes.misw4203.vinilos.ui.albums.collection.AddToCollectionFragment
+import co.edu.uniandes.misw4203.vinilos.ui.albums.collection.AddToCollectionViewModel
 import co.edu.uniandes.misw4203.vinilos.ui.albums.tracks.AddTrackFragment
 import co.edu.uniandes.misw4203.vinilos.ui.albums.tracks.AddTrackViewModel
 import co.edu.uniandes.misw4203.vinilos.ui.role.SessionViewModel
@@ -36,8 +38,8 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 
 /**
- * Pantalla de detalle de un álbum (HU02 / HU08 / HU09). Solo dibuja el estado que entrega
- * AlbumDetailViewModel; los botones "Agregar track" y "Comentar" dependen del rol de SessionViewModel.
+ * Pantalla de detalle de un álbum (HU02 / HU08 / HU09 / HU11). Solo dibuja el estado que entrega
+ * AlbumDetailViewModel; los botones "Agregar track", "Comentar" y "Agregar a colección" dependen del rol de SessionViewModel.
  * "Agregar track" abre el formulario para asociar una canción (HU08).
  * Las listas de tracks y comentarios son cortas y van dentro del scroll, por eso
  * se dibujan como filas en un LinearLayout en vez de un RecyclerView.
@@ -70,7 +72,14 @@ class AlbumDetailFragment : Fragment() {
                 bundleOf(AddTrackViewModel.ARG_ALBUM_ID to viewModel.currentAlbumId)
             )
         }
+        binding.addToCollectionButton.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_albumDetail_to_addToCollection,
+                bundleOf(AddToCollectionViewModel.ARG_ALBUM_ID to viewModel.currentAlbumId)
+            )
+        }
         observeAddedTrack()
+        observeAddedToCollection()
         binding.addCommentButton.setOnClickListener {
             showAddCommentDialog()
         }
@@ -105,9 +114,32 @@ class AlbumDetailFragment : Fragment() {
             }
     }
 
+    /**
+     * HU11: al volver del formulario con el álbum agregado, se muestra el aviso con el nombre
+     * del álbum y del coleccionista. El detalle no se recarga: la colección se ve en HU06.
+     */
+    private fun observeAddedToCollection() {
+        val savedStateHandle = findNavController().currentBackStackEntry?.savedStateHandle ?: return
+        savedStateHandle.getLiveData<Bundle>(AddToCollectionFragment.RESULT_ADDED_TO_COLLECTION)
+            .observe(viewLifecycleOwner) { result ->
+                if (result == null) return@observe
+                savedStateHandle.remove<Bundle>(AddToCollectionFragment.RESULT_ADDED_TO_COLLECTION)
+                Snackbar.make(
+                    binding.root,
+                    getString(
+                        R.string.add_to_collection_success,
+                        result.getString(AddToCollectionFragment.RESULT_ALBUM_NAME).orEmpty(),
+                        result.getString(AddToCollectionFragment.RESULT_COLLECTOR_NAME).orEmpty()
+                    ),
+                    Snackbar.LENGTH_LONG
+                ).show()
+            }
+    }
+
     private fun renderRole(role: UserRole?) {
         binding.addTrackButton.isVisible = role?.canAddTracks == true
         binding.addCommentButton.isVisible = role?.canAddComments == true
+        binding.addToCollectionButton.isVisible = role?.canAddToCollection == true
     }
 
     private fun render(state: AlbumDetailUiState) {
