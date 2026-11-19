@@ -19,4 +19,7 @@
     <!-- Medidas de imágenes de la HU04 -->
     <dimen name="artist_detail_image_size">160dp</dimen>
     <dimen name="artist_album_cover_size">56dp</dimen>
+
+    <!-- Carátula del álbum en el formulario "Agregar track" (HU08): la usan el layout y Glide -->
+    <dimen name="add_track_cover_size">56dp</dimen>
 </resources>

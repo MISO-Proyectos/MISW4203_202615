@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Campo "Coleccionista" que comparten los formularios de HU09, HU10 y HU11. -->
+<resources>
+    <string name="collector_field_label">Coleccionista *</string>
+    <string name="collector_field_label_description">Coleccionista, obligatorio</string>
+    <string name="collector_field_placeholder">Selecciona el coleccionista</string>
+    <string name="collector_field_helper">El backend no maneja inicio de sesión, por eso eliges quién eres en cada registro.</string>
+    <string name="collector_field_error_required">Selecciona un coleccionista</string>
+    <string name="collector_field_error_load">No pudimos cargar los coleccionistas</string>
+    <string name="collector_field_retry">Reintentar cargar los coleccionistas</string>
+    <string name="collector_field_dropdown">Ver coleccionistas</string>
+</resources>

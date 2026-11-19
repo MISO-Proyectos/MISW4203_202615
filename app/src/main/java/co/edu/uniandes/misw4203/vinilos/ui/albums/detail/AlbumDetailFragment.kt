@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -13,6 +14,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import co.edu.uniandes.misw4203.vinilos.R
 import co.edu.uniandes.misw4203.vinilos.data.model.Album
 import co.edu.uniandes.misw4203.vinilos.data.model.Comment
@@ -20,6 +22,12 @@ import co.edu.uniandes.misw4203.vinilos.data.model.Track
 import co.edu.uniandes.misw4203.vinilos.databinding.FragmentAlbumDetailBinding
 import co.edu.uniandes.misw4203.vinilos.databinding.ItemCommentBinding
 import co.edu.uniandes.misw4203.vinilos.databinding.ItemTrackBinding
+import co.edu.uniandes.misw4203.vinilos.ui.albums.collection.AddToCollectionFragment
+import co.edu.uniandes.misw4203.vinilos.ui.albums.collection.AddToCollectionViewModel
+import co.edu.uniandes.misw4203.vinilos.ui.albums.comments.AddCommentFragment
+import co.edu.uniandes.misw4203.vinilos.ui.albums.comments.AddCommentViewModel
+import co.edu.uniandes.misw4203.vinilos.ui.albums.tracks.AddTrackFragment
+import co.edu.uniandes.misw4203.vinilos.ui.albums.tracks.AddTrackViewModel
 import co.edu.uniandes.misw4203.vinilos.ui.role.SessionViewModel
 import co.edu.uniandes.misw4203.vinilos.ui.role.UserRole
 import com.bumptech.glide.Glide
@@ -29,8 +37,9 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 
 /**
- * Pantalla de detalle de un álbum (HU02). Solo dibuja el estado que entrega
- * AlbumDetailViewModel; el botón "Agregar track" depende del rol de SessionViewModel.
+ * Pantalla de detalle de un álbum (HU02 / HU08 / HU09 / HU11). Solo dibuja el estado que entrega
+ * AlbumDetailViewModel; los botones "Agregar track", "Comentar" y "Agregar a colección" dependen del rol de SessionViewModel.
+ * "Agregar track" abre el formulario para asociar una canción (HU08).
  * Las listas de tracks y comentarios son cortas y van dentro del scroll, por eso
  * se dibujan como filas en un LinearLayout en vez de un RecyclerView.
  */
@@ -57,8 +66,25 @@ class AlbumDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.retryButton.setOnClickListener { viewModel.loadAlbum() }
         binding.addTrackButton.setOnClickListener {
-            // TODO: abrir el formulario para asociar un track cuando exista su HU
-            Snackbar.make(binding.root, R.string.add_track_coming_soon, Snackbar.LENGTH_SHORT).show()
+            findNavController().navigate(
+                R.id.action_albumDetail_to_addTrack,
+                bundleOf(AddTrackViewModel.ARG_ALBUM_ID to viewModel.currentAlbumId)
+            )
+        }
+        binding.addToCollectionButton.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_albumDetail_to_addToCollection,
+                bundleOf(AddToCollectionViewModel.ARG_ALBUM_ID to viewModel.currentAlbumId)
+            )
+        }
+        observeAddedTrack()
+        observeAddedToCollection()
+        observeAddedComment()
+        binding.addCommentButton.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_albumDetail_to_addComment,
+                bundleOf(AddCommentViewModel.ARG_ALBUM_ID to viewModel.currentAlbumId)
+            )
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -69,8 +95,69 @@ class AlbumDetailFragment : Fragment() {
         }
     }
 
+    /**
+     * HU08: al volver del formulario con una canción agregada, se recarga el álbum,
+     * se resalta la canción y se muestra el aviso con su nombre.
+     */
+    private fun observeAddedTrack() {
+        val savedStateHandle = findNavController().currentBackStackEntry?.savedStateHandle ?: return
+        savedStateHandle.getLiveData<Bundle>(AddTrackFragment.RESULT_ADDED_TRACK)
+            .observe(viewLifecycleOwner) { result ->
+                if (result == null) return@observe
+                savedStateHandle.remove<Bundle>(AddTrackFragment.RESULT_ADDED_TRACK)
+                viewModel.onTrackAdded(result.getInt(AddTrackFragment.RESULT_TRACK_ID))
+                Snackbar.make(
+                    binding.root,
+                    getString(
+                        R.string.add_track_success,
+                        result.getString(AddTrackFragment.RESULT_TRACK_NAME).orEmpty()
+                    ),
+                    Snackbar.LENGTH_LONG
+                ).show()
+            }
+    }
+
+    /**
+     * HU09: al volver del formulario con un comentario publicado, se recarga el álbum
+     * para que aparezca el comentario nuevo y se muestra el aviso.
+     */
+    private fun observeAddedComment() {
+        val savedStateHandle = findNavController().currentBackStackEntry?.savedStateHandle ?: return
+        savedStateHandle.getLiveData<Boolean>(AddCommentFragment.RESULT_ADDED_COMMENT)
+            .observe(viewLifecycleOwner) { added ->
+                if (added != true) return@observe
+                savedStateHandle.remove<Boolean>(AddCommentFragment.RESULT_ADDED_COMMENT)
+                viewModel.loadAlbum()
+                Snackbar.make(binding.root, R.string.add_comment_success, Snackbar.LENGTH_LONG).show()
+            }
+    }
+
+    /**
+     * HU11: al volver del formulario con el álbum agregado, se muestra el aviso con el nombre
+     * del álbum y del coleccionista. El detalle no se recarga: la colección se ve en HU06.
+     */
+    private fun observeAddedToCollection() {
+        val savedStateHandle = findNavController().currentBackStackEntry?.savedStateHandle ?: return
+        savedStateHandle.getLiveData<Bundle>(AddToCollectionFragment.RESULT_ADDED_TO_COLLECTION)
+            .observe(viewLifecycleOwner) { result ->
+                if (result == null) return@observe
+                savedStateHandle.remove<Bundle>(AddToCollectionFragment.RESULT_ADDED_TO_COLLECTION)
+                Snackbar.make(
+                    binding.root,
+                    getString(
+                        R.string.add_to_collection_success,
+                        result.getString(AddToCollectionFragment.RESULT_ALBUM_NAME).orEmpty(),
+                        result.getString(AddToCollectionFragment.RESULT_COLLECTOR_NAME).orEmpty()
+                    ),
+                    Snackbar.LENGTH_LONG
+                ).show()
+            }
+    }
+
     private fun renderRole(role: UserRole?) {
         binding.addTrackButton.isVisible = role?.canAddTracks == true
+        binding.addCommentButton.isVisible = role?.canAddComments == true
+        binding.addToCollectionButton.isVisible = role?.canAddToCollection == true
     }
 
     private fun render(state: AlbumDetailUiState) {
@@ -79,7 +166,7 @@ class AlbumDetailFragment : Fragment() {
         binding.errorContainer.isVisible = state is AlbumDetailUiState.Error
 
         when (state) {
-            is AlbumDetailUiState.Success -> showAlbum(state.album)
+            is AlbumDetailUiState.Success -> showAlbum(state.album, state.highlightedTrackId)
             is AlbumDetailUiState.Error ->
                 binding.errorText.text =
                     state.message.ifBlank { getString(R.string.albums_error_default) }
@@ -87,7 +174,7 @@ class AlbumDetailFragment : Fragment() {
         }
     }
 
-    private fun showAlbum(album: Album) {
+    private fun showAlbum(album: Album, highlightedTrackId: Int?) {
         val unknown = getString(R.string.album_value_unknown)
 
         binding.albumName.text = album.name
@@ -113,17 +200,19 @@ class AlbumDetailFragment : Fragment() {
         binding.albumDescription.text = album.description
             .ifBlank { getString(R.string.album_no_description) }
 
-        showTracks(album.tracks)
+        showTracks(album.tracks, highlightedTrackId)
         showComments(album.comments)
     }
 
-    private fun showTracks(tracks: List<Track>) {
+    private fun showTracks(tracks: List<Track>, highlightedTrackId: Int?) {
         binding.tracksCount.text =
             resources.getQuantityString(R.plurals.album_tracks_count, tracks.size, tracks.size)
         binding.tracksContainer.isVisible = tracks.isNotEmpty()
         binding.tracksEmpty.isVisible = tracks.isEmpty()
 
         binding.tracksContainer.removeAllViews()
+        // La canción recién agregada (HU08) se pinta en naranja, como en el prototipo
+        val highlightColor = MaterialColors.getColor(binding.tracksContainer, androidx.appcompat.R.attr.colorPrimary)
         tracks.forEachIndexed { index, track ->
             val row = ItemTrackBinding.inflate(layoutInflater, binding.tracksContainer, true)
             val duration = AlbumDetailFormatter.formatDuration(track.duration)
@@ -131,6 +220,10 @@ class AlbumDetailFragment : Fragment() {
             row.trackNumber.text = AlbumDetailFormatter.formatTrackNumber(index + 1)
             row.trackName.text = track.name
             row.trackDuration.text = duration
+            if (track.id == highlightedTrackId) {
+                row.trackName.setTextColor(highlightColor)
+                row.trackDuration.setTextColor(highlightColor)
+            }
             // TalkBack lee la fila completa en una sola frase
             row.trackRow.contentDescription =
                 getString(R.string.track_description, index + 1, track.name, duration)

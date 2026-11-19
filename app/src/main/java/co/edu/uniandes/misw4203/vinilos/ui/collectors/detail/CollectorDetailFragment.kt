@@ -86,6 +86,8 @@ class CollectorDetailFragment : Fragment() {
 
     private fun showAlbums(albums: List<CollectorAlbum>) {
         binding.albumsCount.text = CollectorDetailFormatter.formatCount(albums.size)
+        binding.albumsCount.contentDescription =
+            resources.getQuantityString(R.plurals.collector_albums_count_description, albums.size, albums.size)
         binding.albumsContainer.isVisible = albums.isNotEmpty()
         binding.albumsEmpty.isVisible = albums.isEmpty()
         binding.albumsContainer.removeAllViews()
@@ -120,6 +122,8 @@ class CollectorDetailFragment : Fragment() {
     /** Artistas favoritos como chips con borde (sin acción: el backend no dice si son músicos o bandas). */
     private fun showPerformers(performers: List<Performer>) {
         binding.performersCount.text = CollectorDetailFormatter.formatCount(performers.size)
+        binding.performersCount.contentDescription =
+            resources.getQuantityString(R.plurals.collector_performers_count_description, performers.size, performers.size)
         binding.performersGroup.isVisible = performers.isNotEmpty()
         binding.performersEmpty.isVisible = performers.isEmpty()
         binding.performersGroup.removeAllViews()
@@ -138,6 +142,8 @@ class CollectorDetailFragment : Fragment() {
 
     private fun showComments(comments: List<Comment>) {
         binding.commentsCount.text = CollectorDetailFormatter.formatCount(comments.size)
+        binding.commentsCount.contentDescription =
+            resources.getQuantityString(R.plurals.collector_comments_count_description, comments.size, comments.size)
         binding.commentsContainer.isVisible = comments.isNotEmpty()
         binding.commentsEmpty.isVisible = comments.isEmpty()
         binding.commentsContainer.removeAllViews()

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Campo "Coleccionista" (desplegable) que comparten HU09, HU10 y HU11.
+    Se pinta con CollectorFieldBinder. Úsalo con <include android:id="@+id/collectorField" .../>.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/collectorLabel"
+        style="@style/Widget.Vinilos.FormLabel"
+        android:contentDescription="@string/collector_field_label_description"
+        android:text="@string/collector_field_label" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/collectorLayout"
+        style="@style/Widget.Vinilos.TextField.Dropdown"
+        app:endIconContentDescription="@string/collector_field_dropdown"
+        app:errorIconDrawable="@null"
+        app:helperText="@string/collector_field_helper">
+
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:id="@+id/collectorInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/collector_field_placeholder"
+            android:inputType="none" />
+    </com.google.android.material.textfield.TextInputLayout>
+</LinearLayout>

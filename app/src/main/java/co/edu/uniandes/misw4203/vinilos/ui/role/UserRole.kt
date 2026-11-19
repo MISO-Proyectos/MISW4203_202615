@@ -13,8 +13,16 @@ enum class UserRole(
     /** Muestra el botón "Agregar álbum" en el catálogo. */
     val canAddAlbums: Boolean,
     /** Muestra el botón "Agregar track" en el detalle de un álbum. */
-    val canAddTracks: Boolean
+    val canAddTracks: Boolean,
+    /** Muestra el botón "Comentar" en el detalle de un álbum. */
+    val canAddComments: Boolean,
+    /** Muestra el botón "Agregar favorito" en el detalle de un artista (HU10). */
+    val canAddFavorites: Boolean,
+    /** Muestra el botón "Agregar a colección" en el detalle de un álbum (HU11). */
+    val canAddToCollection: Boolean
 ) {
-    VISITOR(R.string.role_visitor, canAddAlbums = false, canAddTracks = false),
-    COLLECTOR(R.string.role_collector, canAddAlbums = true, canAddTracks = true)
+    VISITOR(R.string.role_visitor, canAddAlbums = false, canAddTracks = false, canAddComments = false,
+        canAddFavorites = false, canAddToCollection = false),
+    COLLECTOR(R.string.role_collector, canAddAlbums = true, canAddTracks = true, canAddComments = true,
+        canAddFavorites = true, canAddToCollection = true)
 }
