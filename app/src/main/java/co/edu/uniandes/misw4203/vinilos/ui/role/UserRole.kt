@@ -13,8 +13,10 @@ enum class UserRole(
     /** Muestra el botón "Agregar álbum" en el catálogo. */
     val canAddAlbums: Boolean,
     /** Muestra el botón "Agregar track" en el detalle de un álbum. */
-    val canAddTracks: Boolean
+    val canAddTracks: Boolean,
+    /** Muestra el botón "Comentar" en el detalle de un álbum. */
+    val canAddComments: Boolean
 ) {
-    VISITOR(R.string.role_visitor, canAddAlbums = false, canAddTracks = false),
-    COLLECTOR(R.string.role_collector, canAddAlbums = true, canAddTracks = true)
+    VISITOR(R.string.role_visitor, canAddAlbums = false, canAddTracks = false, canAddComments = false),
+    COLLECTOR(R.string.role_collector, canAddAlbums = true, canAddTracks = true, canAddComments = true)
 }

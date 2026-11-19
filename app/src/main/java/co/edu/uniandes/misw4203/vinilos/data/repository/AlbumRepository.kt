@@ -2,6 +2,7 @@ package co.edu.uniandes.misw4203.vinilos.data.repository
 
 import co.edu.uniandes.misw4203.vinilos.data.adapter.AlbumServiceAdapter
 import co.edu.uniandes.misw4203.vinilos.data.model.Album
+import co.edu.uniandes.misw4203.vinilos.data.model.Comment
 import co.edu.uniandes.misw4203.vinilos.data.model.NewAlbum
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -45,6 +46,17 @@ class AlbumRepository(
      */
     suspend fun createAlbum(album: NewAlbum): Result<Album> =
         call { serviceAdapter.createAlbum(album) }.onSuccess { clearCache() }
+
+    /**
+     * HU09: agrega un comentario a un álbum.
+     */
+    suspend fun addComment(
+        albumId: Int,
+        collectorId: Int,
+        rating: Int,
+        description: String
+    ): Result<Comment> =
+        call { serviceAdapter.addComment(albumId, collectorId, rating, description) }
 
     private suspend fun <T> call(block: suspend () -> T): Result<T> =
         safeCall(

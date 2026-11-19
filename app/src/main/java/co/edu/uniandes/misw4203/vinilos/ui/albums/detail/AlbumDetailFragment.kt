@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -17,6 +18,7 @@ import co.edu.uniandes.misw4203.vinilos.R
 import co.edu.uniandes.misw4203.vinilos.data.model.Album
 import co.edu.uniandes.misw4203.vinilos.data.model.Comment
 import co.edu.uniandes.misw4203.vinilos.data.model.Track
+import co.edu.uniandes.misw4203.vinilos.databinding.DialogAddCommentBinding
 import co.edu.uniandes.misw4203.vinilos.databinding.FragmentAlbumDetailBinding
 import co.edu.uniandes.misw4203.vinilos.databinding.ItemCommentBinding
 import co.edu.uniandes.misw4203.vinilos.databinding.ItemTrackBinding
@@ -25,12 +27,13 @@ import co.edu.uniandes.misw4203.vinilos.ui.role.UserRole
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.material.color.MaterialColors
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 
 /**
- * Pantalla de detalle de un álbum (HU02). Solo dibuja el estado que entrega
- * AlbumDetailViewModel; el botón "Agregar track" depende del rol de SessionViewModel.
+ * Pantalla de detalle de un álbum (HU02 / HU09). Solo dibuja el estado que entrega
+ * AlbumDetailViewModel; los botones "Agregar track" y "Comentar" dependen del rol de SessionViewModel.
  * Las listas de tracks y comentarios son cortas y van dentro del scroll, por eso
  * se dibujan como filas en un LinearLayout en vez de un RecyclerView.
  */
@@ -60,6 +63,9 @@ class AlbumDetailFragment : Fragment() {
             // TODO: abrir el formulario para asociar un track cuando exista su HU
             Snackbar.make(binding.root, R.string.add_track_coming_soon, Snackbar.LENGTH_SHORT).show()
         }
+        binding.addCommentButton.setOnClickListener {
+            showAddCommentDialog()
+        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -71,6 +77,7 @@ class AlbumDetailFragment : Fragment() {
 
     private fun renderRole(role: UserRole?) {
         binding.addTrackButton.isVisible = role?.canAddTracks == true
+        binding.addCommentButton.isVisible = role?.canAddComments == true
     }
 
     private fun render(state: AlbumDetailUiState) {
@@ -151,6 +158,77 @@ class AlbumDetailFragment : Fragment() {
             row.commentText.text = comment.description
             showStars(row.commentStars, comment.rating, starStyle)
         }
+    }
+
+    /** HU09: Muestra el cuadro de diálogo para que un coleccionista agregue un comentario. */
+    private fun showAddCommentDialog() {
+        val dialogBinding = DialogAddCommentBinding.inflate(layoutInflater)
+        var selectedRating = MAX_RATING
+        var dialog: AlertDialog? = null
+
+        val starStyle = StarStyle.from(binding.root)
+        val stars = listOf(
+            dialogBinding.star1,
+            dialogBinding.star2,
+            dialogBinding.star3,
+            dialogBinding.star4,
+            dialogBinding.star5
+        )
+
+        fun updateStarRating(rating: Int) {
+            selectedRating = rating
+            stars.forEachIndexed { index, starImageView ->
+                starImageView.setColorFilter(
+                    if (index < rating) starStyle.filledColor else starStyle.emptyColor
+                )
+            }
+        }
+
+        stars.forEachIndexed { index, starImageView ->
+            starImageView.setOnClickListener {
+                updateStarRating(index + 1)
+            }
+        }
+
+        dialogBinding.cancelButton.setOnClickListener {
+            dialog?.dismiss()
+        }
+
+        dialogBinding.submitButton.setOnClickListener {
+            val description = dialogBinding.descriptionInput.text?.toString().orEmpty().trim()
+            if (description.isBlank()) {
+                dialogBinding.descriptionLayout.error = getString(R.string.add_comment_description_error)
+                return@setOnClickListener
+            }
+            dialogBinding.descriptionLayout.error = null
+
+            // Mostrar estado de carga en el diálogo
+            dialogBinding.loadingIndicator.isVisible = true
+            dialogBinding.submitButton.isEnabled = false
+            dialogBinding.cancelButton.isEnabled = false
+
+            viewModel.addComment(
+                rating = selectedRating,
+                description = description
+            ) { result ->
+                if (_binding == null) return@addComment
+                dialog?.dismiss()
+                result.fold(
+                    onSuccess = {
+                        Snackbar.make(binding.root, R.string.add_comment_success, Snackbar.LENGTH_SHORT).show()
+                    },
+                    onFailure = {
+                        Snackbar.make(binding.root, R.string.add_comment_error_default, Snackbar.LENGTH_LONG).show()
+                    }
+                )
+            }
+        }
+
+        dialog = MaterialAlertDialogBuilder(requireContext())
+            .setView(dialogBinding.root)
+            .create()
+
+        dialog.show()
     }
 
     /** Dibuja cinco estrellas: las primeras [rating] en naranja y el resto apagadas. */
