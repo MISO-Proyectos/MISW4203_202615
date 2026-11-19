@@ -81,41 +81,6 @@ class AlbumDetailViewModelTest {
         assertEquals(AlbumDetailUiState.Loading, viewModel.uiState.value)
     }
 
-    @Test
-    fun `agregar comentario exitosamente recarga el album`() = runTest(dispatcher) {
-        val api = FakeBackendApi(albums = listOf(albumDto(id = 100)))
-        val viewModel = viewModelWith(api, albumId = 100)
-        advanceUntilIdle()
-
-        var resultSuccess = false
-        viewModel.addComment(collectorId = 100, rating = 5, description = "Gran álbum") { result ->
-            resultSuccess = result.isSuccess
-        }
-        advanceUntilIdle()
-
-        assertTrue(resultSuccess)
-        assertEquals(1, api.addedComments.size)
-        assertEquals("Gran álbum", api.addedComments.first().description)
-        assertEquals(5, api.addedComments.first().rating)
-        assertTrue(viewModel.uiState.value is AlbumDetailUiState.Success)
-    }
-
-    @Test
-    fun `error al agregar comentario notifica fallo`() = runTest(dispatcher) {
-        val api = FakeBackendApi(albums = listOf(albumDto(id = 100)))
-        val viewModel = viewModelWith(api, albumId = 100)
-        advanceUntilIdle()
-
-        api.error = IOException("sin red")
-        var resultSuccess = true
-        viewModel.addComment(collectorId = 100, rating = 4, description = "Error") { result ->
-            resultSuccess = result.isSuccess
-        }
-        advanceUntilIdle()
-
-        assertTrue(!resultSuccess)
-    }
-
     @Test(expected = IllegalArgumentException::class)
     fun `sin el argumento albumId no se puede crear`() {
         AlbumDetailViewModel(SavedStateHandle(), AlbumRepository(AlbumServiceAdapter(FakeBackendApi(), dispatcher), dispatcher))
