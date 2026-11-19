@@ -47,6 +47,27 @@ En Android 17 (API 37) la app pide al abrir el permiso de red local (aparece com
 - Reporte: `app/build/reports/androidTests/connected/debug/index.html`
 - Estrategia y casos de prueba: ver la wiki.
 
+### Preparar el backend para correr todas las pruebas
+Los datos por defecto del backend entran con ids fijos (100 a 103) y la secuencia de PostgreSQL arranca en 1; sin este paso, las pruebas que crean datos chocan con esos ids (error de llave duplicada) después de unas pocas corridas.
+
+Desde PowerShell, dentro de la carpeta `BackVynils`:
+```powershell
+docker compose down
+Remove-Item -Recurse -Force .\pgdata
+docker compose up --build -d
+# Esperar a que responda: hasta 40 intentos de 3 s (2 minutos)
+$listo = $false
+for ($i = 1; $i -le 40 -and -not $listo; $i++) {
+  try { $listo = (Invoke-WebRequest http://localhost:3000/albums -UseBasicParsing).StatusCode -eq 200 } catch { Start-Sleep -Seconds 3 }
+}
+if (-not $listo) { Write-Error "El backend no respondió en http://localhost:3000/albums después de 2 minutos. Revisa los logs con: docker compose logs web db"; return }
+# Dejar las secuencias por encima de los ids por defecto
+foreach ($t in 'album','collector','collector_album','comment','performer','performer_prize','prize','track') {
+  docker compose exec -T db psql -U postgres -d vinyls -c "SELECT setval(pg_get_serial_sequence('$t','id'), 1000);"
+}
+```
+Si prefieres ver los logs, quita `-d` de `docker compose up` y corre el `setval` desde otra terminal una vez que `http://localhost:3000/albums` responda.
+
 ## APK
 El APK está en la carpeta `releases/` del repositorio (`releases/vinilos-v2.0.0.apk`) y también en la sección Releases:
 https://github.com/MISO-Proyectos/MISW4203_202615/releases
