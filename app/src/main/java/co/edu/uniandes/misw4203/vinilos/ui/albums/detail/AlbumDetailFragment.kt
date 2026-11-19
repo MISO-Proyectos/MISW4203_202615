@@ -47,6 +47,7 @@ class AlbumDetailFragment : Fragment() {
 
     private var _binding: FragmentAlbumDetailBinding? = null
     private val binding get() = _binding!!
+    private var snackbar: Snackbar? = null
 
     private val viewModel: AlbumDetailViewModel by viewModels { AlbumDetailViewModel.Factory }
 
@@ -106,14 +107,12 @@ class AlbumDetailFragment : Fragment() {
                 if (result == null) return@observe
                 savedStateHandle.remove<Bundle>(AddTrackFragment.RESULT_ADDED_TRACK)
                 viewModel.onTrackAdded(result.getInt(AddTrackFragment.RESULT_TRACK_ID))
-                Snackbar.make(
-                    binding.root,
+                showMessage(
                     getString(
                         R.string.add_track_success,
                         result.getString(AddTrackFragment.RESULT_TRACK_NAME).orEmpty()
-                    ),
-                    Snackbar.LENGTH_LONG
-                ).show()
+                    )
+                )
             }
     }
 
@@ -128,7 +127,7 @@ class AlbumDetailFragment : Fragment() {
                 if (added != true) return@observe
                 savedStateHandle.remove<Boolean>(AddCommentFragment.RESULT_ADDED_COMMENT)
                 viewModel.loadAlbum()
-                Snackbar.make(binding.root, R.string.add_comment_success, Snackbar.LENGTH_LONG).show()
+                showMessage(getString(R.string.add_comment_success))
             }
     }
 
@@ -142,15 +141,13 @@ class AlbumDetailFragment : Fragment() {
             .observe(viewLifecycleOwner) { result ->
                 if (result == null) return@observe
                 savedStateHandle.remove<Bundle>(AddToCollectionFragment.RESULT_ADDED_TO_COLLECTION)
-                Snackbar.make(
-                    binding.root,
+                showMessage(
                     getString(
                         R.string.add_to_collection_success,
                         result.getString(AddToCollectionFragment.RESULT_ALBUM_NAME).orEmpty(),
                         result.getString(AddToCollectionFragment.RESULT_COLLECTOR_NAME).orEmpty()
-                    ),
-                    Snackbar.LENGTH_LONG
-                ).show()
+                    )
+                )
             }
     }
 
@@ -261,7 +258,20 @@ class AlbumDetailFragment : Fragment() {
         }
     }
 
+    /**
+     * Muestra un aviso de esta pantalla. Material lo agrega al contenido de la actividad, no al
+     * fragmento, y sobreviviría a la navegación: al volver al catálogo taparía la barra inferior.
+     * Por eso se guarda y se cierra al destruir la vista. (En el detalle la barra inferior no
+     * está visible, así que no hay a qué anclarlo con setAnchorView.)
+     */
+    private fun showMessage(message: String) {
+        snackbar?.dismiss()
+        snackbar = Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).also { it.show() }
+    }
+
     override fun onDestroyView() {
+        snackbar?.dismiss()
+        snackbar = null
         _binding = null
         super.onDestroyView()
     }
