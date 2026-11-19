@@ -13,6 +13,7 @@ import co.edu.uniandes.misw4203.vinilos.data.dto.MusicianDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.PerformerDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.TrackCreateDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.TrackDto
+import co.edu.uniandes.misw4203.vinilos.data.model.ArtistType
 import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.HttpException
 import retrofit2.Response
@@ -185,6 +186,48 @@ class FakeBackendApi(
         bandsError?.let { throw it }
         return bands.firstOrNull { it.id == id }
             ?: throw HttpException(Response.error<Any>(404, "".toResponseBody(null)))
+    }
+
+    /** HU10: favoritos del coleccionista, o HTTP 404 si el coleccionista no existe. */
+    override suspend fun getCollectorPerformers(collectorId: Int): List<PerformerDto> {
+        error?.let { throw it }
+        val collector = collectors.firstOrNull { it.id == collectorId }
+            ?: throw HttpException(Response.error<Any>(404, "".toResponseBody(null)))
+        return collector.favoritePerformers.orEmpty()
+    }
+
+    /** Llamadas recibidas en POST /collectors/{id}/musicians/{id} y /bands/{id}: (coleccionista, artista, tipo), en orden. */
+    val addedFavorites = mutableListOf<Triple<Int, Int, ArtistType>>()
+
+    override suspend fun addFavoriteMusician(collectorId: Int, musicianId: Int): PerformerDto =
+        addFavorite(collectorId, musicianId, ArtistType.MUSICIAN)
+
+    override suspend fun addFavoriteBand(collectorId: Int, bandId: Int): PerformerDto =
+        addFavorite(collectorId, bandId, ArtistType.BAND)
+
+    /**
+     * Agrega el artista a los favoritos del coleccionista para que getCollectorPerformers ya lo
+     * devuelva. Responde HTTP 404 si no existe el coleccionista o el artista (el backend real
+     * busca en la misma tabla de artistas sin importar la ruta). No guarda dos veces el mismo
+     * favorito, pero tampoco avisa que ya existía.
+     */
+    private fun addFavorite(collectorId: Int, artistId: Int, type: ArtistType): PerformerDto {
+        error?.let { throw it }
+        addedFavorites += Triple(collectorId, artistId, type)
+        val artist = musicians.firstOrNull { it.id == artistId }?.let { PerformerDto(it.id, it.name, it.image) }
+            ?: bands.firstOrNull { it.id == artistId }?.let { PerformerDto(it.id, it.name, it.image) }
+        if (collectors.none { it.id == collectorId } || artist == null) {
+            throw HttpException(Response.error<Any>(404, "".toResponseBody(null)))
+        }
+        collectors = collectors.map { collector ->
+            val current = collector.favoritePerformers.orEmpty()
+            if (collector.id == collectorId && current.none { it.id == artistId }) {
+                collector.copy(favoritePerformers = current + artist)
+            } else {
+                collector
+            }
+        }
+        return artist
     }
 
     companion object {

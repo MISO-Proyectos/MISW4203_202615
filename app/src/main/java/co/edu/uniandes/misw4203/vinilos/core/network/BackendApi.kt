@@ -9,6 +9,7 @@ import co.edu.uniandes.misw4203.vinilos.data.dto.CollectorDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.CommentCreateDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.CommentDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.MusicianDto
+import co.edu.uniandes.misw4203.vinilos.data.dto.PerformerDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.TrackCreateDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.TrackDto
 import retrofit2.http.Body
@@ -79,4 +80,25 @@ interface BackendApi {
     /** HU04: detalle de una banda. */
     @GET("bands/{id}")
     suspend fun getBand(@Path("id") id: Int): BandDto
+
+    /** HU10: artistas favoritos de un coleccionista. De cada uno solo se usa el id. */
+    @GET("collectors/{id}/performers")
+    suspend fun getCollectorPerformers(@Path("id") collectorId: Int): List<PerformerDto>
+
+    /**
+     * HU10: agrega un músico a los favoritos de un coleccionista, sin cuerpo.
+     * El backend responde con el artista y no valida si ya era favorito.
+     */
+    @POST("collectors/{collectorId}/musicians/{musicianId}")
+    suspend fun addFavoriteMusician(
+        @Path("collectorId") collectorId: Int,
+        @Path("musicianId") musicianId: Int
+    ): PerformerDto
+
+    /** HU10: agrega una banda a los favoritos de un coleccionista, sin cuerpo. */
+    @POST("collectors/{collectorId}/bands/{bandId}")
+    suspend fun addFavoriteBand(
+        @Path("collectorId") collectorId: Int,
+        @Path("bandId") bandId: Int
+    ): PerformerDto
 }
