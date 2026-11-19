@@ -5,6 +5,7 @@ import co.edu.uniandes.misw4203.vinilos.data.adapter.AlbumServiceAdapter.Compani
 import co.edu.uniandes.misw4203.vinilos.data.dto.CollectorAlbumCreateDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.CollectorAlbumDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.CollectorDto
+import co.edu.uniandes.misw4203.vinilos.data.model.ArtistType
 import co.edu.uniandes.misw4203.vinilos.data.model.Collector
 import co.edu.uniandes.misw4203.vinilos.data.model.CollectorAlbum
 import co.edu.uniandes.misw4203.vinilos.data.model.CollectorAlbumStatus
@@ -65,6 +66,20 @@ class CollectorServiceAdapter(
             albumId,
             CollectorAlbumCreateDto(price = price, status = status.apiValue)
         )
+    }
+
+    /** HU10: ids de los artistas (músicos y bandas) que ya son favoritos del coleccionista. */
+    suspend fun getFavoriteArtistIds(collectorId: Int): Set<Int> {
+        val dtos = api.getCollectorPerformers(collectorId)
+        return withContext(dispatcher) { dtos.mapNotNull { it.id }.toSet() }
+    }
+
+    /** HU10: agrega el artista a los favoritos del coleccionista (POST según su tipo). Los errores se propagan. */
+    suspend fun addFavoriteArtist(collectorId: Int, artistId: Int, type: ArtistType) {
+        when (type) {
+            ArtistType.MUSICIAN -> api.addFavoriteMusician(collectorId, artistId)
+            ArtistType.BAND -> api.addFavoriteBand(collectorId, artistId)
+        }
     }
 
     companion object {
