@@ -49,7 +49,15 @@ class CreateAlbumE2ETest {
 
     private companion object {
         const val TITULO = "Agregar álbum"
-        const val OBLIGATORIO = "Este campo es obligatorio."
+        // Cada error de "obligatorio" nombra su campo (accesibilidad, A11Y-07)
+        val OBLIGATORIOS = mapOf(
+            R.id.nameLayout to "El nombre es obligatorio.",
+            R.id.coverLayout to "La URL de la portada es obligatoria.",
+            R.id.releaseDateLayout to "La fecha de lanzamiento es obligatoria.",
+            R.id.genreLayout to "El género es obligatorio.",
+            R.id.recordLabelLayout to "El sello discográfico es obligatorio.",
+            R.id.descriptionLayout to "La descripción es obligatoria."
+        )
         const val URL_INVALIDA = "Ingresa un enlace válido que empiece por http:// o https://."
         const val PORTADA = "https://i.pinimg.com/564x/aa/5f/ed/aa5fed7fac61cc8f41d1e79db917a7cd.jpg"
         const val DESCRIPCION = "Álbum creado por la prueba E2E de la HU07."
@@ -118,11 +126,8 @@ class CreateAlbumE2ETest {
 
         tocarGuardar()
 
-        listOf(
-            R.id.nameLayout, R.id.coverLayout, R.id.releaseDateLayout,
-            R.id.genreLayout, R.id.recordLabelLayout, R.id.descriptionLayout
-        ).forEach { campo ->
-            onView(withId(campo)).check(matches(conError(OBLIGATORIO)))
+        OBLIGATORIOS.forEach { (campo, mensaje) ->
+            onView(withId(campo)).check(matches(conError(mensaje)))
         }
         // Sigue en el formulario
         onView(withId(R.id.topBarTitle)).check(matches(withText(TITULO)))
@@ -144,7 +149,8 @@ class CreateAlbumE2ETest {
     fun corregir_un_campo_quita_su_error() {
         abrirFormulario()
         tocarGuardar()
-        onView(withId(R.id.nameLayout)).perform(scrollTo()).check(matches(conError(OBLIGATORIO)))
+        onView(withId(R.id.nameLayout)).perform(scrollTo())
+            .check(matches(conError(OBLIGATORIOS.getValue(R.id.nameLayout))))
 
         onView(withId(R.id.nameInput)).perform(replaceText("Un nombre"))
         elegirOpcion(R.id.genreInput, "Clásica")
@@ -152,7 +158,8 @@ class CreateAlbumE2ETest {
         onView(withId(R.id.nameLayout)).check(matches(sinError()))
         onView(withId(R.id.genreLayout)).check(matches(sinError()))
         onView(withId(R.id.genreInput)).check(matches(withText("Clásica")))
-        onView(withId(R.id.recordLabelLayout)).check(matches(conError(OBLIGATORIO)))
+        onView(withId(R.id.recordLabelLayout))
+            .check(matches(conError(OBLIGATORIOS.getValue(R.id.recordLabelLayout))))
     }
 
     // CP-HU07-06

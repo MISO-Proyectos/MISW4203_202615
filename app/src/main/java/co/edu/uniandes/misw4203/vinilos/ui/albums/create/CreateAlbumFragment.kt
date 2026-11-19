@@ -143,12 +143,12 @@ class CreateAlbumFragment : Fragment() {
         binding.genreInput.showSelection(state.genre?.let { getString(it.labelRes) })
         binding.recordLabelInput.showSelection(state.recordLabel?.apiValue)
 
-        showError(binding.nameLayout, state.errors[AlbumFormField.NAME])
-        showError(binding.coverLayout, state.errors[AlbumFormField.COVER])
-        showError(binding.releaseDateLayout, state.errors[AlbumFormField.RELEASE_DATE])
-        showError(binding.genreLayout, state.errors[AlbumFormField.GENRE])
-        showError(binding.recordLabelLayout, state.errors[AlbumFormField.RECORD_LABEL])
-        showError(binding.descriptionLayout, state.errors[AlbumFormField.DESCRIPTION])
+        showError(binding.nameLayout, AlbumFormField.NAME, state.errors)
+        showError(binding.coverLayout, AlbumFormField.COVER, state.errors)
+        showError(binding.releaseDateLayout, AlbumFormField.RELEASE_DATE, state.errors)
+        showError(binding.genreLayout, AlbumFormField.GENRE, state.errors)
+        showError(binding.recordLabelLayout, AlbumFormField.RECORD_LABEL, state.errors)
+        showError(binding.descriptionLayout, AlbumFormField.DESCRIPTION, state.errors)
 
         val enabled = !state.isSaving
         listOf(
@@ -166,8 +166,18 @@ class CreateAlbumFragment : Fragment() {
         if (text.toString() != value) setText(value, false)
     }
 
-    private fun showError(layout: TextInputLayout, error: AlbumFormError?) {
-        val message = error?.let { getString(it.messageRes) }
+    /**
+     * El error de "obligatorio" nombra el campo, para que TalkBack no lea cinco
+     * mensajes iguales sin decir a cuál campo pertenece cada uno.
+     */
+    private fun showError(
+        layout: TextInputLayout,
+        field: AlbumFormField,
+        errors: Map<AlbumFormField, AlbumFormError>
+    ) {
+        val message = errors[field]?.let {
+            getString(if (it == AlbumFormError.REQUIRED) field.requiredRes else it.messageRes)
+        }
         if (layout.error?.toString() != message) layout.error = message
     }
 
@@ -213,6 +223,17 @@ class CreateAlbumFragment : Fragment() {
                 AlbumGenre.SALSA -> R.string.genre_salsa
                 AlbumGenre.ROCK -> R.string.genre_rock
                 AlbumGenre.FOLK -> R.string.genre_folk
+            }
+
+        @get:StringRes
+        private val AlbumFormField.requiredRes: Int
+            get() = when (this) {
+                AlbumFormField.NAME -> R.string.create_album_error_required_name
+                AlbumFormField.COVER -> R.string.create_album_error_required_cover
+                AlbumFormField.RELEASE_DATE -> R.string.create_album_error_required_release_date
+                AlbumFormField.GENRE -> R.string.create_album_error_required_genre
+                AlbumFormField.RECORD_LABEL -> R.string.create_album_error_required_record_label
+                AlbumFormField.DESCRIPTION -> R.string.create_album_error_required_description
             }
 
         @get:StringRes
