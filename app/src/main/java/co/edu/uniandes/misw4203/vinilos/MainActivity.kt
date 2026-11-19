@@ -206,7 +206,7 @@ class MainActivity : AppCompatActivity() {
             R.id.collectorListFragment
         )
 
-        /** Formularios (HU07): la barra superior muestra una "X" para cerrar. */
-        val FORM_DESTINATIONS = setOf(R.id.createAlbumFragment)
+        /** Formularios (HU07 y HU08): la barra superior muestra una "X" para cerrar. */
+        val FORM_DESTINATIONS = setOf(R.id.createAlbumFragment, R.id.addTrackFragment)
     }
 }

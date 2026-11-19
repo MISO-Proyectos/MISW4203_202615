@@ -34,14 +34,34 @@ class AlbumDetailViewModel(
         loadAlbum()
     }
 
+    /** Canción recién agregada (HU08) que se resalta en la lista. */
+    private var highlightedTrackId: Int? = null
+
+    /** Id del álbum, para abrir el formulario "Agregar track". */
+    val currentAlbumId: Int get() = albumId
+
     /** Pide el álbum. Se llama al abrir la pantalla y desde el botón "Reintentar". */
     fun loadAlbum() {
         _uiState.value = AlbumDetailUiState.Loading
         viewModelScope.launch {
             _uiState.value = albumRepository.getAlbum(albumId).fold(
-                onSuccess = { AlbumDetailUiState.Success(it) },
+                onSuccess = { AlbumDetailUiState.Success(it, highlightedTrackId) },
                 onFailure = { AlbumDetailUiState.Error(it.message.orEmpty()) }
             )
+        }
+    }
+
+    /**
+     * HU08: se agregó la canción [trackId]. Se vuelve a pedir el álbum sin pasar por
+     * Loading, para que la pantalla no parpadee ni pierda el scroll, y se resalta la
+     * canción nueva. Si la recarga falla se deja el álbum que ya se veía.
+     */
+    fun onTrackAdded(trackId: Int) {
+        highlightedTrackId = trackId
+        viewModelScope.launch {
+            albumRepository.getAlbum(albumId).onSuccess {
+                _uiState.value = AlbumDetailUiState.Success(it, trackId)
+            }
         }
     }
 

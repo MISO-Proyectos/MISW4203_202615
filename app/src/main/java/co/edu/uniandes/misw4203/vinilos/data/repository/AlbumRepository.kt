@@ -2,6 +2,8 @@ package co.edu.uniandes.misw4203.vinilos.data.repository
 
 import co.edu.uniandes.misw4203.vinilos.data.adapter.AlbumServiceAdapter
 import co.edu.uniandes.misw4203.vinilos.data.model.Album
+import co.edu.uniandes.misw4203.vinilos.data.model.NewTrack
+import co.edu.uniandes.misw4203.vinilos.data.model.Track
 import co.edu.uniandes.misw4203.vinilos.data.model.Comment
 import co.edu.uniandes.misw4203.vinilos.data.model.NewAlbum
 import kotlinx.coroutines.CoroutineDispatcher
@@ -39,6 +41,13 @@ class AlbumRepository(
     /** HU02: detalle de un álbum (no se cachea). Si no existe devuelve NotFound. */
     suspend fun getAlbum(albumId: Int): Result<Album> =
         call { serviceAdapter.getAlbum(albumId) }
+
+    /**
+     * HU08: asocia una canción a un álbum. Si el álbum no existe devuelve NotFound.
+     * El detalle no se cachea, así que al volver a pedirlo ya trae la canción nueva.
+     */
+    suspend fun addTrack(albumId: Int, track: NewTrack): Result<Track> =
+        call { serviceAdapter.addTrack(albumId, track) }
 
     /**
      * HU07: crea un álbum. Si sale bien se borra el catálogo en memoria para que la

@@ -7,9 +7,11 @@ import co.edu.uniandes.misw4203.vinilos.data.dto.CollectorRefDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.CommentCreateDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.CommentDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.PerformerDto
+import co.edu.uniandes.misw4203.vinilos.data.dto.TrackCreateDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.TrackDto
 import co.edu.uniandes.misw4203.vinilos.data.model.Album
 import co.edu.uniandes.misw4203.vinilos.data.model.Comment
+import co.edu.uniandes.misw4203.vinilos.data.model.NewTrack
 import co.edu.uniandes.misw4203.vinilos.data.model.NewAlbum
 import co.edu.uniandes.misw4203.vinilos.data.model.Performer
 import co.edu.uniandes.misw4203.vinilos.data.model.ReleaseDate
@@ -43,6 +45,14 @@ class AlbumServiceAdapter(
         }
     }
 
+    /** HU08: asocia una canción a un álbum y devuelve la canción guardada (con su id). */
+    suspend fun addTrack(albumId: Int, track: NewTrack): Track {
+        val dto = api.addTrack(albumId, track.toDto())
+        return withContext(dispatcher) {
+            dto.toModel() ?: throw IllegalStateException("El backend devolvió una canción sin id")
+        }
+    }
+
     /** HU07: crea un álbum y devuelve el álbum guardado por el backend (con su id). */
     suspend fun createAlbum(album: NewAlbum): Album {
         val dto = api.createAlbum(album.toDto())
@@ -70,6 +80,9 @@ class AlbumServiceAdapter(
     }
 
     companion object {
+
+        /** Convierte la canción nueva en el JSON que espera POST /albums/{id}/tracks. */
+        fun NewTrack.toDto(): TrackCreateDto = TrackCreateDto(name.trim(), duration.trim())
 
         /** Convierte el álbum nuevo en el JSON que espera POST /albums. */
         fun NewAlbum.toDto(): AlbumCreateDto = AlbumCreateDto(
