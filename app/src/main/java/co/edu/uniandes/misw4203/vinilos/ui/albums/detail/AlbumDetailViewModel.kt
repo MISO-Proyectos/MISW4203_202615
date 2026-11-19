@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 /**
- * ViewModel del detalle de un álbum (HU02 / HU09).
+ * ViewModel del detalle de un álbum (HU02).
  */
 class AlbumDetailViewModel(
     savedStateHandle: SavedStateHandle,
@@ -65,30 +65,9 @@ class AlbumDetailViewModel(
         }
     }
 
-    /** HU09: agrega un comentario al álbum y recarga sus detalles si fue exitoso. */
-    fun addComment(
-        collectorId: Int = DEFAULT_COLLECTOR_ID,
-        rating: Int,
-        description: String,
-        onResult: (Result<Unit>) -> Unit
-    ) {
-        viewModelScope.launch {
-            val result = albumRepository.addComment(albumId, collectorId, rating, description)
-            if (result.isSuccess) {
-                loadAlbum()
-                onResult(Result.success(Unit))
-            } else {
-                onResult(Result.failure(result.exceptionOrNull() ?: Exception()))
-            }
-        }
-    }
-
     companion object {
         /** Nombre del argumento en nav_graph.xml. */
         const val ARG_ALBUM_ID = "albumId"
-
-        /** ID de coleccionista por defecto (Manolo Bellon). */
-        const val DEFAULT_COLLECTOR_ID = 100
 
         /** Crea el ViewModel con los argumentos de navegación y el repositorio de AppContainer. */
         val Factory: ViewModelProvider.Factory = viewModelFactory {
