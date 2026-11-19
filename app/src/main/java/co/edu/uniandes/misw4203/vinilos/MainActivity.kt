@@ -86,6 +86,11 @@ class MainActivity : AppCompatActivity() {
             binding.topBar.isVisible = destination.id != R.id.roleSelectionFragment
             binding.bottomBar.isVisible = onTopLevelScreen
             binding.topBarTitle.text = destination.label
+            // En las secciones principales el título repite la opción de la barra inferior;
+            // TalkBack lo anuncia como "Sección …" para que no sean dos elementos iguales.
+            binding.topBarTitle.contentDescription = destination.label
+                ?.takeIf { onTopLevelScreen }
+                ?.let { getString(R.string.top_bar_section, it) }
             updateTopBarIcon()
             updateRoleChip()
             updateBottomInset()

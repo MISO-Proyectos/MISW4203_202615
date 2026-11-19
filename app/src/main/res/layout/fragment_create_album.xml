@@ -107,6 +107,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/genreLayout"
             style="@style/Widget.Vinilos.TextField.Dropdown"
+            app:endIconContentDescription="@string/create_album_genre_dropdown"
             app:helperText="@string/create_album_genre_helper">
 
             <com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -127,6 +128,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/recordLabelLayout"
             style="@style/Widget.Vinilos.TextField.Dropdown"
+            app:endIconContentDescription="@string/create_album_record_label_dropdown"
             app:helperText="@string/create_album_record_label_helper">
 
             <com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -161,7 +163,8 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/saveButton"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="wrap_content"
+            android:minHeight="56dp"
             android:layout_marginTop="24dp"
             android:text="@string/create_album_save"
             android:textAppearance="?attr/textAppearanceLabelLarge"
