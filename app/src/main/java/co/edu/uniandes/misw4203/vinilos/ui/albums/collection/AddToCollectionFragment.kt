@@ -104,7 +104,12 @@ class AddToCollectionFragment : Fragment() {
         val bannerWasVisible = binding.errorBanner.isVisible
         binding.errorBanner.isVisible = state.showErrorBanner
         // El aviso está arriba: si recién aparece, se sube para que el usuario lo vea
-        if (state.showErrorBanner && !bannerWasVisible) binding.addToCollectionScroll.smoothScrollTo(0, 0)
+        if (state.showErrorBanner && !bannerWasVisible) {
+            binding.addToCollectionScroll.smoothScrollTo(0, 0)
+            // El foco pasa al aviso (un solo elemento que TalkBack lee primero); después el
+            // usuario recorre los campos con error en orden. El teclado ya se cerró al guardar.
+            binding.errorBanner.post { _binding?.errorBanner?.requestFocus() }
+        }
 
         binding.albumSummary.isVisible = state.album != null
         state.album?.let(::showAlbum)
