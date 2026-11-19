@@ -32,7 +32,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 /**
- * HU06 - Accesibilidad del detalle de un coleccionista (A11Y-11 a A11Y-16).
+ * HU06 - Accesibilidad del detalle de un coleccionista (A11Y-21 a A11Y-26).
  * Comprueba en la vista real lo que el Accessibility Scanner no revisa: encabezados, elementos
  * agrupados, descripción y acción de la fila de un álbum y regiones vivas de carga y error.
  * Precondición: backend BackVynils con sus datos por defecto (Manolo Bellon, id 100, con el álbum
@@ -108,7 +108,7 @@ class CollectorDetailAccessibilityTest {
                 }
         }
 
-    // A11Y-11
+    // A11Y-21
     @Test
     fun el_nombre_y_los_titulos_de_seccion_son_encabezados() {
         onView(withId(R.id.detailName)).check(matches(esEncabezado()))
@@ -117,7 +117,7 @@ class CollectorDetailAccessibilityTest {
         onView(withId(R.id.commentsTitle)).check(matches(esEncabezado()))
     }
 
-    // A11Y-12
+    // A11Y-22
     @Test
     fun el_correo_y_el_telefono_se_leen_junto_con_su_etiqueta() {
         onView(withId(R.id.emailRow)).check(
@@ -140,7 +140,7 @@ class CollectorDetailAccessibilityTest {
         )
     }
 
-    // A11Y-13
+    // A11Y-23
     @Test
     fun la_fila_de_album_tiene_descripcion_completa_y_accion() {
         val fila = allOf(withId(R.id.albumRow), hasDescendant(withText(ALBUM)))
@@ -156,7 +156,7 @@ class CollectorDetailAccessibilityTest {
         onView(fila).check(matches(conAccionDeToque(ACCION_FILA)))
     }
 
-    // A11Y-16
+    // A11Y-26
     @Test
     fun el_comentario_se_lee_como_un_solo_elemento() {
         val fila = allOf(withId(R.id.commentRow), hasDescendant(withText(COMENTARIO)))
@@ -165,7 +165,7 @@ class CollectorDetailAccessibilityTest {
         onView(fila).check(matches(allOf(isFocusable(), hasDescendant(withId(R.id.commentStars)))))
     }
 
-    // A11Y-15
+    // A11Y-25
     @Test
     fun la_carga_y_el_error_se_anuncian_como_regiones_vivas() {
         onView(withId(R.id.loadingIndicator)).check(matches(esRegionViva()))
