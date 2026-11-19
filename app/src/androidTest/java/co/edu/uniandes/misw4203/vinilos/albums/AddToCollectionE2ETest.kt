@@ -10,6 +10,7 @@ import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.action.ViewActions.scrollTo
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.RootMatchers.isPlatformPopup
@@ -240,8 +241,14 @@ class AddToCollectionE2ETest {
         tocarAgregar()
         volvioAlDetalle()
 
-        // Atrás al catálogo (pantalla principal) y de ahí a Coleccionistas
+        // Atrás al catálogo (pantalla principal) y de ahí a Coleccionistas. El aviso del detalle
+        // sigue visible sobre la barra inferior hasta que se cierra (la barra no existe en el
+        // detalle, no se puede anclar el aviso a ella): se espera a que desaparezca, porque un
+        // clic sobre "Coleccionistas" mientras está visible le caería al aviso.
         pressBack()
+        waitFor(timeoutMs = 15_000) {
+            onView(withId(com.google.android.material.R.id.snackbar_text)).check(doesNotExist())
+        }
         waitFor { onView(withId(R.id.collectorListFragment)).perform(click()) }
         waitFor {
             onView(withId(R.id.collectorList)).perform(
