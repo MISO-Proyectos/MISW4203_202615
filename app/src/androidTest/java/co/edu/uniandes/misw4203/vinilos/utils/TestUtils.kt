@@ -10,16 +10,12 @@ import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.rule.GrantPermissionRule
 import co.edu.uniandes.misw4203.vinilos.R
-import com.google.android.material.textfield.TextInputLayout
-import org.hamcrest.Description
-import org.hamcrest.Matcher
 
 object TestUtils {
 
@@ -61,27 +57,6 @@ object TestUtils {
             )
         )
     }
-
-    /** Campo de formulario (TextInputLayout) que muestra exactamente ese mensaje de error. */
-    fun conError(mensaje: String): Matcher<View> =
-        object : BoundedMatcher<View, TextInputLayout>(TextInputLayout::class.java) {
-            override fun describeTo(description: Description) {
-                description.appendText("campo con el error \"$mensaje\"")
-            }
-
-            override fun matchesSafely(item: TextInputLayout): Boolean =
-                item.error?.toString() == mensaje
-        }
-
-    /** Campo de formulario (TextInputLayout) que no muestra ningún error. */
-    fun sinError(): Matcher<View> =
-        object : BoundedMatcher<View, TextInputLayout>(TextInputLayout::class.java) {
-            override fun describeTo(description: Description) {
-                description.appendText("campo sin error")
-            }
-
-            override fun matchesSafely(item: TextInputLayout): Boolean = item.error.isNullOrEmpty()
-        }
 
     /**
      * Repite la verificación hasta que pase o se agote el tiempo.

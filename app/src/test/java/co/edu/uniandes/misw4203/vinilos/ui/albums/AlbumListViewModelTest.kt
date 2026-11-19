@@ -1,10 +1,6 @@
 package co.edu.uniandes.misw4203.vinilos.ui.albums
 
 import co.edu.uniandes.misw4203.vinilos.core.network.BackendApi
-import co.edu.uniandes.misw4203.vinilos.data.dto.TrackCreateDto
-import co.edu.uniandes.misw4203.vinilos.data.dto.AlbumCreateDto
-import co.edu.uniandes.misw4203.vinilos.data.dto.CollectorAlbumCreateDto
-import co.edu.uniandes.misw4203.vinilos.data.dto.CommentCreateDto
 import co.edu.uniandes.misw4203.vinilos.data.FakeBackendApi
 import co.edu.uniandes.misw4203.vinilos.data.FakeBackendApi.Companion.albumDto
 import co.edu.uniandes.misw4203.vinilos.data.adapter.AlbumServiceAdapter
@@ -105,19 +101,11 @@ class AlbumListViewModelTest {
 
         override suspend fun getAlbum(albumId: Int) = delegate.getAlbum(albumId)
 
-        override suspend fun addTrack(albumId: Int, track: TrackCreateDto) = delegate.addTrack(albumId, track)
-        override suspend fun createAlbum(album: AlbumCreateDto) = delegate.createAlbum(album)
-
-        override suspend fun addComment(albumId: Int, comment: CommentCreateDto) = delegate.addComment(albumId, comment)
-
         override suspend fun getCollectors() = delegate.getCollectors()
 
         override suspend fun getCollector(id: Int) = delegate.getCollector(id)
 
         override suspend fun getCollectorAlbums(id: Int) = delegate.getCollectorAlbums(id)
-
-        override suspend fun addAlbumToCollector(collectorId: Int, albumId: Int, body: CollectorAlbumCreateDto) =
-            delegate.addAlbumToCollector(collectorId, albumId, body)
 
         override suspend fun getMusicians() = delegate.getMusicians()
 
@@ -126,13 +114,5 @@ class AlbumListViewModelTest {
         override suspend fun getMusician(id: Int) = delegate.getMusician(id)
 
         override suspend fun getBand(id: Int) = delegate.getBand(id)
-
-        override suspend fun getCollectorPerformers(collectorId: Int) = delegate.getCollectorPerformers(collectorId)
-
-        override suspend fun addFavoriteMusician(collectorId: Int, musicianId: Int) =
-            delegate.addFavoriteMusician(collectorId, musicianId)
-
-        override suspend fun addFavoriteBand(collectorId: Int, bandId: Int) =
-            delegate.addFavoriteBand(collectorId, bandId)
     }
 }

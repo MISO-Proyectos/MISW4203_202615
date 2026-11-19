@@ -12,10 +12,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import co.edu.uniandes.misw4203.vinilos.MainActivity
 import co.edu.uniandes.misw4203.vinilos.R
-import co.edu.uniandes.misw4203.vinilos.utils.BackendFixtures
 import co.edu.uniandes.misw4203.vinilos.utils.TestUtils.grantLocalNetworkAccess
 import co.edu.uniandes.misw4203.vinilos.utils.TestUtils.waitFor
 import org.junit.Before
@@ -50,6 +48,7 @@ class CollectorListE2ETest {
         const val INICIALES_PRIMERO = "MB"
         const val CORREO_PRIMERO = "manollo@caracol.com.co"
         const val TELEFONO_PRIMERO = "3502457896"
+        const val CONTADOR = "2 coleccionistas"
     }
 
     private fun laListaMuestra(texto: String) = waitFor {
@@ -98,11 +97,6 @@ class CollectorListE2ETest {
     // CP-HU05-09
     @Test
     fun listado_muestra_el_contador_de_coleccionistas() {
-        // Otras pruebas crean sus propios coleccionistas y el backend los conserva,
-        // así que el contador se compara con lo que hay hoy en el backend
-        val total = BackendFixtures.contarColeccionistas()
-        val contador = InstrumentationRegistry.getInstrumentation().targetContext.resources
-            .getQuantityString(R.plurals.collectors_count, total, total)
-        laListaMuestra(contador)
+        laListaMuestra(CONTADOR)
     }
 }

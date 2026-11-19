@@ -40,7 +40,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:accessibilityLiveRegion="polite"
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:padding="32dp"

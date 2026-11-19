@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.ConcatAdapter
 import co.edu.uniandes.misw4203.vinilos.R
 import co.edu.uniandes.misw4203.vinilos.data.model.Album
 import co.edu.uniandes.misw4203.vinilos.databinding.FragmentAlbumListBinding
-import co.edu.uniandes.misw4203.vinilos.ui.albums.create.CreateAlbumFragment
 import co.edu.uniandes.misw4203.vinilos.ui.albums.detail.AlbumDetailViewModel
 import co.edu.uniandes.misw4203.vinilos.ui.role.SessionViewModel
 import co.edu.uniandes.misw4203.vinilos.ui.role.UserRole
@@ -28,8 +27,7 @@ import kotlinx.coroutines.launch
 /**
  * Pantalla del catálogo de álbumes (HU01). Solo dibuja el estado que entrega
  * AlbumListViewModel y le avisa cuando el usuario toca "Reintentar".
- * El botón "Agregar álbum" depende del rol guardado en SessionViewModel y abre el
- * formulario de creación (HU07).
+ * El botón "Agregar álbum" depende del rol guardado en SessionViewModel.
  */
 class AlbumListFragment : Fragment() {
 
@@ -60,9 +58,11 @@ class AlbumListFragment : Fragment() {
         binding.albumList.adapter = ConcatAdapter(countAdapter, albumAdapter)
         binding.retryButton.setOnClickListener { viewModel.loadAlbums(forceRefresh = true) }
         binding.addAlbumButton.setOnClickListener {
-            findNavController().navigate(R.id.action_albumList_to_createAlbum)
+            // TODO: navegar al formulario de creación de álbum cuando exista su HU
+            Snackbar.make(binding.root, R.string.add_album_coming_soon, Snackbar.LENGTH_SHORT)
+                .setAnchorView(binding.addAlbumButton)
+                .show()
         }
-        observeCreatedAlbum()
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -70,25 +70,6 @@ class AlbumListFragment : Fragment() {
                 launch { session.role.collect(::renderRole) }
             }
         }
-    }
-
-    /**
-     * HU07: al volver del formulario con un álbum creado, se recarga el catálogo
-     * (el repositorio ya borró su caché) y se muestra el aviso con el nombre del álbum.
-     */
-    private fun observeCreatedAlbum() {
-        val savedStateHandle = findNavController().currentBackStackEntry?.savedStateHandle ?: return
-        savedStateHandle.getLiveData<String>(CreateAlbumFragment.RESULT_CREATED_ALBUM)
-            .observe(viewLifecycleOwner) { albumName ->
-                if (albumName == null) return@observe
-                savedStateHandle.remove<String>(CreateAlbumFragment.RESULT_CREATED_ALBUM)
-                viewModel.loadAlbums()
-                Snackbar.make(
-                    binding.root,
-                    getString(R.string.create_album_success, albumName),
-                    Snackbar.LENGTH_LONG
-                ).setAnchorView(binding.addAlbumButton).show()
-            }
     }
 
     /** HU02: abre el detalle del álbum tocado. */
