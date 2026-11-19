@@ -55,8 +55,12 @@ Desde PowerShell, dentro de la carpeta `BackVynils`:
 docker compose down
 Remove-Item -Recurse -Force .\pgdata
 docker compose up --build -d
-# Esperar a que responda (puede tardar un minuto); debe devolver 200
-do { Start-Sleep -Seconds 3; $r = try { (Invoke-WebRequest http://localhost:3000/albums -UseBasicParsing).StatusCode } catch { 0 } } until ($r -eq 200)
+# Esperar a que responda: hasta 40 intentos de 3 s (2 minutos)
+$listo = $false
+for ($i = 1; $i -le 40 -and -not $listo; $i++) {
+  try { $listo = (Invoke-WebRequest http://localhost:3000/albums -UseBasicParsing).StatusCode -eq 200 } catch { Start-Sleep -Seconds 3 }
+}
+if (-not $listo) { Write-Error "El backend no respondió en http://localhost:3000/albums después de 2 minutos. Revisa los logs con: docker compose logs web db"; return }
 # Dejar las secuencias por encima de los ids por defecto
 foreach ($t in 'album','collector','collector_album','comment','performer','performer_prize','prize','track') {
   docker compose exec -T db psql -U postgres -d vinyls -c "SELECT setval(pg_get_serial_sequence('$t','id'), 1000);"
