@@ -126,5 +126,13 @@ class AlbumListViewModelTest {
         override suspend fun getMusician(id: Int) = delegate.getMusician(id)
 
         override suspend fun getBand(id: Int) = delegate.getBand(id)
+
+        override suspend fun getCollectorPerformers(collectorId: Int) = delegate.getCollectorPerformers(collectorId)
+
+        override suspend fun addFavoriteMusician(collectorId: Int, musicianId: Int) =
+            delegate.addFavoriteMusician(collectorId, musicianId)
+
+        override suspend fun addFavoriteBand(collectorId: Int, bandId: Int) =
+            delegate.addFavoriteBand(collectorId, bandId)
     }
 }

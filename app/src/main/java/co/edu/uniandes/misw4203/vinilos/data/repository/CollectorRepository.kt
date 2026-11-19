@@ -1,9 +1,11 @@
 package co.edu.uniandes.misw4203.vinilos.data.repository
 
 import co.edu.uniandes.misw4203.vinilos.data.adapter.CollectorServiceAdapter
+import co.edu.uniandes.misw4203.vinilos.data.model.ArtistType
 import co.edu.uniandes.misw4203.vinilos.data.model.CollectionResult
 import co.edu.uniandes.misw4203.vinilos.data.model.Collector
 import co.edu.uniandes.misw4203.vinilos.data.model.CollectorAlbumStatus
+import co.edu.uniandes.misw4203.vinilos.data.model.FavoriteResult
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
@@ -61,6 +63,29 @@ class CollectorRepository(
         } else {
             serviceAdapter.addAlbumToCollector(collectorId, albumId, price, status)
             CollectionResult.ADDED
+        }
+    }
+
+    /**
+     * HU10: agrega el artista a los favoritos del coleccionista. El backend no impide repetir
+     * un favorito, así que primero consulta los favoritos del coleccionista: si el artista ya
+     * está devuelve [FavoriteResult.ALREADY_FAVORITE] sin hacer el POST. Si el coleccionista o
+     * el artista no existen devuelve NotFound. No toca la caché del listado de coleccionistas.
+     */
+    suspend fun addFavoriteArtist(
+        collectorId: Int,
+        artistId: Int,
+        type: ArtistType
+    ): Result<FavoriteResult> = safeCall(
+        dispatcher = dispatcher,
+        notFoundMessage = "No encontramos el artista o el coleccionista. Puede que hayan sido eliminados.",
+        unexpectedMessage = "No pudimos agregar el artista a favoritos. Intenta de nuevo."
+    ) {
+        if (artistId in serviceAdapter.getFavoriteArtistIds(collectorId)) {
+            FavoriteResult.ALREADY_FAVORITE
+        } else {
+            serviceAdapter.addFavoriteArtist(collectorId, artistId, type)
+            FavoriteResult.ADDED
         }
     }
 
