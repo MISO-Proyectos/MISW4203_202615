@@ -21,6 +21,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import co.edu.uniandes.misw4203.vinilos.MainActivity
 import co.edu.uniandes.misw4203.vinilos.R
 import co.edu.uniandes.misw4203.vinilos.VinilosApplication
@@ -33,6 +34,8 @@ import kotlinx.coroutines.runBlocking
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.instanceOf
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -156,6 +159,31 @@ class AccesibilidadColeccionistasE2ETest {
     fun a11y_hu11_02_formulario_vacio() {
         abrirFormulario()
         onView(isRoot()).perform(revisarAccesibilidad())
+    }
+
+    // A11Y-HU11-02 (etiquetas): sin depender de TalkBack, el campo debe quedar ligado a su
+    // etiqueta (labelFor, WCAG 1.3.1) y la etiqueta debe leerse "obligatorio" y sin asterisco.
+    // getLabeledBy() solo funciona en un nodo "sellado" (el que entrega el servicio de
+    // accesibilidad), no en el que devuelve createAccessibilityNodeInfo() de la vista. Por eso
+    // el nodo se pide a UiAutomation, fuera del hilo principal para no bloquearlo.
+    private fun verificarEtiquetaDelCampo(idCampo: Int, descripcion: String) {
+        onView(withId(idCampo)).perform(scrollTo()).check(matches(isDisplayed()))
+        val instrumentation = InstrumentationRegistry.getInstrumentation()
+        val nombre = instrumentation.targetContext.resources.getResourceEntryName(idCampo)
+        val idCompleto = "${instrumentation.targetContext.packageName}:id/$nombre"
+        val raiz = instrumentation.uiAutomation.rootInActiveWindow
+        val campo = raiz.findAccessibilityNodeInfosByViewId(idCompleto).firstOrNull()
+        assertNotNull("No se encontró el campo $nombre", campo)
+        val etiqueta = campo!!.labeledBy
+        assertNotNull("El campo $nombre no tiene etiqueta asociada (labelFor)", etiqueta)
+        assertEquals(descripcion, etiqueta!!.contentDescription?.toString())
+    }
+
+    @Test
+    fun a11y_hu11_02_coleccionista_y_precio_estan_ligados_a_su_etiqueta() {
+        abrirFormulario()
+        verificarEtiquetaDelCampo(R.id.collectorInput, "Coleccionista, obligatorio")
+        verificarEtiquetaDelCampo(R.id.priceInput, "Precio, obligatorio")
     }
 
     // A11Y-HU11-03
