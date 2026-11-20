@@ -126,7 +126,8 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/saveButton"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="wrap_content"
+            android:minHeight="56dp"
             android:layout_marginTop="24dp"
             android:text="@string/add_favorite_save"
             android:textAppearance="?attr/textAppearanceLabelLarge"
@@ -137,6 +138,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:accessibilityLiveRegion="polite"
             android:contentDescription="@string/add_favorite_saving"
             android:indeterminate="true"
             android:visibility="gone"

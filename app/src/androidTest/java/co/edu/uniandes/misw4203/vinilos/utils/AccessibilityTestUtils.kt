@@ -1,10 +1,12 @@
 package co.edu.uniandes.misw4203.vinilos.utils
 
 import android.view.View
+import android.widget.TextView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import com.google.android.apps.common.testing.accessibility.framework.integrations.espresso.AccessibilityValidator
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import co.edu.uniandes.misw4203.vinilos.R
 import com.google.android.apps.common.testing.accessibility.framework.AccessibilityCheckResult.AccessibilityCheckResultType
 import com.google.android.apps.common.testing.accessibility.framework.AccessibilityViewCheckResult
 import com.google.android.apps.common.testing.accessibility.framework.checks.DuplicateSpeakableTextCheck
@@ -78,6 +80,28 @@ object AccessibilityTestUtils {
         }
 
     /**
+     * Texto duplicado entre el título de la pantalla "Agregar a favoritos" y su botón de acción
+     * (HU10). El prototipo usa la misma frase en los dos: el título es un encabezado y el botón
+     * se anuncia como botón, así que el usuario los distingue por su rol. Solo se suprime este
+     * chequeo para el botón saveButton de ese formulario (el que tiene el texto
+     * add_favorite_save); el saveButton de los demás formularios sigue revisándose.
+     */
+    private fun duplicadoDeTituloYBotonDeFavoritos(): Matcher<AccessibilityViewCheckResult> =
+        object : TypeSafeMatcher<AccessibilityViewCheckResult>() {
+            override fun describeTo(description: Description) {
+                description.appendText("DuplicateSpeakableTextCheck sobre el saveButton de Agregar a favoritos")
+            }
+
+            override fun matchesSafely(r: AccessibilityViewCheckResult): Boolean {
+                val vista = r.view as? TextView ?: return false
+                return r.accessibilityHierarchyCheck == DuplicateSpeakableTextCheck::class.java &&
+                    vista.id != View.NO_ID &&
+                    vista.resources.getResourceEntryName(vista.id) == "saveButton" &&
+                    vista.text.toString() == vista.context.getString(R.string.add_favorite_save)
+            }
+        }
+
+    /**
      * Corre los chequeos de ATF sobre toda la vista raíz y falla si hay errores o advertencias.
      * El mensaje de la falla lista cada hallazgo.
      */
@@ -88,7 +112,11 @@ object AccessibilityTestUtils {
             val validator = AccessibilityValidator()
                 .setRunChecksFromRootView(true)
                 .setSuppressingResultMatcher(
-                    anyOf(falsoPositivoDeLaBarraSuperior(), duplicadoDeEtiquetaYCampo())
+                    anyOf(
+                        falsoPositivoDeLaBarraSuperior(),
+                        duplicadoDeEtiquetaYCampo(),
+                        duplicadoDeTituloYBotonDeFavoritos()
+                    )
                 )
             val hallazgos = validator.checkAndReturnResults(view).filter {
                 it.type == AccessibilityCheckResultType.ERROR ||

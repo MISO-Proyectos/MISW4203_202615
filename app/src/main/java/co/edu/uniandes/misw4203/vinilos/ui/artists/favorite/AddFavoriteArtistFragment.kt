@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.core.os.bundleOf
+import androidx.core.view.ViewCompat
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -56,6 +58,9 @@ class AddFavoriteArtistFragment : Fragment() {
         // Texto de ayuda propio de este formulario; el campo común trae uno genérico
         binding.collectorField.collectorLayout.helperText = getString(R.string.add_favorite_collector_helper)
 
+        // El aviso de error también se lee como un solo elemento, sin entrar al orden del teclado
+        ViewCompat.setScreenReaderFocusable(binding.errorBanner, true)
+
         binding.saveButton.setOnClickListener {
             hideKeyboard()
             viewModel.save()
@@ -74,7 +79,18 @@ class AddFavoriteArtistFragment : Fragment() {
         val bannerWasVisible = binding.errorBanner.isVisible
         binding.errorBanner.isVisible = state.showErrorBanner
         // El aviso está arriba: si recién aparece, se sube para que el usuario lo vea
-        if (state.showErrorBanner && !bannerWasVisible) binding.addFavoriteScroll.smoothScrollTo(0, 0)
+        if (state.showErrorBanner && !bannerWasVisible) {
+            binding.addFavoriteScroll.smoothScrollTo(0, 0)
+            // El aviso es una live region (se anuncia solo) y además se lleva el foco de
+            // TalkBack a él; después el usuario recorre el campo con error.
+            binding.errorBanner.post {
+                _binding?.errorBanner?.let {
+                    ViewCompat.performAccessibilityAction(
+                        it, AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS, null
+                    )
+                }
+            }
+        }
 
         binding.artistName.text = state.artistName
         binding.artistInfo.text = getString(
