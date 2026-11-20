@@ -7,8 +7,6 @@
     - Álbumes usa AlbumListFragment (HU01) y abre AlbumDetailFragment (HU02).
       Artistas usa ArtistListFragment (HU03) y abre ArtistDetailFragment (HU04).
       Coleccionistas usa CollectorListFragment (HU05).
-    - Desde el detalle de un álbum, el coleccionista abre AddTrackFragment (HU08).
-    - Desde el catálogo, el coleccionista abre CreateAlbumFragment (HU07).
 -->
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -42,61 +40,13 @@
         <action
             android:id="@+id/action_albumList_to_albumDetail"
             app:destination="@id/albumDetailFragment" />
-        <action
-            android:id="@+id/action_albumList_to_createAlbum"
-            app:destination="@id/createAlbumFragment" />
     </fragment>
-
-    <!-- HU07: formulario para crear un álbum (solo coleccionistas) -->
-    <fragment
-        android:id="@+id/createAlbumFragment"
-        android:name="co.edu.uniandes.misw4203.vinilos.ui.albums.create.CreateAlbumFragment"
-        android:label="@string/create_album_title" />
 
     <!-- HU02: detalle de un álbum. "albumId" lo lee AlbumDetailViewModel -->
     <fragment
         android:id="@+id/albumDetailFragment"
         android:name="co.edu.uniandes.misw4203.vinilos.ui.albums.detail.AlbumDetailFragment"
         android:label="@string/album_detail_title">
-        <argument
-            android:name="albumId"
-            app:argType="integer" />
-        <action
-            android:id="@+id/action_albumDetail_to_addTrack"
-            app:destination="@id/addTrackFragment" />
-        <action
-            android:id="@+id/action_albumDetail_to_addToCollection"
-            app:destination="@id/addToCollectionFragment" />
-        <action
-            android:id="@+id/action_albumDetail_to_addComment"
-            app:destination="@id/addCommentFragment" />
-    </fragment>
-
-    <!-- HU09: formulario para comentar un álbum. "albumId" lo lee AddCommentViewModel -->
-    <fragment
-        android:id="@+id/addCommentFragment"
-        android:name="co.edu.uniandes.misw4203.vinilos.ui.albums.comments.AddCommentFragment"
-        android:label="@string/add_comment_title">
-        <argument
-            android:name="albumId"
-            app:argType="integer" />
-    </fragment>
-
-    <!-- HU11: formulario para agregar un álbum a la colección de un coleccionista. "albumId" lo lee AddToCollectionViewModel -->
-    <fragment
-        android:id="@+id/addToCollectionFragment"
-        android:name="co.edu.uniandes.misw4203.vinilos.ui.albums.collection.AddToCollectionFragment"
-        android:label="@string/add_to_collection_title">
-        <argument
-            android:name="albumId"
-            app:argType="integer" />
-    </fragment>
-
-    <!-- HU08: formulario para agregar una canción a un álbum. "albumId" lo lee AddTrackViewModel -->
-    <fragment
-        android:id="@+id/addTrackFragment"
-        android:name="co.edu.uniandes.misw4203.vinilos.ui.albums.tracks.AddTrackFragment"
-        android:label="@string/add_track_title">
         <argument
             android:name="albumId"
             app:argType="integer" />
@@ -126,28 +76,6 @@
         <action
             android:id="@+id/action_artistDetail_to_albumDetail"
             app:destination="@id/albumDetailFragment" />
-        <action
-            android:id="@+id/action_artistDetail_to_addFavorite"
-            app:destination="@id/addFavoriteArtistFragment" />
-    </fragment>
-
-    <!-- HU10: formulario para agregar un artista a los favoritos de un coleccionista. Los argumentos los lee AddFavoriteArtistViewModel -->
-    <fragment
-        android:id="@+id/addFavoriteArtistFragment"
-        android:name="co.edu.uniandes.misw4203.vinilos.ui.artists.favorite.AddFavoriteArtistFragment"
-        android:label="@string/add_favorite_title">
-        <argument
-            android:name="artistId"
-            app:argType="integer" />
-        <argument
-            android:name="artistType"
-            app:argType="string" />
-        <argument
-            android:name="artistName"
-            app:argType="string" />
-        <argument
-            android:name="albumCount"
-            app:argType="integer" />
     </fragment>
 
     <!-- HU05: listado de coleccionistas (el id coincide con el del menú inferior) -->

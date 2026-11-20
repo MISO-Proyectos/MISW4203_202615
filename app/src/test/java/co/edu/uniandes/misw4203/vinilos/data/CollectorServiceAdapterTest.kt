@@ -2,15 +2,11 @@ package co.edu.uniandes.misw4203.vinilos.data
 
 import co.edu.uniandes.misw4203.vinilos.data.FakeBackendApi.Companion.albumDto
 import co.edu.uniandes.misw4203.vinilos.data.FakeBackendApi.Companion.collectorAlbumDto
-import co.edu.uniandes.misw4203.vinilos.data.FakeBackendApi.Companion.bandDto
 import co.edu.uniandes.misw4203.vinilos.data.FakeBackendApi.Companion.collectorDto
-import co.edu.uniandes.misw4203.vinilos.data.FakeBackendApi.Companion.musicianDto
 import co.edu.uniandes.misw4203.vinilos.data.adapter.CollectorServiceAdapter
 import co.edu.uniandes.misw4203.vinilos.data.adapter.CollectorServiceAdapter.Companion.toDetailModel
 import co.edu.uniandes.misw4203.vinilos.data.adapter.CollectorServiceAdapter.Companion.toModel
 import co.edu.uniandes.misw4203.vinilos.data.dto.CommentDto
-import co.edu.uniandes.misw4203.vinilos.data.model.ArtistType
-import co.edu.uniandes.misw4203.vinilos.data.model.CollectorAlbumStatus
 import co.edu.uniandes.misw4203.vinilos.data.dto.PerformerDto
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -147,100 +143,5 @@ class CollectorServiceAdapterTest {
         val adapter = CollectorServiceAdapter(FakeBackendApi())
 
         assertThrows(retrofit2.HttpException::class.java) { runBlocking { adapter.getCollector(999) } }
-    }
-
-    // HU11
-
-    @Test
-    fun `getCollectorAlbumIds devuelve los ids de los albumes de la coleccion`() = runBlocking {
-        val adapter = CollectorServiceAdapter(
-            FakeBackendApi(
-                collectors = listOf(collectorDto(id = 100)),
-                collectorAlbums = listOf(
-                    collectorAlbumDto(id = 1, album = albumDto(id = 100)),
-                    collectorAlbumDto(id = 2, album = albumDto(id = 102)),
-                    collectorAlbumDto(id = 3, album = null)
-                )
-            )
-        )
-
-        assertEquals(setOf(100, 102), adapter.getCollectorAlbumIds(100))
-    }
-
-    @Test
-    fun `addAlbumToCollector envia el precio y el estado en el formato del backend`() = runBlocking {
-        val api = FakeBackendApi(
-            albums = listOf(albumDto(id = 100)),
-            collectors = listOf(collectorDto(id = 100))
-        )
-
-        CollectorServiceAdapter(api).addAlbumToCollector(100, 100, 35000, CollectorAlbumStatus.ACTIVE)
-
-        val (_, _, body) = api.addedToCollection.single()
-        assertEquals(35000, body.price)
-        assertEquals("Active", body.status)
-    }
-
-    // HU10
-
-    @Test
-    fun `getFavoriteArtistIds devuelve los ids de los favoritos del coleccionista`() = runBlocking {
-        val adapter = CollectorServiceAdapter(
-            FakeBackendApi(
-                collectors = listOf(
-                    collectorDto(
-                        id = 100,
-                        favoritePerformers = listOf(
-                            PerformerDto(100, "Rubén Blades", "rb.jpg"),
-                            PerformerDto(101, "Queen", "q.jpg"),
-                            PerformerDto(null, "Sin id", null)
-                        )
-                    )
-                )
-            )
-        )
-
-        assertEquals(setOf(100, 101), adapter.getFavoriteArtistIds(100))
-    }
-
-    @Test
-    fun `getFavoriteArtistIds de un coleccionista sin favoritos devuelve un conjunto vacio`() = runBlocking {
-        val adapter = CollectorServiceAdapter(FakeBackendApi(collectors = listOf(collectorDto(id = 100))))
-
-        assertTrue(adapter.getFavoriteArtistIds(100).isEmpty())
-    }
-
-    @Test
-    fun `getFavoriteArtistIds de un coleccionista que no existe propaga el error 404`() {
-        val adapter = CollectorServiceAdapter(FakeBackendApi())
-
-        val error = assertThrows(retrofit2.HttpException::class.java) {
-            runBlocking { adapter.getFavoriteArtistIds(999) }
-        }
-        assertEquals(404, error.code())
-    }
-
-    @Test
-    fun `addFavoriteArtist de un musico usa la ruta de musicos`() = runBlocking {
-        val api = FakeBackendApi(
-            collectors = listOf(collectorDto(id = 100)),
-            musicians = listOf(musicianDto(id = 100))
-        )
-
-        CollectorServiceAdapter(api).addFavoriteArtist(100, 100, ArtistType.MUSICIAN)
-
-        assertEquals(listOf(Triple(100, 100, ArtistType.MUSICIAN)), api.addedFavorites)
-    }
-
-    @Test
-    fun `addFavoriteArtist de una banda usa la ruta de bandas`() = runBlocking {
-        val api = FakeBackendApi(
-            collectors = listOf(collectorDto(id = 100)),
-            bands = listOf(bandDto(id = 101))
-        )
-
-        CollectorServiceAdapter(api).addFavoriteArtist(100, 101, ArtistType.BAND)
-
-        assertEquals(listOf(Triple(100, 101, ArtistType.BAND)), api.addedFavorites)
     }
 }

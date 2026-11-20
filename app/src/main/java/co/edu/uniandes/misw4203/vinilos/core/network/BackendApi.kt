@@ -1,20 +1,11 @@
 package co.edu.uniandes.misw4203.vinilos.core.network
 
-import co.edu.uniandes.misw4203.vinilos.data.dto.AlbumCreateDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.AlbumDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.BandDto
-import co.edu.uniandes.misw4203.vinilos.data.dto.CollectorAlbumCreateDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.CollectorAlbumDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.CollectorDto
-import co.edu.uniandes.misw4203.vinilos.data.dto.CommentCreateDto
-import co.edu.uniandes.misw4203.vinilos.data.dto.CommentDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.MusicianDto
-import co.edu.uniandes.misw4203.vinilos.data.dto.PerformerDto
-import co.edu.uniandes.misw4203.vinilos.data.dto.TrackCreateDto
-import co.edu.uniandes.misw4203.vinilos.data.dto.TrackDto
-import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.POST
 import retrofit2.http.Path
 
 /** Rutas de la API REST de Vinilos (Retrofit). */
@@ -28,20 +19,6 @@ interface BackendApi {
     @GET("albums/{id}")
     suspend fun getAlbum(@Path("id") albumId: Int): AlbumDto
 
-    /** HU08: asocia una canción nueva a un álbum. El backend responde con la canción creada. */
-    @POST("albums/{id}/tracks")
-    suspend fun addTrack(@Path("id") albumId: Int, @Body track: TrackCreateDto): TrackDto
-    /** HU07: crea un álbum. El backend responde con el álbum creado (ya con su id). */
-    @POST("albums")
-    suspend fun createAlbum(@Body album: AlbumCreateDto): AlbumDto
-
-    /** HU09: agrega un comentario a un álbum. */
-    @POST("albums/{albumId}/comments")
-    suspend fun addComment(
-        @Path("albumId") albumId: Int,
-        @Body comment: CommentCreateDto
-    ): CommentDto
-
     /** HU05: listado de coleccionistas. */
     @GET("collectors")
     suspend fun getCollectors(): List<CollectorDto>
@@ -53,17 +30,6 @@ interface BackendApi {
     /** HU06: álbumes de la colección de un coleccionista, con precio, estado y datos del álbum. */
     @GET("collectors/{id}/albums")
     suspend fun getCollectorAlbums(@Path("id") id: Int): List<CollectorAlbumDto>
-
-    /**
-     * HU11: agrega un álbum a la colección de un coleccionista, con su precio y estado.
-     * El backend responde con la relación guardada y no impide repetir el álbum.
-     */
-    @POST("collectors/{collectorId}/albums/{albumId}")
-    suspend fun addAlbumToCollector(
-        @Path("collectorId") collectorId: Int,
-        @Path("albumId") albumId: Int,
-        @Body body: CollectorAlbumCreateDto
-    ): CollectorAlbumDto
 
     /** HU03: listado de artistas (músicos). */
     @GET("musicians")
@@ -80,25 +46,4 @@ interface BackendApi {
     /** HU04: detalle de una banda. */
     @GET("bands/{id}")
     suspend fun getBand(@Path("id") id: Int): BandDto
-
-    /** HU10: artistas favoritos de un coleccionista. De cada uno solo se usa el id. */
-    @GET("collectors/{id}/performers")
-    suspend fun getCollectorPerformers(@Path("id") collectorId: Int): List<PerformerDto>
-
-    /**
-     * HU10: agrega un músico a los favoritos de un coleccionista, sin cuerpo.
-     * El backend responde con el artista y no valida si ya era favorito.
-     */
-    @POST("collectors/{collectorId}/musicians/{musicianId}")
-    suspend fun addFavoriteMusician(
-        @Path("collectorId") collectorId: Int,
-        @Path("musicianId") musicianId: Int
-    ): PerformerDto
-
-    /** HU10: agrega una banda a los favoritos de un coleccionista, sin cuerpo. */
-    @POST("collectors/{collectorId}/bands/{bandId}")
-    suspend fun addFavoriteBand(
-        @Path("collectorId") collectorId: Int,
-        @Path("bandId") bandId: Int
-    ): PerformerDto
 }

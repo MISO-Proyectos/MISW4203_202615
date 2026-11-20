@@ -4,7 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import co.edu.uniandes.misw4203.vinilos.data.FakeBackendApi
 import co.edu.uniandes.misw4203.vinilos.data.FakeBackendApi.Companion.albumDto
 import co.edu.uniandes.misw4203.vinilos.data.adapter.AlbumServiceAdapter
-import co.edu.uniandes.misw4203.vinilos.data.dto.TrackCreateDto
 import co.edu.uniandes.misw4203.vinilos.data.repository.AlbumRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -84,60 +83,5 @@ class AlbumDetailViewModelTest {
     @Test(expected = IllegalArgumentException::class)
     fun `sin el argumento albumId no se puede crear`() {
         AlbumDetailViewModel(SavedStateHandle(), AlbumRepository(AlbumServiceAdapter(FakeBackendApi(), dispatcher), dispatcher))
-    }
-
-    // HU08: al volver del formulario con una canción agregada
-
-    @Test
-    fun `al agregar un track recarga sin pasar por Loading y lo resalta`() = runTest(dispatcher) {
-        val api = FakeBackendApi(albums = listOf(albumDto(id = 100)))
-        val viewModel = viewModelWith(api)
-        advanceUntilIdle()
-        val track = api.addTrack(100, TrackCreateDto("Todos vuelven", "05:03"))
-
-        viewModel.onTrackAdded(track.id!!)
-        // Mientras recarga se sigue viendo el álbum anterior
-        assertTrue(viewModel.uiState.value is AlbumDetailUiState.Success)
-        advanceUntilIdle()
-
-        val state = viewModel.uiState.value as AlbumDetailUiState.Success
-        assertEquals(listOf("Decisiones", "Todos vuelven"), state.album.tracks.map { it.name })
-        assertEquals(track.id, state.highlightedTrackId)
-    }
-
-    @Test
-    fun `si la recarga falla se deja el album que ya se veia`() = runTest(dispatcher) {
-        val api = FakeBackendApi(albums = listOf(albumDto(id = 100)))
-        val viewModel = viewModelWith(api)
-        advanceUntilIdle()
-        val before = viewModel.uiState.value
-
-        api.error = IOException("sin red")
-        viewModel.onTrackAdded(11)
-        advanceUntilIdle()
-
-        assertEquals(before, viewModel.uiState.value)
-    }
-
-    @Test
-    fun `reintentar despues de agregar un track lo sigue resaltando`() = runTest(dispatcher) {
-        val api = FakeBackendApi(albums = listOf(albumDto(id = 100)))
-        val viewModel = viewModelWith(api)
-        advanceUntilIdle()
-        viewModel.onTrackAdded(10)
-        advanceUntilIdle()
-
-        viewModel.loadAlbum()
-        advanceUntilIdle()
-
-        assertEquals(10, (viewModel.uiState.value as AlbumDetailUiState.Success).highlightedTrackId)
-    }
-
-    @Test
-    fun `al abrir el detalle ningun track esta resaltado`() = runTest(dispatcher) {
-        val viewModel = viewModelWith(FakeBackendApi(albums = listOf(albumDto(id = 100))))
-        advanceUntilIdle()
-
-        assertEquals(null, (viewModel.uiState.value as AlbumDetailUiState.Success).highlightedTrackId)
     }
 }

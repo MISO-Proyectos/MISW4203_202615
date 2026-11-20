@@ -1,11 +1,7 @@
 package co.edu.uniandes.misw4203.vinilos.data.repository
 
 import co.edu.uniandes.misw4203.vinilos.data.adapter.CollectorServiceAdapter
-import co.edu.uniandes.misw4203.vinilos.data.model.ArtistType
-import co.edu.uniandes.misw4203.vinilos.data.model.CollectionResult
 import co.edu.uniandes.misw4203.vinilos.data.model.Collector
-import co.edu.uniandes.misw4203.vinilos.data.model.CollectorAlbumStatus
-import co.edu.uniandes.misw4203.vinilos.data.model.FavoriteResult
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
@@ -41,53 +37,6 @@ class CollectorRepository(
     /** HU06: detalle de un coleccionista (no se cachea). Si no existe devuelve NotFound. */
     suspend fun getCollector(id: Int): Result<Collector> =
         call { serviceAdapter.getCollector(id) }
-
-    /**
-     * HU11: agrega el álbum a la colección del coleccionista. El backend no impide repetir
-     * un álbum, así que primero consulta la colección: si ya está devuelve
-     * [CollectionResult.ALREADY_IN_COLLECTION] sin hacer el POST. Si el coleccionista o el
-     * álbum no existen devuelve NotFound. No toca la caché del listado de coleccionistas.
-     */
-    suspend fun addAlbumToCollector(
-        collectorId: Int,
-        albumId: Int,
-        price: Int,
-        status: CollectorAlbumStatus
-    ): Result<CollectionResult> = safeCall(
-        dispatcher = dispatcher,
-        notFoundMessage = "No encontramos el álbum o el coleccionista. Puede que hayan sido eliminados.",
-        unexpectedMessage = "No pudimos agregar el álbum a la colección. Intenta de nuevo."
-    ) {
-        if (albumId in serviceAdapter.getCollectorAlbumIds(collectorId)) {
-            CollectionResult.ALREADY_IN_COLLECTION
-        } else {
-            serviceAdapter.addAlbumToCollector(collectorId, albumId, price, status)
-            CollectionResult.ADDED
-        }
-    }
-
-    /**
-     * HU10: agrega el artista a los favoritos del coleccionista. El backend no impide repetir
-     * un favorito, así que primero consulta los favoritos del coleccionista: si el artista ya
-     * está devuelve [FavoriteResult.ALREADY_FAVORITE] sin hacer el POST. Si el coleccionista o
-     * el artista no existen devuelve NotFound. No toca la caché del listado de coleccionistas.
-     */
-    suspend fun addFavoriteArtist(
-        collectorId: Int,
-        artistId: Int,
-        type: ArtistType
-    ): Result<FavoriteResult> = safeCall(
-        dispatcher = dispatcher,
-        notFoundMessage = "No encontramos el artista o el coleccionista. Puede que hayan sido eliminados.",
-        unexpectedMessage = "No pudimos agregar el artista a favoritos. Intenta de nuevo."
-    ) {
-        if (artistId in serviceAdapter.getFavoriteArtistIds(collectorId)) {
-            FavoriteResult.ALREADY_FAVORITE
-        } else {
-            serviceAdapter.addFavoriteArtist(collectorId, artistId, type)
-            FavoriteResult.ADDED
-        }
-    }
 
     private suspend fun <T> call(block: suspend () -> T): Result<T> =
         safeCall(

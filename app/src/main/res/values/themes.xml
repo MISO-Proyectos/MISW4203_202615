@@ -265,48 +265,4 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
     </style>
-
-    <!-- ===== Formulario de creación de álbum (HU07) ===== -->
-
-    <!-- Etiqueta encima de cada campo: "Nombre *", "Género *"... -->
-    <style name="Widget.Vinilos.FormLabel" parent="">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">20dp</item>
-        <item name="android:layout_marginBottom">8dp</item>
-        <item name="android:textAppearance">@style/TextAppearance.Vinilos.LabelLarge</item>
-        <item name="android:textColor">?attr/colorOnSurface</item>
-    </style>
-
-    <!-- Campo de texto: caja con borde y esquinas de 12dp; la etiqueta va afuera (sin hint flotante) -->
-    <style name="Widget.Vinilos.TextField" parent="Widget.Material3.TextInputLayout.OutlinedBox">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="hintEnabled">false</item>
-        <item name="boxCornerRadiusTopStart">12dp</item>
-        <item name="boxCornerRadiusTopEnd">12dp</item>
-        <item name="boxCornerRadiusBottomStart">12dp</item>
-        <item name="boxCornerRadiusBottomEnd">12dp</item>
-        <item name="boxStrokeColor">?attr/colorPrimary</item>
-        <item name="endIconTint">?attr/colorOnSurfaceVariant</item>
-        <item name="helperTextTextAppearance">@style/TextAppearance.Vinilos.BodySmall</item>
-        <item name="helperTextTextColor">?attr/colorOnSurfaceVariant</item>
-        <item name="errorTextAppearance">@style/TextAppearance.Vinilos.BodySmall</item>
-    </style>
-
-    <!-- Lista desplegable (género y sello) con la misma caja que los campos de texto -->
-    <style name="Widget.Vinilos.TextField.Dropdown" parent="Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="hintEnabled">false</item>
-        <item name="boxCornerRadiusTopStart">12dp</item>
-        <item name="boxCornerRadiusTopEnd">12dp</item>
-        <item name="boxCornerRadiusBottomStart">12dp</item>
-        <item name="boxCornerRadiusBottomEnd">12dp</item>
-        <item name="boxStrokeColor">?attr/colorPrimary</item>
-        <item name="endIconTint">?attr/colorOnSurfaceVariant</item>
-        <item name="helperTextTextAppearance">@style/TextAppearance.Vinilos.BodySmall</item>
-        <item name="helperTextTextColor">?attr/colorOnSurfaceVariant</item>
-        <item name="errorTextAppearance">@style/TextAppearance.Vinilos.BodySmall</item>
-    </style>
 </resources>
