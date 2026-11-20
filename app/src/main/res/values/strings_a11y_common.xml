@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Accesibilidad: textos comunes a varias pantallas. -->
+<resources>
+    <!-- Acción del aviso de éxito cuando hay un lector de pantalla en versiones anteriores a Android 10 -->
+    <string name="a11y_snackbar_close">Cerrar</string>
+</resources>

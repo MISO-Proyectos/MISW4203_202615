@@ -1,12 +1,18 @@
 package co.edu.uniandes.misw4203.vinilos.ui.albums.detail
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.accessibility.AccessibilityManager
+import android.widget.TextView
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.core.os.bundleOf
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -33,6 +39,7 @@ import co.edu.uniandes.misw4203.vinilos.ui.role.UserRole
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.material.color.MaterialColors
+import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 
@@ -263,10 +270,50 @@ class AlbumDetailFragment : Fragment() {
      * fragmento, y sobreviviría a la navegación: al volver al catálogo taparía la barra inferior.
      * Por eso se guarda y se cierra al destruir la vista. (En el detalle la barra inferior no
      * está visible, así que no hay a qué anclarlo con setAnchorView.)
+     *
+     * Con un lector de pantalla (TalkBack) el aviso de 2,75 s de `LENGTH_LONG` se iba antes de
+     * terminar de leerse y el foco saltaba a «Volver»: se le da un tiempo acorde al texto y se
+     * lleva el foco de accesibilidad al aviso en cuanto aparece (A11Y-29). Sin lector de pantalla
+     * queda igual que antes.
      */
     private fun showMessage(message: String) {
         snackbar?.dismiss()
-        snackbar = Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).also { it.show() }
+        val bar = Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG)
+        if (isScreenReaderActive()) {
+            configureForScreenReader(bar, message)
+        }
+        snackbar = bar.also { it.show() }
+    }
+
+    private fun isScreenReaderActive(): Boolean {
+        val manager = requireContext().getSystemService(Context.ACCESSIBILITY_SERVICE) as? AccessibilityManager
+        return manager != null && manager.isEnabled && manager.isTouchExplorationEnabled
+    }
+
+    // Lint avisa de que no conviene forzar el foco de accesibilidad. Aquí es lo buscado: sin esto TalkBack
+    // deja el foco en «Volver» y el aviso de éxito no se lee (A11Y-29). Solo se hace con lector activo.
+    @SuppressLint("AccessibilityFocus")
+    private fun configureForScreenReader(bar: Snackbar, message: String) {
+        val manager = requireContext().getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
+        val base = SCREEN_READER_BASE_MS + SCREEN_READER_MS_PER_CHAR * message.length
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            // Material vuelve a pasar el valor por getRecommendedTimeoutMillis, que solo lo sube
+            // si el usuario configuró un tiempo mayor: no se acumula.
+            bar.duration = manager.getRecommendedTimeoutMillis(
+                base,
+                AccessibilityManager.FLAG_CONTENT_TEXT or AccessibilityManager.FLAG_CONTENT_CONTROLS
+            )
+        } else {
+            bar.duration = Snackbar.LENGTH_INDEFINITE
+            bar.setAction(R.string.a11y_snackbar_close) { bar.dismiss() }
+        }
+        bar.addCallback(object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
+            override fun onShown(transientBottomBar: Snackbar) {
+                transientBottomBar.view
+                    .findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
+                    ?.performAccessibilityAction(AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS, null)
+            }
+        })
     }
 
     override fun onDestroyView() {
@@ -293,5 +340,9 @@ class AlbumDetailFragment : Fragment() {
 
     private companion object {
         const val MAX_RATING = 5
+
+        /** Tiempo del aviso con lector de pantalla: 4 s fijos más 80 ms por carácter (≈ 10 s para 75 caracteres). */
+        const val SCREEN_READER_BASE_MS = 4_000
+        const val SCREEN_READER_MS_PER_CHAR = 80
     }
 }
