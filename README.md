@@ -25,7 +25,7 @@ https://github.com/MISO-Proyectos/MISW4203_202615/wiki
 1. Clonar: `git clone https://github.com/MISO-Proyectos/MISW4203_202615.git`
 2. Abrir la carpeta en Android Studio (File > Open) y esperar a que termine Gradle Sync.
 3. Levantar el backend. Es el proyecto BackVynils que entregó el curso (NestJS + PostgreSQL): https://github.com/TheSoftwareDesignLab/BackVynils. No viene dentro de este repositorio, así que hay que clonarlo en otra carpeta: `git clone https://github.com/TheSoftwareDesignLab/BackVynils.git`
-   - Con Docker (lo más fácil): `docker compose up --build` dentro de la carpeta `BackVynils`, o
+   - Con Docker (lo más fácil): `docker compose up --build` dentro de la carpeta `BackVynils` (con PostgreSQL 16: ver «Preparar el backend para correr todas las pruebas», porque `postgres:latest` ya es la 18 y no arranca), o
    - Sin Docker: tener PostgreSQL en `localhost:5432` (base `vinyls`, usuario y clave `postgres`) y Node.js 12 (el backend es viejo y con versiones más nuevas de Node puede fallar). Luego `npm install` y `npm run start` dentro de la carpeta `BackVynils`.
 4. Verificar que `http://localhost:3000/albums` responde en el navegador. Al arrancar con la base vacía, el backend carga solo cuatro álbumes por defecto.
 5. Ejecutar en un emulador (botón Run) o por consola: `.\gradlew.bat installDebug`
@@ -49,6 +49,14 @@ En Android 17 (API 37) la app pide al abrir el permiso de red local (aparece com
 
 ### Preparar el backend para correr todas las pruebas
 Los datos por defecto del backend entran con ids fijos (100 a 103) y la secuencia de PostgreSQL arranca en 1; sin este paso, las pruebas que crean datos chocan con esos ids (error de llave duplicada) después de unas pocas corridas.
+
+**Antes, fija PostgreSQL en la versión 16.** El `docker-compose.yml` de BackVynils usa `image: postgres` sin versión, y desde que `postgres:latest` es la 18 la base no arranca con la carpeta `./pgdata` (el contenedor `db` sale con error y el backend queda con `getaddrinfo ENOTFOUND db`). BackVynils no es nuestro y no se modifica: crea, dentro de la carpeta `BackVynils`, el archivo `docker-compose.override.yml` (Docker Compose lo lee solo, junto al `docker-compose.yml`) con este contenido:
+```yaml
+services:
+  db:
+    image: postgres:16
+```
+Si ya intentaste levantar la base con la 18, borra `pgdata` (el script de abajo ya lo hace); los datos que tenía se pierden.
 
 Desde PowerShell, dentro de la carpeta `BackVynils`:
 ```powershell
