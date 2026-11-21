@@ -108,10 +108,9 @@ class AddCommentFragment : Fragment() {
             binding.descriptionLayout.error = descriptionError
         }
 
+        // Los campos siguen activos mientras guarda (TalkBack anunciaría cada uno como
+        // "inhabilitado" y taparía el aviso de éxito); solo se bloquean los botones.
         val enabled = !state.isSaving
-        binding.collectorField.collectorLayout.isEnabled = enabled
-        binding.ratingBar.isEnabled = enabled
-        binding.descriptionLayout.isEnabled = enabled
         binding.saveButton.isEnabled = enabled
         binding.cancelButton.isEnabled = enabled
         binding.savingIndicator.isVisible = state.isSaving

@@ -145,12 +145,10 @@ class AddToCollectionFragment : Fragment() {
         showStatus(state.status)
         binding.statusError.isVisible = CollectionFormField.STATUS in state.errors
 
+        // Los campos siguen activos mientras guarda: si se desactivan, TalkBack anuncia cada uno
+        // como "inhabilitado" y esos avisos tapan el de éxito. Solo se bloquean los botones;
+        // el ViewModel ignora save() mientras guarda y envía los valores del momento del toque.
         val enabled = !state.isSaving
-        binding.collectorField.collectorLayout.isEnabled = enabled
-        binding.priceLayout.isEnabled = enabled
-        binding.statusGroup.isEnabled = enabled
-        binding.statusActiveButton.isEnabled = enabled
-        binding.statusInactiveButton.isEnabled = enabled
         binding.saveButton.isEnabled = enabled
         binding.cancelButton.isEnabled = enabled
         binding.savingIndicator.isVisible = state.isSaving
