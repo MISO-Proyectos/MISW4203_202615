@@ -110,8 +110,10 @@ class AddFavoriteArtistFragment : Fragment() {
             error = collectorError
         )
 
+        // El campo sigue activo mientras guarda: si se desactiva, TalkBack lo anuncia como
+        // "inhabilitado" y ese aviso tapa el de éxito. Solo se bloquean los botones; el
+        // ViewModel ignora save() mientras guarda y envía el coleccionista del momento del toque.
         val enabled = !state.isSaving
-        binding.collectorField.collectorLayout.isEnabled = enabled
         binding.saveButton.isEnabled = enabled
         binding.cancelButton.isEnabled = enabled
         binding.savingIndicator.isVisible = state.isSaving
