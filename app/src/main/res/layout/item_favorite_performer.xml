@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Artista favorito en el detalle de un coleccionista (HU06). Se ve como un chip con borde, pero es
+    un TextView para que el nombre pueda ocupar varias líneas con fuente grande (el Chip de Material
+    es de una sola línea y lo corta). El ícono lo pone CollectorDetailFragment con su tamaño. El
+    espacio de 8dp arriba y abajo que antes daba el área táctil del Chip lo pone el ChipGroup.
+-->
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_favorite_performer"
+    android:drawablePadding="8dp"
+    android:gravity="center_vertical"
+    android:minHeight="32dp"
+    android:paddingStart="8dp"
+    android:paddingTop="5dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="3dp"
+    android:textAppearance="?attr/textAppearanceLabelLarge"
+    android:textColor="?attr/colorOnSurface"
+    tools:text="Rubén Blades Bellido de Luna" />
