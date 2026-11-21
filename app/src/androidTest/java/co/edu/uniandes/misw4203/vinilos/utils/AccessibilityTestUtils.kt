@@ -81,7 +81,7 @@ object AccessibilityTestUtils {
 
     /**
      * Texto duplicado entre el título de la pantalla "Agregar a favoritos" y su botón de acción
-     * (HU10). El prototipo usa la misma frase en los dos: el título es un encabezado y el botón
+     * (HU10, A11Y-32). El prototipo usa la misma frase en los dos: el título es un encabezado y el botón
      * se anuncia como botón, así que el usuario los distingue por su rol. Solo se suprime este
      * chequeo para el botón saveButton de ese formulario (el que tiene el texto
      * add_favorite_save); el saveButton de los demás formularios sigue revisándose.

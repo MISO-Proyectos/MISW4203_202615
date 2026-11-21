@@ -41,7 +41,7 @@ import org.junit.runner.RunWith
 /**
  * Accesibilidad de HU10 (agregar un artista a favoritos): botón del detalle del artista y
  * formulario, revisados con el motor del Accessibility Scanner (ATF), más comprobaciones
- * directas de A11Y-27, A11Y-28 y A11Y-29. Backend real; el coleccionista se crea por la API con
+ * directas de A11Y-27, A11Y-28 y A11Y-31. Backend real; el coleccionista se crea por la API con
  * nombre único (BackendFixtures) para no cambiar los datos por defecto.
  */
 @RunWith(AndroidJUnit4::class)
@@ -155,9 +155,9 @@ class AccesibilidadFavoritosE2ETest {
         }
     }
 
-    // A11Y-29 (C7): el aviso de error se lee como un solo elemento
+    // A11Y-31 (C7): el aviso de error se lee como un solo elemento
     @Test
-    fun a11y_29_el_aviso_de_error_es_un_solo_elemento_para_el_lector() {
+    fun a11y_31_el_aviso_de_error_es_un_solo_elemento_para_el_lector() {
         abrirFormulario()
         activityRule.scenario.onActivity { activity ->
             val aviso = activity.findViewById<View>(R.id.errorBanner)
