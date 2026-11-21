@@ -42,9 +42,9 @@
                 android:importantForAccessibility="no"
                 android:padding="12dp"
                 android:src="@drawable/ic_album"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/topBarTitle"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toTopOf="@id/topBarTitle"
                 app:tint="?attr/colorPrimary" />
 
             <TextView
