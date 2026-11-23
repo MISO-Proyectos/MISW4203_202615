@@ -24,7 +24,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 /**
- * HU02 - Consultar el detalle de un álbum (E2E con el backend real).
+ * HU02 / HU09 - Consultar el detalle de un álbum y comentar como coleccionista (E2E con el backend real).
  * Precondición: backend BackVynils recién levantado con su base vacía; al arrancar
  * carga solo los 4 álbumes por defecto (ids 100 a 103) que usan estas pruebas.
  * Buscando América (id 100) tiene 2 tracks y 1 comentario; Poeta del pueblo (id 101)
@@ -124,8 +124,7 @@ class AlbumDetailE2ETest {
         abrirDetalleDeAlbum(ALBUM)
         waitFor { onView(withId(R.id.albumName)).check(matches(withText(ALBUM))) }
 
-        onView(withId(R.id.commentsCount)).perform(scrollTo())
-        onView(withId(R.id.commentsCount)).check(matches(withText("1")))
+        onView(withId(R.id.commentsCount)).perform(scrollTo()).check(matches(withText("1")))
         onView(withText("The most relevant album of Ruben Blades"))
             .perform(scrollTo())
             .check(matches(isDisplayed()))
@@ -141,5 +140,18 @@ class AlbumDetailE2ETest {
         onView(withId(R.id.tracksCount)).check(matches(withText("0 canciones")))
         onView(withId(R.id.tracksEmpty)).perform(scrollTo())
         onView(withId(R.id.tracksEmpty)).check(matches(withText(R.string.album_no_tracks)))
+    }
+
+    // CP-HU09-01 (automático)
+    @Test
+    fun el_boton_comentar_aparece_para_el_coleccionista() {
+        onView(withId(R.id.topBarTitle)).check(matches(isDisplayed()))
+        onView(withId(R.id.roleChip)).perform(click())
+        onView(withId(R.id.collectorCard)).perform(click())
+
+        abrirDetalleDeAlbum(ALBUM)
+
+        waitFor { onView(withId(R.id.albumName)).check(matches(withText(ALBUM))) }
+        onView(withId(R.id.addCommentButton)).perform(scrollTo()).check(matches(isDisplayed()))
     }
 }

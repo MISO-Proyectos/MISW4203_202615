@@ -15,6 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:accessibilityLiveRegion="polite"
         android:contentDescription="@string/collector_detail_loading"
         android:indeterminate="true"
         android:visibility="gone" />
@@ -37,8 +38,10 @@
 
             <TextView
                 android:id="@+id/detailAvatar"
-                android:layout_width="88dp"
-                android:layout_height="88dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="88dp"
+                android:minHeight="88dp"
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/bg_avatar"
                 android:gravity="center"
@@ -68,8 +71,10 @@
                 android:paddingEnd="12dp">
 
                 <LinearLayout
+                    android:id="@+id/emailRow"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:focusable="true"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:paddingTop="12dp"
@@ -112,8 +117,10 @@
                     android:background="?attr/colorOutlineVariant" />
 
                 <LinearLayout
+                    android:id="@+id/telephoneRow"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:focusable="true"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:paddingTop="12dp"
@@ -159,6 +166,7 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/performersTitle"
                     style="@style/Widget.Vinilos.SectionTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -178,7 +186,9 @@
                 android:id="@+id/performersGroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp" />
+                android:layout_marginTop="12dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp" />
 
             <TextView
                 android:id="@+id/performersEmpty"
@@ -199,6 +209,7 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/albumsTitle"
                     style="@style/Widget.Vinilos.SectionTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -243,6 +254,7 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/commentsTitle"
                     style="@style/Widget.Vinilos.SectionTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -285,6 +297,7 @@
         android:id="@+id/errorContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:accessibilityLiveRegion="polite"
         android:layout_gravity="center"
         android:gravity="center_horizontal"
         android:orientation="vertical"

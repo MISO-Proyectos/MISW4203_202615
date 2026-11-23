@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- HU11: agregar un álbum a la colección de un coleccionista. -->
+<resources>
+    <!-- Botón del detalle del álbum -->
+    <string name="add_to_collection">Agregar a colección</string>
+
+    <!-- Formulario -->
+    <string name="add_to_collection_title">Agregar a colección</string>
+    <string name="add_to_collection_error_banner">Completa los campos obligatorios para guardar.</string>
+    <string name="add_to_collection_album_label">Álbum</string>
+    <plurals name="add_to_collection_album_tracks">
+        <item quantity="one">%d track</item>
+        <item quantity="other">%d tracks</item>
+    </plurals>
+    <string name="add_to_collection_album_info">%1$s · %2$s</string>
+    <string name="add_to_collection_required_hint">Los campos marcados con * son obligatorios.</string>
+
+    <string name="add_to_collection_price_label">Precio *</string>
+    <string name="add_to_collection_price_label_description">Precio, obligatorio</string>
+    <string name="add_to_collection_price_placeholder">Valor en pesos</string>
+    <string name="add_to_collection_price_helper">Solo números, sin puntos ni comas.</string>
+    <string name="add_to_collection_price_prefix">$</string>
+
+    <string name="add_to_collection_status_label">Estado *</string>
+    <string name="add_to_collection_status_label_description">Estado, obligatorio</string>
+    <string name="add_to_collection_status_active">Activo</string>
+    <string name="add_to_collection_status_inactive">Inactivo</string>
+    <string name="add_to_collection_status_helper">Activo: disponible para vender o intercambiar.</string>
+
+    <string name="add_to_collection_save">Agregar a la colección</string>
+    <string name="add_to_collection_saving">Agregando el álbum a la colección</string>
+    <string name="add_to_collection_cancel">Cancelar</string>
+
+    <!-- Errores y resultados -->
+    <string name="add_to_collection_error_price">Ingresa un precio válido</string>
+    <string name="add_to_collection_error_status">Selecciona el estado</string>
+    <string name="add_to_collection_error_duplicate">Este álbum ya está en la colección de %1$s</string>
+    <string name="add_to_collection_error_default">No se pudo agregar el álbum a la colección. Inténtalo de nuevo.</string>
+    <string name="add_to_collection_album_fallback">El álbum</string>
+    <string name="add_to_collection_success">%1$s se agregó a la colección de %2$s</string>
+</resources>

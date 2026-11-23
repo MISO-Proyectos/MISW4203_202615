@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -47,6 +48,8 @@ class CollectorListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         // El RecyclerView ocupa toda la pantalla: su tamaño no cambia al llegar los datos
         binding.collectorList.setHasFixedSize(true)
+        // El título del estado vacío o de error es un encabezado para TalkBack
+        ViewCompat.setAccessibilityHeading(binding.messageTitle, true)
         binding.collectorList.adapter = ConcatAdapter(countAdapter, collectorAdapter)
         binding.retryButton.setOnClickListener { viewModel.loadCollectors(forceRefresh = true) }
 

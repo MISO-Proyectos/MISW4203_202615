@@ -64,6 +64,23 @@
                 android:textColor="?attr/colorOnSurfaceVariant"
                 tools:text="@string/artist_type_musician" />
 
+            <!-- HU10: solo para el coleccionista; el ícono es decorativo, TalkBack lee el texto -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/addFavoriteButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="12dp"
+                android:minHeight="48dp"
+                android:text="@string/add_favorite"
+                android:textColor="?attr/colorOnSecondaryContainer"
+                android:visibility="gone"
+                app:backgroundTint="?attr/colorSecondaryContainer"
+                app:icon="@drawable/ic_favorite"
+                app:iconSize="18dp"
+                app:iconTint="?attr/colorOnSecondaryContainer"
+                tools:visibility="visible" />
+
             <!-- Bloque de Fecha de Nacimiento / Creación -->
             <LinearLayout
                 android:id="@+id/dateContainer"

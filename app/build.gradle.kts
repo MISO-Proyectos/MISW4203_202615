@@ -31,8 +31,8 @@ android {
         // Versión de Android contra la cual se prueba la aplicación
         targetSdk = 37
 
-        versionCode = 2
-        versionName = "2.0.0"
+        versionCode = 3
+        versionName = "2.1.0"
 
         testInstrumentationRunner =
             "androidx.test.runner.AndroidJUnitRunner"
@@ -94,6 +94,7 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation("androidx.test.espresso:espresso-contrib:3.7.0")
+    androidTestImplementation(libs.androidx.espresso.accessibility)
     androidTestImplementation("androidx.test:rules:1.7.0")
     androidTestImplementation("androidx.test:runner:1.7.0")
 }

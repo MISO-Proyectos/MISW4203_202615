@@ -6,7 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.os.bundleOf
+import androidx.core.view.AccessibilityDelegateCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -22,11 +26,11 @@ import co.edu.uniandes.misw4203.vinilos.data.model.Performer
 import co.edu.uniandes.misw4203.vinilos.databinding.FragmentCollectorDetailBinding
 import co.edu.uniandes.misw4203.vinilos.databinding.ItemCollectorAlbumBinding
 import co.edu.uniandes.misw4203.vinilos.databinding.ItemCommentBinding
+import co.edu.uniandes.misw4203.vinilos.databinding.ItemFavoritePerformerBinding
 import co.edu.uniandes.misw4203.vinilos.ui.albums.detail.AlbumDetailViewModel
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.google.android.material.chip.Chip
 import com.google.android.material.color.MaterialColors
 import kotlinx.coroutines.launch
 
@@ -54,11 +58,26 @@ class CollectorDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.retryButton.setOnClickListener { viewModel.loadCollector() }
+        markHeadings()
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect(::render)
             }
         }
+    }
+
+    /**
+     * El nombre y los títulos de sección son encabezados para el lector de pantalla (saltar de uno
+     * a otro). El estilo SectionTitle solo lo aplica desde Android 9; ViewCompat lo hace también
+     * en las versiones anteriores hasta la 21.
+     */
+    private fun markHeadings() {
+        listOf(
+            binding.detailName,
+            binding.performersTitle,
+            binding.albumsTitle,
+            binding.commentsTitle
+        ).forEach { ViewCompat.setAccessibilityHeading(it, true) }
     }
 
     private fun render(state: CollectorDetailUiState) {
@@ -86,6 +105,8 @@ class CollectorDetailFragment : Fragment() {
 
     private fun showAlbums(albums: List<CollectorAlbum>) {
         binding.albumsCount.text = CollectorDetailFormatter.formatCount(albums.size)
+        binding.albumsCount.contentDescription =
+            resources.getQuantityString(R.plurals.collector_albums_count_description, albums.size, albums.size)
         binding.albumsContainer.isVisible = albums.isNotEmpty()
         binding.albumsEmpty.isVisible = albums.isEmpty()
         binding.albumsContainer.removeAllViews()
@@ -114,30 +135,62 @@ class CollectorDetailFragment : Fragment() {
                 .centerCrop()
                 .into(row.albumCover)
             row.albumRow.setOnClickListener { openAlbumDetail(album.id) }
+            describeAlbumRow(row, item)
         }
     }
 
-    /** Artistas favoritos como chips con borde (sin acción: el backend no dice si son músicos o bandas). */
+    /**
+     * El lector de pantalla lee la fila como un solo elemento: "Buscando América, precio 35, estado
+     * Activo", y dice qué pasa al tocarla: "Toca dos veces para ver el detalle del álbum".
+     */
+    private fun describeAlbumRow(row: ItemCollectorAlbumBinding, item: CollectorAlbum) {
+        row.albumRow.contentDescription = getString(
+            R.string.collector_album_row_description,
+            item.album.name,
+            CollectorDetailFormatter.formatPrice(item.price),
+            row.albumStatus.text
+        )
+        ViewCompat.setAccessibilityDelegate(row.albumRow, object : AccessibilityDelegateCompat() {
+            override fun onInitializeAccessibilityNodeInfo(host: View, info: AccessibilityNodeInfoCompat) {
+                super.onInitializeAccessibilityNodeInfo(host, info)
+                info.addAction(
+                    AccessibilityNodeInfoCompat.AccessibilityActionCompat(
+                        AccessibilityNodeInfoCompat.ACTION_CLICK,
+                        getString(R.string.collector_album_row_action)
+                    )
+                )
+            }
+        })
+    }
+
+    /**
+     * Artistas favoritos con aspecto de chip (borde, ícono de micrófono y nombre), sin acción: el backend
+     * no dice si son músicos o bandas. No son Chip de Material porque ese componente es de una sola línea
+     * y corta los nombres largos con fuente grande; aquí el nombre se parte en varias líneas.
+     */
     private fun showPerformers(performers: List<Performer>) {
         binding.performersCount.text = CollectorDetailFormatter.formatCount(performers.size)
+        binding.performersCount.contentDescription =
+            resources.getQuantityString(R.plurals.collector_performers_count_description, performers.size, performers.size)
         binding.performersGroup.isVisible = performers.isNotEmpty()
         binding.performersEmpty.isVisible = performers.isEmpty()
         binding.performersGroup.removeAllViews()
+        val iconSize = resources.getDimensionPixelSize(R.dimen.favorite_performer_icon_size)
         performers.forEach { performer ->
-            val chip = Chip(requireContext()).apply {
-                text = performer.name
-                setChipIconResource(R.drawable.ic_mic)
-                isChipIconVisible = true
-                isClickable = false
-                isCheckable = false
-                isFocusable = false
-            }
-            binding.performersGroup.addView(chip)
+            val item = ItemFavoritePerformerBinding.inflate(layoutInflater, binding.performersGroup, false).root
+            item.text = performer.name
+            // El ícono es decorativo: el lector de pantalla solo lee el nombre
+            val icon = AppCompatResources.getDrawable(requireContext(), R.drawable.ic_mic)?.mutate()
+            icon?.setBounds(0, 0, iconSize, iconSize)
+            item.setCompoundDrawablesRelative(icon, null, null, null)
+            binding.performersGroup.addView(item)
         }
     }
 
     private fun showComments(comments: List<Comment>) {
         binding.commentsCount.text = CollectorDetailFormatter.formatCount(comments.size)
+        binding.commentsCount.contentDescription =
+            resources.getQuantityString(R.plurals.collector_comments_count_description, comments.size, comments.size)
         binding.commentsContainer.isVisible = comments.isNotEmpty()
         binding.commentsEmpty.isVisible = comments.isEmpty()
         binding.commentsContainer.removeAllViews()

@@ -1,14 +1,19 @@
 package co.edu.uniandes.misw4203.vinilos.data
 
 import co.edu.uniandes.misw4203.vinilos.core.network.BackendApi
+import co.edu.uniandes.misw4203.vinilos.data.dto.AlbumCreateDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.AlbumDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.BandDto
+import co.edu.uniandes.misw4203.vinilos.data.dto.CollectorAlbumCreateDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.CollectorAlbumDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.CollectorDto
+import co.edu.uniandes.misw4203.vinilos.data.dto.CommentCreateDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.CommentDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.MusicianDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.PerformerDto
+import co.edu.uniandes.misw4203.vinilos.data.dto.TrackCreateDto
 import co.edu.uniandes.misw4203.vinilos.data.dto.TrackDto
+import co.edu.uniandes.misw4203.vinilos.data.model.ArtistType
 import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.HttpException
 import retrofit2.Response
@@ -25,7 +30,7 @@ class FakeBackendApi(
     /** Se puede cambiar para simular que el backend tiene coleccionistas nuevos. */
     var collectors: List<CollectorDto> = emptyList(),
     /** Álbumes de la colección que devuelve GET /collectors/{id}/albums (iguales para cualquier coleccionista). */
-    private val collectorAlbums: List<CollectorAlbumDto> = emptyList(),
+    var collectorAlbums: List<CollectorAlbumDto> = emptyList(),
     /** Se puede cambiar para simular que el backend tiene artistas nuevos. */
     var musicians: List<MusicianDto> = emptyList(),
     var bands: List<BandDto> = emptyList(),
@@ -49,6 +54,66 @@ class FakeBackendApi(
             ?: throw HttpException(Response.error<Any>(404, "".toResponseBody(null)))
     }
 
+    /** Canciones recibidas en POST /albums/{id}/tracks, con el id del álbum, en orden. */
+    val addedTracks = mutableListOf<Pair<Int, TrackCreateDto>>()
+
+    /**
+     * Agrega la canción al álbum (con el siguiente id libre) para que getAlbum ya la
+     * devuelva. Responde HTTP 404 si el álbum no existe.
+     */
+    override suspend fun addTrack(albumId: Int, track: TrackCreateDto): TrackDto {
+        error?.let { throw it }
+        addedTracks += albumId to track
+        val album = albums.firstOrNull { it.id == albumId }
+            ?: throw HttpException(Response.error<Any>(404, "".toResponseBody(null)))
+        val nextId = (albums.flatMap { it.tracks.orEmpty() }.mapNotNull { it.id }.maxOrNull() ?: 0) + 1
+        val created = TrackDto(nextId, track.name, track.duration)
+        albums = albums.map { if (it.id == albumId) it.copy(tracks = album.tracks.orEmpty() + created) else it }
+        return created
+    }
+
+    /** Cuerpos recibidos en POST /albums, en orden. */
+    val createdAlbums = mutableListOf<AlbumCreateDto>()
+
+    /** Crea el álbum con el siguiente id libre y lo agrega a [albums]. */
+    override suspend fun createAlbum(album: AlbumCreateDto): AlbumDto {
+        error?.let { throw it }
+        createdAlbums += album
+        val created = AlbumDto(
+            id = (albums.mapNotNull { it.id }.maxOrNull() ?: 0) + 1,
+            name = album.name,
+            cover = album.cover,
+            releaseDate = album.releaseDate,
+            description = album.description,
+            genre = album.genre,
+            recordLabel = album.recordLabel,
+            tracks = emptyList(),
+            performers = emptyList()
+        )
+        albums = albums + created
+        return created
+    }
+
+    /** Cuerpos recibidos en POST /albums/{id}/comments, en orden. */
+    val addedComments = mutableListOf<CommentCreateDto>()
+
+    /**
+     * Agrega el comentario al álbum (con el siguiente id libre) para que getAlbum ya lo
+     * devuelva. Como el backend real, responde HTTP 404 si no existe el álbum o el coleccionista.
+     */
+    override suspend fun addComment(albumId: Int, comment: CommentCreateDto): CommentDto {
+        error?.let { throw it }
+        addedComments += comment
+        val album = albums.firstOrNull { it.id == albumId }
+        if (album == null || collectors.none { it.id == comment.collector.id }) {
+            throw HttpException(Response.error<Any>(404, "".toResponseBody(null)))
+        }
+        val nextId = (albums.flatMap { it.comments.orEmpty() }.mapNotNull { it.id }.maxOrNull() ?: 0) + 1
+        val created = CommentDto(id = nextId, description = comment.description, rating = comment.rating)
+        albums = albums.map { if (it.id == albumId) it.copy(comments = album.comments.orEmpty() + created) else it }
+        return created
+    }
+
     override suspend fun getCollectors(): List<CollectorDto> {
         listRequests++
         error?.let { throw it }
@@ -67,6 +132,35 @@ class FakeBackendApi(
             throw HttpException(Response.error<Any>(404, "".toResponseBody(null)))
         }
         return collectorAlbums
+    }
+
+    /** Llamadas recibidas en POST /collectors/{id}/albums/{albumId}: (coleccionista, álbum, cuerpo), en orden. */
+    val addedToCollection = mutableListOf<Triple<Int, Int, CollectorAlbumCreateDto>>()
+
+    /**
+     * Guarda la relación en [collectorAlbums] para que getCollectorAlbums ya la devuelva.
+     * Responde HTTP 404 si no existe el coleccionista o el álbum. Como el backend real,
+     * no impide repetir el álbum.
+     */
+    override suspend fun addAlbumToCollector(
+        collectorId: Int,
+        albumId: Int,
+        body: CollectorAlbumCreateDto
+    ): CollectorAlbumDto {
+        error?.let { throw it }
+        addedToCollection += Triple(collectorId, albumId, body)
+        val album = albums.firstOrNull { it.id == albumId }
+        if (collectors.none { it.id == collectorId } || album == null) {
+            throw HttpException(Response.error<Any>(404, "".toResponseBody(null)))
+        }
+        val created = CollectorAlbumDto(
+            id = 500 + addedToCollection.size,
+            price = body.price,
+            status = body.status,
+            album = album
+        )
+        collectorAlbums = collectorAlbums + created
+        return created
     }
 
     override suspend fun getMusicians(): List<MusicianDto> {
@@ -92,6 +186,48 @@ class FakeBackendApi(
         bandsError?.let { throw it }
         return bands.firstOrNull { it.id == id }
             ?: throw HttpException(Response.error<Any>(404, "".toResponseBody(null)))
+    }
+
+    /** HU10: favoritos del coleccionista, o HTTP 404 si el coleccionista no existe. */
+    override suspend fun getCollectorPerformers(collectorId: Int): List<PerformerDto> {
+        error?.let { throw it }
+        val collector = collectors.firstOrNull { it.id == collectorId }
+            ?: throw HttpException(Response.error<Any>(404, "".toResponseBody(null)))
+        return collector.favoritePerformers.orEmpty()
+    }
+
+    /** Llamadas recibidas en POST /collectors/{id}/musicians/{id} y /bands/{id}: (coleccionista, artista, tipo), en orden. */
+    val addedFavorites = mutableListOf<Triple<Int, Int, ArtistType>>()
+
+    override suspend fun addFavoriteMusician(collectorId: Int, musicianId: Int): PerformerDto =
+        addFavorite(collectorId, musicianId, ArtistType.MUSICIAN)
+
+    override suspend fun addFavoriteBand(collectorId: Int, bandId: Int): PerformerDto =
+        addFavorite(collectorId, bandId, ArtistType.BAND)
+
+    /**
+     * Agrega el artista a los favoritos del coleccionista para que getCollectorPerformers ya lo
+     * devuelva. Responde HTTP 404 si no existe el coleccionista o el artista (el backend real
+     * busca en la misma tabla de artistas sin importar la ruta). No guarda dos veces el mismo
+     * favorito, pero tampoco avisa que ya existía.
+     */
+    private fun addFavorite(collectorId: Int, artistId: Int, type: ArtistType): PerformerDto {
+        error?.let { throw it }
+        addedFavorites += Triple(collectorId, artistId, type)
+        val artist = musicians.firstOrNull { it.id == artistId }?.let { PerformerDto(it.id, it.name, it.image) }
+            ?: bands.firstOrNull { it.id == artistId }?.let { PerformerDto(it.id, it.name, it.image) }
+        if (collectors.none { it.id == collectorId } || artist == null) {
+            throw HttpException(Response.error<Any>(404, "".toResponseBody(null)))
+        }
+        collectors = collectors.map { collector ->
+            val current = collector.favoritePerformers.orEmpty()
+            if (collector.id == collectorId && current.none { it.id == artistId }) {
+                collector.copy(favoritePerformers = current + artist)
+            } else {
+                collector
+            }
+        }
+        return artist
     }
 
     companion object {

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Accesibilidad del detalle de un coleccionista (HU06): textos que solo lee el lector de pantalla. -->
+<resources>
+    <!-- Fila de un álbum de la colección: nombre, precio y estado juntos -->
+    <string name="collector_album_row_description">%1$s, precio %2$s, estado %3$s</string>
+    <!-- Acción de la fila: TalkBack dice "Toca dos veces para ver el detalle del álbum" -->
+    <string name="collector_album_row_action">ver el detalle del álbum</string>
+</resources>

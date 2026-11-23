@@ -130,6 +130,21 @@
                     tools:text="Elektra" />
             </LinearLayout>
 
+            <!-- HU11: solo para el coleccionista; el ícono es decorativo, TalkBack lee el texto -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/addToCollectionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/add_to_collection"
+                android:textColor="?attr/colorOnSecondaryContainer"
+                android:visibility="gone"
+                app:backgroundTint="?attr/colorSecondaryContainer"
+                app:icon="@drawable/ic_add_to_collection"
+                app:iconSize="18dp"
+                app:iconTint="?attr/colorOnSecondaryContainer"
+                tools:visibility="visible" />
+
             <!-- Descripción -->
             <TextView
                 style="@style/Widget.Vinilos.SectionTitle"
@@ -250,6 +265,20 @@
                 android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:textColor="?attr/colorOnSurfaceVariant"
                 android:visibility="gone" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/addCommentButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="@string/add_comment"
+                android:textColor="?attr/colorOnSecondaryContainer"
+                android:visibility="gone"
+                app:backgroundTint="?attr/colorSecondaryContainer"
+                app:icon="@drawable/ic_add"
+                app:iconSize="18dp"
+                app:iconTint="?attr/colorOnSecondaryContainer"
+                tools:visibility="visible" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

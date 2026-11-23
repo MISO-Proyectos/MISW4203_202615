@@ -13,10 +13,14 @@
     <!-- Estrellas de la calificación de un comentario -->
     <!-- Carátula de un álbum en la colección de un coleccionista (HU06) -->
     <dimen name="collector_album_cover_size">56dp</dimen>
+    <dimen name="favorite_performer_icon_size">18dp</dimen>
     <dimen name="comment_star_size">16dp</dimen>
     <dimen name="comment_star_gap">2dp</dimen>
 
     <!-- Medidas de imágenes de la HU04 -->
     <dimen name="artist_detail_image_size">160dp</dimen>
     <dimen name="artist_album_cover_size">56dp</dimen>
+
+    <!-- Carátula del álbum en el formulario "Agregar track" (HU08): la usan el layout y Glide -->
+    <dimen name="add_track_cover_size">56dp</dimen>
 </resources>

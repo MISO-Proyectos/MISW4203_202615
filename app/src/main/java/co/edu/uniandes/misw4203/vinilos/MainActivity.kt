@@ -43,9 +43,15 @@ class MainActivity : AppCompatActivity() {
     /** Alto de la barra de navegación del sistema; se recalcula con los insets. */
     private var systemBottomInset = 0
 
+    /** Alto del teclado (0 si está oculto); se recalcula con los insets. */
+    private var imeBottomInset = 0
+
     /** Rol actual y si la pantalla es una sección de la barra inferior; deciden qué se ve arriba. */
     private var currentRole: UserRole? = null
     private var onTopLevelScreen = false
+
+    /** Pantallas tipo formulario: muestran una "X" para cerrar en vez de la flecha "volver". */
+    private var onFormScreen = false
 
     /** Android 17 exige este permiso para llegar al backend en la red local (10.0.2.2 en el emulador). */
     private val localNetworkPermission =
@@ -76,9 +82,15 @@ class MainActivity : AppCompatActivity() {
             // En las secciones principales se ven la barra inferior y el chip del rol;
             // en las demás pantallas (por ejemplo, el detalle) aparece la flecha "volver".
             onTopLevelScreen = destination.id in TOP_LEVEL_DESTINATIONS
+            onFormScreen = destination.id in FORM_DESTINATIONS
             binding.topBar.isVisible = destination.id != R.id.roleSelectionFragment
             binding.bottomBar.isVisible = onTopLevelScreen
             binding.topBarTitle.text = destination.label
+            // En las secciones principales el título repite la opción de la barra inferior;
+            // TalkBack lo anuncia como "Sección …" para que no sean dos elementos iguales.
+            binding.topBarTitle.contentDescription = destination.label
+                ?.takeIf { onTopLevelScreen }
+                ?.let { getString(R.string.top_bar_section, it) }
             updateTopBarIcon()
             updateRoleChip()
             updateBottomInset()
@@ -108,6 +120,7 @@ class MainActivity : AppCompatActivity() {
             )
             view.updatePadding(left = bars.left, top = bars.top, right = bars.right)
             systemBottomInset = bars.bottom
+            imeBottomInset = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom
             updateBottomInset()
             WindowInsetsCompat.CONSUMED
         }
@@ -116,7 +129,10 @@ class MainActivity : AppCompatActivity() {
     private fun updateBottomInset() {
         val barVisible = binding.bottomBar.isVisible
         binding.bottomBar.updatePadding(bottom = if (barVisible) systemBottomInset else 0)
-        binding.navHostFragment.updatePadding(bottom = if (barVisible) 0 else systemBottomInset)
+        // Sin barra inferior (detalle, formularios) el contenido termina encima del teclado
+        // para que los campos de abajo no queden tapados al escribir
+        val contentInset = maxOf(systemBottomInset, imeBottomInset)
+        binding.navHostFragment.updatePadding(bottom = if (barVisible) 0 else contentInset)
     }
 
     /** Vuelve a la selección de rol y borra la pila de pantallas. */
@@ -145,7 +161,10 @@ class MainActivity : AppCompatActivity() {
         binding.roleChip.contentDescription = label?.let { getString(R.string.change_role, it) }
     }
 
-    /** Disco naranja (decorativo) en las secciones principales; flecha "volver" en las demás. */
+    /**
+     * Disco naranja (decorativo) en las secciones principales; "X" para cerrar en los
+     * formularios y flecha "volver" en las demás pantallas.
+     */
     private fun updateTopBarIcon() {
         val icon = binding.topBarIcon
         val back = !onTopLevelScreen
@@ -154,14 +173,24 @@ class MainActivity : AppCompatActivity() {
         } else {
             androidx.appcompat.R.attr.colorPrimary
         }
-        icon.setImageResource(if (back) R.drawable.ic_arrow_back else R.drawable.ic_album)
+        icon.setImageResource(
+            when {
+                !back -> R.drawable.ic_album
+                onFormScreen -> R.drawable.ic_close
+                else -> R.drawable.ic_arrow_back
+            }
+        )
         ImageViewCompat.setImageTintList(
             icon,
             ColorStateList.valueOf(MaterialColors.getColor(icon, tintAttr))
         )
         icon.isClickable = back
         icon.isFocusable = back
-        icon.contentDescription = if (back) getString(R.string.navigate_up) else null
+        icon.contentDescription = when {
+            !back -> null
+            onFormScreen -> getString(R.string.close)
+            else -> getString(R.string.navigate_up)
+        }
         icon.importantForAccessibility = if (back) {
             View.IMPORTANT_FOR_ACCESSIBILITY_YES
         } else {
@@ -175,6 +204,15 @@ class MainActivity : AppCompatActivity() {
             R.id.albumListFragment,
             R.id.artistListFragment,
             R.id.collectorListFragment
+        )
+
+        /** Formularios (HU07, HU08, HU09, HU10 y HU11): la barra superior muestra una "X" para cerrar. */
+        val FORM_DESTINATIONS = setOf(
+            R.id.createAlbumFragment,
+            R.id.addTrackFragment,
+            R.id.addCommentFragment,
+            R.id.addToCollectionFragment,
+            R.id.addFavoriteArtistFragment
         )
     }
 }
