@@ -58,24 +58,35 @@ object AccessibilityTestUtils {
         }
 
     /**
-     * Texto duplicado entre la etiqueta y su campo (Coleccionista y Precio de HU11). La etiqueta
+     * Campos de formulario ligados a su etiqueta con labelFor: HU11 (Coleccionista y Precio) y los
+     * formularios de HU07 (álbum), HU08 (track) y HU09 (comentario). ATF marca el texto de la
+     * etiqueta y el del campo como repetidos; el Scanner no lo marca (ver Accesibilidad).
+     */
+    private val CAMPOS_CON_ETIQUETA = setOf(
+        "collectorInput", "priceInput",
+        "nameInput", "coverInput", "releaseDateInput", "genreInput", "recordLabelInput",
+        "descriptionInput",
+        "trackNameInput", "trackDurationInput"
+    )
+
+    /**
+     * Texto duplicado entre la etiqueta y su campo (HU07, HU08, HU09 y HU11). La etiqueta
      * y el campo son dos paradas de foco unidas por labelFor: es el mismo patrón de HU07 y HU08,
      * que el Accessibility Scanner acepta sin sugerencias. El contentDescription de la etiqueta
      * ("... obligatorio") es lo que evita que se lea "asterisco", y labelFor hace que el campo
-     * se anuncie con su nombre (WCAG 1.3.1). Solo se suprime este chequeo para estos dos ids.
+     * se anuncie con su nombre (WCAG 1.3.1). Solo se suprime este chequeo para los ids de CAMPOS_CON_ETIQUETA.
      */
     private fun duplicadoDeEtiquetaYCampo(): Matcher<AccessibilityViewCheckResult> =
         object : TypeSafeMatcher<AccessibilityViewCheckResult>() {
             override fun describeTo(description: Description) {
-                description.appendText("DuplicateSpeakableTextCheck sobre collectorInput o priceInput")
+                description.appendText("DuplicateSpeakableTextCheck sobre un campo con etiqueta (labelFor)")
             }
 
             override fun matchesSafely(r: AccessibilityViewCheckResult): Boolean {
                 val vista = r.view ?: return false
                 return r.accessibilityHierarchyCheck == DuplicateSpeakableTextCheck::class.java &&
                     vista.id != View.NO_ID &&
-                    vista.resources.getResourceEntryName(vista.id) in
-                    setOf("collectorInput", "priceInput")
+                    vista.resources.getResourceEntryName(vista.id) in CAMPOS_CON_ETIQUETA
             }
         }
 
