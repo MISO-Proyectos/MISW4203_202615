@@ -24,6 +24,16 @@ import org.hamcrest.TypeSafeMatcher
  */
 object AccessibilityTestUtils {
 
+    /**
+     * Nombre del id de la vista, o null si no tiene id o no se puede resolver. Se lee desde
+     * context.resources y no desde View.resources: en API 22 el ViewStub del framework
+     * (android:id/action_mode_bar_stub) tiene id pero View.resources es null, y el matcher
+     * lanzaba NullPointerException en las 25 pruebas ATF con hallazgos de TouchTargetSizeCheck.
+     */
+    private fun nombreDeId(vista: View): String? =
+        if (vista.id == View.NO_ID) null
+        else runCatching { vista.context.resources.getResourceEntryName(vista.id) }.getOrNull()
+
     /** Una línea por resultado: tipo, chequeo, id del elemento y mensaje. */
     private fun describir(r: AccessibilityViewCheckResult): String {
         val vista = r.view
@@ -52,8 +62,7 @@ object AccessibilityTestUtils {
             override fun matchesSafely(r: AccessibilityViewCheckResult): Boolean {
                 val vista = r.view ?: return false
                 return r.accessibilityHierarchyCheck == TouchTargetSizeCheck::class.java &&
-                    vista.id != View.NO_ID &&
-                    vista.resources.getResourceEntryName(vista.id) == "topBarIcon"
+                    nombreDeId(vista) == "topBarIcon"
             }
         }
 
@@ -85,8 +94,7 @@ object AccessibilityTestUtils {
             override fun matchesSafely(r: AccessibilityViewCheckResult): Boolean {
                 val vista = r.view ?: return false
                 return r.accessibilityHierarchyCheck == DuplicateSpeakableTextCheck::class.java &&
-                    vista.id != View.NO_ID &&
-                    vista.resources.getResourceEntryName(vista.id) in CAMPOS_CON_ETIQUETA
+                    nombreDeId(vista) in CAMPOS_CON_ETIQUETA
             }
         }
 
@@ -106,8 +114,7 @@ object AccessibilityTestUtils {
             override fun matchesSafely(r: AccessibilityViewCheckResult): Boolean {
                 val vista = r.view as? TextView ?: return false
                 return r.accessibilityHierarchyCheck == DuplicateSpeakableTextCheck::class.java &&
-                    vista.id != View.NO_ID &&
-                    vista.resources.getResourceEntryName(vista.id) == "saveButton" &&
+                    nombreDeId(vista) == "saveButton" &&
                     vista.text.toString() == vista.context.getString(R.string.add_favorite_save)
             }
         }
