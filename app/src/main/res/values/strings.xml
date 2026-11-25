@@ -52,8 +52,6 @@
     <string name="comment_rating_description">%1$d de 5 estrellas</string>
     <string name="add_track">Agregar track</string>
 
-    <!-- HU09: comentar un álbum -->
-    <string name="cancel">Cancelar</string>
     <string-array name="months_short">
         <item>ene</item>
         <item>feb</item>
