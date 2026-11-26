@@ -17,6 +17,7 @@ import co.edu.uniandes.misw4203.vinilos.R
 import co.edu.uniandes.misw4203.vinilos.data.model.Artist
 import co.edu.uniandes.misw4203.vinilos.databinding.FragmentArtistListBinding
 import co.edu.uniandes.misw4203.vinilos.ui.artists.detail.ArtistDetailViewModel
+import co.edu.uniandes.misw4203.vinilos.ui.common.navigateOnce
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
@@ -78,7 +79,7 @@ class ArtistListFragment : Fragment() {
 
     /** Navega al detalle del artista (HU04). */
     private fun openArtist(artist: Artist) {
-        findNavController().navigate(
+        findNavController().navigateOnce(
             R.id.action_artistList_to_artistDetail,
             bundleOf(
                 ArtistDetailViewModel.ARG_ARTIST_ID to artist.id,
