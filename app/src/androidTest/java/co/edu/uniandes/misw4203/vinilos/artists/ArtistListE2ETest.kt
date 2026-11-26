@@ -15,7 +15,9 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import co.edu.uniandes.misw4203.vinilos.MainActivity
 import co.edu.uniandes.misw4203.vinilos.R
+import co.edu.uniandes.misw4203.vinilos.utils.TestUtils.dosToquesSeguidos
 import co.edu.uniandes.misw4203.vinilos.utils.TestUtils.grantLocalNetworkAccess
+import co.edu.uniandes.misw4203.vinilos.utils.TestUtils.verificarAbiertaUnaVez
 import co.edu.uniandes.misw4203.vinilos.utils.TestUtils.waitFor
 import org.junit.Before
 import org.junit.Rule
@@ -107,5 +109,19 @@ class ArtistListE2ETest {
 
         laListaMuestra(MUSICO)
         laListaMuestra(BANDA)
+    }
+
+    // CP-HU03-12
+    @Test
+    fun dos_toques_seguidos_en_un_artista_abren_su_detalle_una_sola_vez() {
+        laListaMuestra(BANDA)
+        onView(withId(R.id.artistList)).perform(
+            RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
+                hasDescendant(withText(BANDA)),
+                dosToquesSeguidos()
+            )
+        )
+        waitFor { onView(withId(R.id.artistName)).check(matches(withText(BANDA))) }
+        verificarAbiertaUnaVez(activityRule.scenario, R.id.artistDetailFragment, R.id.artistListFragment)
     }
 }
