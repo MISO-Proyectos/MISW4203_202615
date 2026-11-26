@@ -18,6 +18,7 @@ import co.edu.uniandes.misw4203.vinilos.R
 import co.edu.uniandes.misw4203.vinilos.data.model.Collector
 import co.edu.uniandes.misw4203.vinilos.databinding.FragmentCollectorListBinding
 import co.edu.uniandes.misw4203.vinilos.ui.collectors.detail.CollectorDetailViewModel
+import co.edu.uniandes.misw4203.vinilos.ui.common.navigateOnce
 import kotlinx.coroutines.launch
 
 /**
@@ -62,7 +63,7 @@ class CollectorListFragment : Fragment() {
 
     /** HU06: abre el detalle del coleccionista tocado. */
     private fun openCollector(collector: Collector) {
-        findNavController().navigate(
+        findNavController().navigateOnce(
             R.id.action_collectorList_to_collectorDetail,
             bundleOf(CollectorDetailViewModel.ARG_COLLECTOR_ID to collector.id)
         )
