@@ -8,10 +8,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.accessibility.AccessibilityManager
-import android.widget.TextView
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.core.os.bundleOf
+import androidx.core.view.ViewCompat
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -86,6 +87,7 @@ class AlbumDetailFragment : Fragment() {
                 bundleOf(AddToCollectionViewModel.ARG_ALBUM_ID to viewModel.currentAlbumId)
             )
         }
+        markHeadings()
         observeAddedTrack()
         observeAddedToCollection()
         observeAddedComment()
@@ -102,6 +104,18 @@ class AlbumDetailFragment : Fragment() {
                 launch { session.role.collect(::renderRole) }
             }
         }
+    }
+
+    /**
+     * El nombre y los títulos de sección son encabezados para TalkBack (A11Y-C6) desde API 21+.
+     */
+    private fun markHeadings() {
+        listOf(
+            binding.albumName,
+            binding.descriptionTitle,
+            binding.tracksTitle,
+            binding.commentsTitle
+        ).forEach { ViewCompat.setAccessibilityHeading(it, true) }
     }
 
     /**

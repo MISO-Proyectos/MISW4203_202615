@@ -147,10 +147,12 @@
 
             <!-- Descripción -->
             <TextView
+                android:id="@+id/descriptionTitle"
                 style="@style/Widget.Vinilos.SectionTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
+                android:accessibilityHeading="true"
                 android:text="@string/album_description"
                 tools:ignore="UnusedAttribute" />
 
@@ -172,10 +174,12 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/tracksTitle"
                     style="@style/Widget.Vinilos.SectionTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:accessibilityHeading="true"
                     android:text="@string/album_tracks"
                     tools:ignore="UnusedAttribute" />
 
@@ -230,10 +234,12 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/commentsTitle"
                     style="@style/Widget.Vinilos.SectionTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:accessibilityHeading="true"
                     android:text="@string/album_comments"
                     tools:ignore="UnusedAttribute" />
 
@@ -287,6 +293,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:accessibilityLiveRegion="polite"
         android:contentDescription="@string/albums_loading"
         android:indeterminate="true"
         android:visibility="gone" />
@@ -296,6 +303,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:accessibilityLiveRegion="polite"
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:padding="32dp"

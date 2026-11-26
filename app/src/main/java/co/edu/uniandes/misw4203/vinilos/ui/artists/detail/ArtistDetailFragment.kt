@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -60,6 +61,7 @@ class ArtistDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.retryButton.setOnClickListener { viewModel.loadArtistDetail() }
         binding.addFavoriteButton.setOnClickListener { openAddFavorite() }
+        markHeadings()
         observeAddedFavorite()
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -68,6 +70,17 @@ class ArtistDetailFragment : Fragment() {
                 launch { session.role.collect(::renderRole) }
             }
         }
+    }
+
+    /**
+     * El nombre y los títulos de sección son encabezados para TalkBack (A11Y-C6) desde API 21+.
+     */
+    private fun markHeadings() {
+        listOf(
+            binding.artistName,
+            binding.descriptionTitle,
+            binding.albumsTitle
+        ).forEach { ViewCompat.setAccessibilityHeading(it, true) }
     }
 
     /**
@@ -142,11 +155,16 @@ class ArtistDetailFragment : Fragment() {
             .into(binding.artistImage)
 
         // Fecha de nacimiento o fecha de creación según el tipo de artista
-        binding.dateLabel.setText(
+        val dateLabelText = getString(
             if (artist.type == ArtistType.MUSICIAN) R.string.artist_birth_date else R.string.artist_creation_date
         )
+        binding.dateLabel.text = dateLabelText
         val months = resources.getStringArray(R.array.months_short).toList()
-        binding.dateValue.text = artist.date?.let { ArtistDetailFormatter.formatDate(it, months) } ?: unknown
+        val dateValueText = artist.date?.let { ArtistDetailFormatter.formatDate(it, months) } ?: unknown
+        binding.dateValue.text = dateValueText
+
+        // Parada única de foco para TalkBack: "Fecha de nacimiento, 16 jul 1948"
+        binding.dateContainer.contentDescription = "$dateLabelText, $dateValueText"
 
         binding.artistDescription.text = artist.description
             .ifBlank { getString(R.string.artist_no_description) }
