@@ -16,7 +16,9 @@ import androidx.test.platform.app.InstrumentationRegistry
 import co.edu.uniandes.misw4203.vinilos.MainActivity
 import co.edu.uniandes.misw4203.vinilos.R
 import co.edu.uniandes.misw4203.vinilos.utils.BackendFixtures
+import co.edu.uniandes.misw4203.vinilos.utils.TestUtils.dosToquesSeguidos
 import co.edu.uniandes.misw4203.vinilos.utils.TestUtils.grantLocalNetworkAccess
+import co.edu.uniandes.misw4203.vinilos.utils.TestUtils.verificarAbiertaUnaVez
 import co.edu.uniandes.misw4203.vinilos.utils.TestUtils.waitFor
 import org.junit.Before
 import org.junit.Rule
@@ -104,5 +106,19 @@ class CollectorListE2ETest {
         val contador = InstrumentationRegistry.getInstrumentation().targetContext.resources
             .getQuantityString(R.plurals.collectors_count, total, total)
         laListaMuestra(contador)
+    }
+
+    // CP-HU05-14
+    @Test
+    fun dos_toques_seguidos_en_un_coleccionista_abren_su_detalle_una_sola_vez() {
+        laListaMuestra(PRIMER_COLECCIONISTA)
+        onView(withId(R.id.collectorList)).perform(
+            RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
+                hasDescendant(withText(PRIMER_COLECCIONISTA)),
+                dosToquesSeguidos()
+            )
+        )
+        waitFor { onView(withId(R.id.detailName)).check(matches(withText(PRIMER_COLECCIONISTA))) }
+        verificarAbiertaUnaVez(activityRule.scenario, R.id.collectorDetailFragment, R.id.collectorListFragment)
     }
 }

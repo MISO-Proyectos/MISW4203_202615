@@ -34,6 +34,7 @@ import co.edu.uniandes.misw4203.vinilos.ui.albums.comments.AddCommentFragment
 import co.edu.uniandes.misw4203.vinilos.ui.albums.comments.AddCommentViewModel
 import co.edu.uniandes.misw4203.vinilos.ui.albums.tracks.AddTrackFragment
 import co.edu.uniandes.misw4203.vinilos.ui.albums.tracks.AddTrackViewModel
+import co.edu.uniandes.misw4203.vinilos.ui.common.navigateOnce
 import co.edu.uniandes.misw4203.vinilos.ui.role.SessionViewModel
 import co.edu.uniandes.misw4203.vinilos.ui.role.UserRole
 import com.bumptech.glide.Glide
@@ -74,13 +75,13 @@ class AlbumDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.retryButton.setOnClickListener { viewModel.loadAlbum() }
         binding.addTrackButton.setOnClickListener {
-            findNavController().navigate(
+            findNavController().navigateOnce(
                 R.id.action_albumDetail_to_addTrack,
                 bundleOf(AddTrackViewModel.ARG_ALBUM_ID to viewModel.currentAlbumId)
             )
         }
         binding.addToCollectionButton.setOnClickListener {
-            findNavController().navigate(
+            findNavController().navigateOnce(
                 R.id.action_albumDetail_to_addToCollection,
                 bundleOf(AddToCollectionViewModel.ARG_ALBUM_ID to viewModel.currentAlbumId)
             )
@@ -89,7 +90,7 @@ class AlbumDetailFragment : Fragment() {
         observeAddedToCollection()
         observeAddedComment()
         binding.addCommentButton.setOnClickListener {
-            findNavController().navigate(
+            findNavController().navigateOnce(
                 R.id.action_albumDetail_to_addComment,
                 bundleOf(AddCommentViewModel.ARG_ALBUM_ID to viewModel.currentAlbumId)
             )

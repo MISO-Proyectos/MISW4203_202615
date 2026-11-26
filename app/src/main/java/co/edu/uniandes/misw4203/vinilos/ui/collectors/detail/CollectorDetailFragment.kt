@@ -28,6 +28,7 @@ import co.edu.uniandes.misw4203.vinilos.databinding.ItemCollectorAlbumBinding
 import co.edu.uniandes.misw4203.vinilos.databinding.ItemCommentBinding
 import co.edu.uniandes.misw4203.vinilos.databinding.ItemFavoritePerformerBinding
 import co.edu.uniandes.misw4203.vinilos.ui.albums.detail.AlbumDetailViewModel
+import co.edu.uniandes.misw4203.vinilos.ui.common.navigateOnce
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -219,7 +220,7 @@ class CollectorDetailFragment : Fragment() {
     }
 
     private fun openAlbumDetail(albumId: Int) {
-        findNavController().navigate(
+        findNavController().navigateOnce(
             R.id.action_collectorDetail_to_albumDetail,
             bundleOf(AlbumDetailViewModel.ARG_ALBUM_ID to albumId)
         )

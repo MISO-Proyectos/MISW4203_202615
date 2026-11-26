@@ -1,9 +1,12 @@
 package co.edu.uniandes.misw4203.vinilos.utils
 
+import android.app.Activity
 import android.os.Build
 import android.os.SystemClock
 import android.view.View
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
@@ -20,6 +23,7 @@ import co.edu.uniandes.misw4203.vinilos.R
 import com.google.android.material.textfield.TextInputLayout
 import org.hamcrest.Description
 import org.hamcrest.Matcher
+import org.junit.Assert.assertEquals
 
 object TestUtils {
 
@@ -45,6 +49,33 @@ object TestUtils {
         override fun getDescription() = "clic directo sobre la vista"
         override fun perform(uiController: UiController, view: View) {
             view.performClick()
+        }
+    }
+
+    /**
+     * Toca la vista dos veces en el mismo turno del hilo principal, así el segundo toque
+     * siempre llega antes de que la pantalla cambie. Con doubleClick() no está garantizado.
+     */
+    fun dosToquesSeguidos(): ViewAction = object : ViewAction {
+        override fun getConstraints() = isDisplayed()
+        override fun getDescription() = "dos toques seguidos sobre la vista"
+        override fun perform(uiController: UiController, view: View) {
+            view.performClick()
+            view.performClick()
+            uiController.loopMainThreadUntilIdle()
+        }
+    }
+
+    /** El destino actual es [actual] y justo detrás está [anterior]: la pantalla se abrió una sola vez. */
+    fun verificarAbiertaUnaVez(
+        scenario: ActivityScenario<out Activity>,
+        actual: Int,
+        anterior: Int
+    ) {
+        scenario.onActivity { activity ->
+            val navController = activity.findNavController(R.id.nav_host_fragment)
+            assertEquals(actual, navController.currentDestination?.id)
+            assertEquals(anterior, navController.previousBackStackEntry?.destination?.id)
         }
     }
 
