@@ -175,6 +175,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:accessibilityLiveRegion="polite"
             android:contentDescription="@string/create_album_saving"
             android:indeterminate="true"
             android:visibility="gone"
