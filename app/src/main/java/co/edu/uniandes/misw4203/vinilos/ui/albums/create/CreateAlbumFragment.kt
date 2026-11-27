@@ -150,11 +150,10 @@ class CreateAlbumFragment : Fragment() {
         showError(binding.recordLabelLayout, AlbumFormField.RECORD_LABEL, state.errors)
         showError(binding.descriptionLayout, AlbumFormField.DESCRIPTION, state.errors)
 
+        // Los campos siguen activos mientras guarda: si se desactivan, TalkBack anuncia cada uno
+        // como "inhabilitado" y esos avisos tapan el de éxito. Solo se bloquean los botones;
+        // el ViewModel ignora save() mientras guarda y envía los valores del momento del toque.
         val enabled = !state.isSaving
-        listOf(
-            binding.nameLayout, binding.coverLayout, binding.releaseDateLayout,
-            binding.genreLayout, binding.recordLabelLayout, binding.descriptionLayout
-        ).forEach { it.isEnabled = enabled }
         binding.saveButton.isEnabled = enabled
         binding.cancelButton.isEnabled = enabled
         binding.savingIndicator.isVisible = state.isSaving
