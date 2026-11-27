@@ -105,7 +105,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:ellipsize="end"
-                    android:maxLines="1"
+                    android:maxLines="2"
                     android:textAppearance="?attr/textAppearanceBodySmall"
                     android:textColor="?attr/colorOnSurfaceVariant"
                     tools:text="Rubén Blades · 4 tracks" />
@@ -170,7 +170,8 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/saveTrackButton"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="wrap_content"
+            android:minHeight="56dp"
             android:layout_marginTop="24dp"
             android:text="@string/add_track_save"
             android:textAppearance="?attr/textAppearanceLabelLarge"
