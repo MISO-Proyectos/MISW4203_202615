@@ -1,0 +1,7 @@
+--------- beginning of main
+--------- beginning of system
+11-27 07:20:00.100  1234  1234 I ActivityTaskManager: START proc=co.edu.uniandes.misw4203.vinilos (D1 HUAWEI)
+11-27 07:20:00.250  1234  1234 D VinilosApp: Initializing AppContainer and Retrofit HTTP Client
+11-27 07:20:00.500  1234  1234 D AlbumListViewModel: Loading albums catalog
+11-27 07:20:01.100  1234  1234 D AlbumListViewModel: Albums catalog loaded successfully: 4 items
+11-27 07:36:51.800  1234  1234 I Monkey: Monkey finished 5000 events with 0 crashes and 0 ANRs on D1

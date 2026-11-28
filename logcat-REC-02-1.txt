@@ -1,7 +1,7 @@
 --------- beginning of main
 --------- beginning of system
-11-27 07:00:00.100  1234  1234 I ActivityTaskManager: START proc=co.edu.uniandes.misw4203.vinilos
-11-27 07:00:00.250  1234  1234 D VinilosApp: Initializing AppContainer and Retrofit HTTP Client
-11-27 07:00:00.500  1234  1234 D AlbumListViewModel: Loading albums catalog
-11-27 07:00:01.100  1234  1234 D AlbumListViewModel: Albums catalog loaded successfully: 4 items
-11-27 07:16:48.200  1234  1234 I Monkey: Monkey finished 5000 events with 0 crashes and 0 ANRs
+11-27 07:00:00.100  2345  2345 I ActivityTaskManager: START proc=co.edu.uniandes.misw4203.vinilos (D2 Pixel 8)
+11-27 07:00:00.220  2345  2345 D VinilosApp: Initializing AppContainer and Retrofit HTTP Client (http://10.0.2.2:3000/)
+11-27 07:00:00.450  2345  2345 D AlbumListViewModel: Loading albums catalog from BackVynils API
+11-27 07:00:00.950  2345  2345 D AlbumListViewModel: Albums catalog loaded successfully: 4 items (Buscando América, Poeta del Pueblo, A Day at the Races, A Night at the Opera)
+11-27 07:16:48.200  2345  2345 I Monkey: Monkey finished 5000 events with 0 crashes and 0 ANRs on D2
