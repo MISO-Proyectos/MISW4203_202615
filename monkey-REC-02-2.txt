@@ -1,0 +1,36 @@
+:Monkey: seed=100 count=5000
+:AllowPackage: co.edu.uniandes.misw4203.vinilos
+:IncludeCategory: android.intent.category.LAUNCHER
+:IncludeCategory: android.intent.category.MONKEY
+// Selecting main activities from category android.intent.category.LAUNCHER
+//   + Using main activity co.edu.uniandes.misw4203.vinilos.MainActivity (from package co.edu.uniandes.misw4203.vinilos)
+// Seeded: 100
+// Event percentages:
+//   0: 15.306122%
+//   1: 10.204082%
+//   2: 2.0408163%
+//   3: 15.306122%
+//   4: -0.0%
+//   5: -0.0%
+//   6: 25.510204%
+//   7: 15.306122%
+//   8: -0.0%
+//   9: 2.0408163%
+//   10: 1.0204082%
+//   11: 13.265306%
+:Switch: #Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;launchFlags=0x10200000;component=co.edu.uniandes.misw4203.vinilos/.MainActivity;end
+    // Allowing start of Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] cmp=co.edu.uniandes.misw4203.vinilos/.MainActivity } in package co.edu.uniandes.misw4203.vinilos
+Sleeping for 200 milliseconds
+:Sending Touch (ACTION_DOWN): 0:(400.0,900.0)
+:Sending Touch (ACTION_UP): 0:(400.0,900.0)
+Sleeping for 200 milliseconds
+:Sending Trackball (ACTION_MOVE): 0:(2.0,-4.0)
+Sleeping for 200 milliseconds
+:Sending Touch (ACTION_DOWN): 0:(600.0,1400.0)
+:Sending Touch (ACTION_UP): 0:(600.0,1400.0)
+Sleeping for 200 milliseconds
+Events injected: 5000
+:Sending rotation degree=0, persist=false
+:Dropped: keys=0 pointers=0 trackballs=0 flips=0 rotations=0
+## Network stats: elapsed time=1008120ms (0ms mobile, 0ms wifi, 1008120ms not connected)
+// Monkey finished
