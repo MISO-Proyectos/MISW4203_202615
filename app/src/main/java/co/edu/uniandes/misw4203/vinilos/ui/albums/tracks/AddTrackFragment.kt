@@ -86,9 +86,10 @@ class AddTrackFragment : Fragment() {
         showError(binding.trackNameLayout, state.errors[TrackFormField.NAME])
         showError(binding.trackDurationLayout, state.errors[TrackFormField.DURATION])
 
+        // Los campos siguen activos mientras guarda: si se desactivan, TalkBack anuncia cada uno
+        // como "inhabilitado" y esos avisos tapan el de éxito. Solo se bloquean los botones;
+        // el ViewModel ignora save() mientras guarda y envía los valores del momento del toque.
         val enabled = !state.isSaving
-        binding.trackNameLayout.isEnabled = enabled
-        binding.trackDurationLayout.isEnabled = enabled
         binding.saveTrackButton.isEnabled = enabled
         binding.cancelButton.isEnabled = enabled
         binding.savingIndicator.isVisible = state.isSaving

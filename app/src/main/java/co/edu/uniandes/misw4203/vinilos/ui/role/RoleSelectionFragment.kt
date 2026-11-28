@@ -34,9 +34,17 @@ class RoleSelectionFragment : Fragment() {
     }
 
     private fun chooseRole(role: UserRole) {
+        if (!sigueEnSeleccionDeRol()) return
         session.selectRole(role)
         findNavController().navigate(R.id.action_roleSelection_to_albumList)
     }
+
+    /**
+     * Un segundo toque seguido puede llegar cuando ya se navegó al catálogo. Ahí la acción
+     * de navegación no existe (la app se cerraba) y tampoco se debe cambiar el rol.
+     */
+    private fun sigueEnSeleccionDeRol(): Boolean =
+        findNavController().currentDestination?.id == R.id.roleSelectionFragment
 
     override fun onDestroyView() {
         _binding = null

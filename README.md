@@ -41,11 +41,42 @@ Se lee de `local.properties` (en la raíz del proyecto). Git lo ignora, así que
 En Android 17 (API 37) la app pide al abrir el permiso de red local (aparece como «dispositivos cercanos»). Hay que aceptarlo; si no, el catálogo muestra el error de conexión.
 
 ## Pruebas
-- Pruebas unitarias: `.\gradlew.bat testDebugUnitTest`
-- Pruebas E2E con Espresso (con el emulador abierto, las animaciones desactivadas y el backend recién levantado con los cuatro álbumes por defecto):
-  `.\gradlew.bat connectedDebugAndroidTest`
-- Reporte: `app/build/reports/androidTests/connected/debug/index.html`
-- Estrategia y casos de prueba: ver la wiki.
+
+Las pruebas que usan emulador (E2E, accesibilidad y reconocimiento) necesitan las animaciones desactivadas y el backend recién recreado (ver «Preparar el backend para correr todas las pruebas», más abajo).
+
+- Pruebas unitarias: `.\gradlew.bat testDebugUnitTest` (reporte: `app/build/reports/tests/testDebugUnitTest/index.html`)
+- Análisis estático: `.\gradlew.bat lintDebug` (reporte: `app/build/reports/lint-results-debug.html`)
+- Pruebas E2E con Espresso, todas: `.\gradlew.bat connectedDebugAndroidTest` (reporte: `app/build/reports/androidTests/connected/debug/index.html`)
+
+`connectedDebugAndroidTest` no acepta `--tests`. Para correr una sola clase se usa el argumento de instrumentación:
+
+```powershell
+.\gradlew.bat connectedDebugAndroidTest "-Pandroid.testInstrumentationRunnerArguments.class=co.edu.uniandes.misw4203.vinilos.albums.AddToCollectionE2ETest"
+```
+
+Para varias clases, se separan con coma.
+
+### Accesibilidad
+
+Las pruebas usan *Accessibility Test Framework* (`espresso-accessibility`, solo en pruebas):
+
+```powershell
+.\gradlew.bat connectedDebugAndroidTest "-Pandroid.testInstrumentationRunnerArguments.class=co.edu.uniandes.misw4203.vinilos.accesibilidad.AccesibilidadCatalogoE2ETest,co.edu.uniandes.misw4203.vinilos.accesibilidad.AccesibilidadColeccionistasE2ETest,co.edu.uniandes.misw4203.vinilos.accesibilidad.AccesibilidadFavoritosE2ETest,co.edu.uniandes.misw4203.vinilos.collectors.CollectorDetailAccessibilityTest"
+```
+
+La revisión manual con Accessibility Scanner y TalkBack está en la wiki.
+
+### Reconocimiento
+
+Se hizo en un emulador con Android 17 (API 37). Monkey, con las semillas 42, 43 y 44:
+
+```powershell
+adb shell am force-stop co.edu.uniandes.misw4203.vinilos
+adb logcat -c
+adb shell monkey -p co.edu.uniandes.misw4203.vinilos -s 42 --throttle 200 --pct-syskeys 0 -v -v 5000
+```
+
+El APK *debug* trae LeakCanary, y Monkey también abre su pantalla. La exploración sistemática (Droidbot y recorrido propio) y los resultados están en la wiki.
 
 ### Preparar el backend para correr todas las pruebas
 Los datos por defecto del backend entran con ids fijos (100 a 103) y la secuencia de PostgreSQL arranca en 1; sin este paso, las pruebas que crean datos chocan con esos ids (error de llave duplicada) después de unas pocas corridas.
@@ -77,13 +108,23 @@ foreach ($t in 'album','collector','collector_album','comment','performer','perf
 Si prefieres ver los logs, quita `-d` de `docker compose up` y corre el `setval` desde otra terminal una vez que `http://localhost:3000/albums` responda.
 
 ## APK
-El APK está en la carpeta `releases/` del repositorio (`releases/vinilos-v2.1.0.apk`) y también en la sección Releases:
+El APK de la versión `3.0.0` está en `releases/vinilos-v3.0.0.apk` y también en la sección Releases:
 https://github.com/MISO-Proyectos/MISW4203_202615/releases
+
+Es de variante *debug*: incluye LeakCanary y StrictMode.
 
 Para instalarlo en un emulador o en un celular con Android 5.0 o superior hay que tener el backend corriendo. Ojo: el APK usa `10.0.2.2`, que solo sirve en el emulador. En un celular físico hay que compilar de nuevo con la IP del computador (ver «URL del backend»).
 
 ## Ramas (GitFlow)
-- `main`: versiones publicadas (release `v2.1.0`).
+- `main`: versiones publicadas (release `v3.0.0`). Solo recibe ramas `release/*`.
 - `develop`: integración.
 - `feature/HUxx-Tn-descripcion`: una rama por tarea; se integra a `develop` con pull request revisado por otra persona.
 - `release/vX.Y.Z`: se crea desde `develop` para preparar una versión (por ejemplo, agregar el APK); luego se integra a `main` y vuelve a `develop`.
+
+## Documentación
+- [Sprint 3](https://github.com/MISO-Proyectos/MISW4203_202615/wiki/Sprint-3)
+- [Estrategia de pruebas](https://github.com/MISO-Proyectos/MISW4203_202615/wiki/Estrategia-de-Pruebas-Sprint-3)
+- [Pruebas de reconocimiento](https://github.com/MISO-Proyectos/MISW4203_202615/wiki/Pruebas-de-Reconocimiento)
+- [Accesibilidad](https://github.com/MISO-Proyectos/MISW4203_202615/wiki/Accesibilidad)
+- [Micro-optimizaciones](https://github.com/MISO-Proyectos/MISW4203_202615/wiki/Micro-optimizaciones-Sprint-3)
+- [Perfilamiento](https://github.com/MISO-Proyectos/MISW4203_202615/wiki/Perfilamiento-Sprint-3)

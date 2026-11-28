@@ -23,6 +23,7 @@ import co.edu.uniandes.misw4203.vinilos.ui.albums.detail.AlbumDetailViewModel
 import co.edu.uniandes.misw4203.vinilos.ui.artists.favorite.AddFavoriteArtistFragment
 import co.edu.uniandes.misw4203.vinilos.ui.artists.favorite.AddFavoriteArtistViewModel
 import co.edu.uniandes.misw4203.vinilos.ui.artists.labelRes
+import co.edu.uniandes.misw4203.vinilos.ui.common.navigateOnce
 import co.edu.uniandes.misw4203.vinilos.ui.role.SessionViewModel
 import co.edu.uniandes.misw4203.vinilos.ui.role.UserRole
 import com.bumptech.glide.Glide
@@ -97,7 +98,7 @@ class ArtistDetailFragment : Fragment() {
 
     private fun openAddFavorite() {
         val artist = currentArtist ?: return
-        findNavController().navigate(
+        findNavController().navigateOnce(
             R.id.action_artistDetail_to_addFavorite,
             bundleOf(
                 AddFavoriteArtistViewModel.ARG_ARTIST_ID to artist.id,
@@ -186,7 +187,7 @@ class ArtistDetailFragment : Fragment() {
     }
 
     private fun openAlbumDetail(albumId: Int) {
-        findNavController().navigate(
+        findNavController().navigateOnce(
             R.id.action_artistDetail_to_albumDetail,
             bundleOf(AlbumDetailViewModel.ARG_ALBUM_ID to albumId)
         )

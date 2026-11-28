@@ -14,7 +14,9 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import co.edu.uniandes.misw4203.vinilos.MainActivity
 import co.edu.uniandes.misw4203.vinilos.R
+import co.edu.uniandes.misw4203.vinilos.utils.TestUtils.dosToquesSeguidos
 import co.edu.uniandes.misw4203.vinilos.utils.TestUtils.grantLocalNetworkAccess
+import co.edu.uniandes.misw4203.vinilos.utils.TestUtils.verificarAbiertaUnaVez
 import co.edu.uniandes.misw4203.vinilos.utils.TestUtils.waitFor
 import org.junit.Before
 import org.junit.Rule
@@ -108,5 +110,19 @@ class AlbumCatalogE2ETest {
     @Test
     fun catalogo_muestra_el_titulo_de_la_pantalla() {
         onView(withId(R.id.topBarTitle)).check(matches(withText(R.string.nav_albums)))
+    }
+
+    // CP-HU01-17
+    @Test
+    fun dos_toques_seguidos_en_un_album_abren_su_detalle_una_sola_vez() {
+        waitFor { onView(withId(R.id.albumList)).check(matches(hasDescendant(withText(PRIMER_ALBUM)))) }
+        onView(withId(R.id.albumList)).perform(
+            RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
+                hasDescendant(withText(PRIMER_ALBUM)),
+                dosToquesSeguidos()
+            )
+        )
+        waitFor { onView(withId(R.id.albumName)).check(matches(withText(PRIMER_ALBUM))) }
+        verificarAbiertaUnaVez(activityRule.scenario, R.id.albumDetailFragment, R.id.albumListFragment)
     }
 }

@@ -20,6 +20,7 @@ import co.edu.uniandes.misw4203.vinilos.data.model.Album
 import co.edu.uniandes.misw4203.vinilos.databinding.FragmentAlbumListBinding
 import co.edu.uniandes.misw4203.vinilos.ui.albums.create.CreateAlbumFragment
 import co.edu.uniandes.misw4203.vinilos.ui.albums.detail.AlbumDetailViewModel
+import co.edu.uniandes.misw4203.vinilos.ui.common.navigateOnce
 import co.edu.uniandes.misw4203.vinilos.ui.role.SessionViewModel
 import co.edu.uniandes.misw4203.vinilos.ui.role.UserRole
 import com.google.android.material.snackbar.Snackbar
@@ -60,7 +61,7 @@ class AlbumListFragment : Fragment() {
         binding.albumList.adapter = ConcatAdapter(countAdapter, albumAdapter)
         binding.retryButton.setOnClickListener { viewModel.loadAlbums(forceRefresh = true) }
         binding.addAlbumButton.setOnClickListener {
-            findNavController().navigate(R.id.action_albumList_to_createAlbum)
+            findNavController().navigateOnce(R.id.action_albumList_to_createAlbum)
         }
         observeCreatedAlbum()
 
@@ -93,7 +94,7 @@ class AlbumListFragment : Fragment() {
 
     /** HU02: abre el detalle del álbum tocado. */
     private fun openAlbum(album: Album) {
-        findNavController().navigate(
+        findNavController().navigateOnce(
             R.id.action_albumList_to_albumDetail,
             bundleOf(AlbumDetailViewModel.ARG_ALBUM_ID to album.id)
         )
